@@ -1,0 +1,30 @@
+name: 2108-ace-c-ios
+options:
+  bundleIdPrefix: C.ACE
+  deploymentTarget:
+    iOS: 14.0
+
+targets:
+  2108-ace-c-ios:
+    platform: iOS
+    type: application
+    sources:
+      - 2108-ace-c-ios
+  2108-ace-c-iosTests:
+    platform: iOS
+    type: bundle.unit-test
+    sources:
+      - 2108-ace-c-iosTests/
+    scheme:
+      testTargets:
+        - 2108-ace-c-iosTests
+      gatherCoverageData: true
+  2108-ace-c-iosUITests:
+    platform: iOS
+    type: bundle.ui-testing
+    sources:
+      - 2108-ace-c-iosUITests/
+    scheme:
+      testTargets:
+        - 2108-ace-c-iosUITests
+      gatherCoverageData: true
