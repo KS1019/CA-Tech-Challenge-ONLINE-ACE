@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: C.ACE
   deploymentTarget:
     iOS: 14.0
+  generateEmptyDirectories: true
 
 targets:
   2108-ace-c-ios:
