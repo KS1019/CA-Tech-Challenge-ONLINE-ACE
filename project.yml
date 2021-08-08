@@ -9,12 +9,12 @@ targets:
     platform: iOS
     type: application
     sources:
-      - 2108-ace-c-ios
+      - Sources/
   2108-ace-c-iosTests:
     platform: iOS
     type: bundle.unit-test
     sources:
-      - 2108-ace-c-iosTests/
+      - Tests/
     scheme:
       testTargets:
         - 2108-ace-c-iosTests
@@ -23,7 +23,7 @@ targets:
     platform: iOS
     type: bundle.ui-testing
     sources:
-      - 2108-ace-c-iosUITests/
+      - UITests/
     scheme:
       testTargets:
         - 2108-ace-c-iosUITests
