@@ -11,6 +11,8 @@ targets:
     type: application
     sources:
       - Sources/
+      - .gitignore
+      - README.md
   2108-ace-c-iosTests:
     platform: iOS
     type: bundle.unit-test
