@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct _108_ace_c_iosApp: App {
+struct AceCiOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
