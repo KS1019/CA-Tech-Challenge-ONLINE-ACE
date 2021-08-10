@@ -13,6 +13,7 @@ targets:
       - Sources/
       - .gitignore
       - README.md
+      - .swiftlint.yml
     postBuildScripts:
       - script: |
                 if which swiftlint >/dev/null; then
