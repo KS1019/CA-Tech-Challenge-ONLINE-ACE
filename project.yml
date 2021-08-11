@@ -1,4 +1,4 @@
-name: 2108-ace-c-ios
+name: ace-c-ios
 options:
   bundleIdPrefix: C.ACE
   deploymentTarget:
@@ -6,7 +6,7 @@ options:
   generateEmptyDirectories: true
 
 targets:
-  2108-ace-c-ios:
+  ace-c-ios:
     platform: iOS
     type: application
     sources:
@@ -21,21 +21,21 @@ targets:
                 else
                   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
                 fi
-  2108-ace-c-iosTests:
+  ace-c-iosTests:
     platform: iOS
     type: bundle.unit-test
     sources:
       - Tests/
     scheme:
       testTargets:
-        - 2108-ace-c-iosTests
+        - ace-c-iosTests
       gatherCoverageData: true
-  2108-ace-c-iosUITests:
+  ace-c-iosUITests:
     platform: iOS
     type: bundle.ui-testing
     sources:
       - UITests/
     scheme:
       testTargets:
-        - 2108-ace-c-iosUITests
+        - ace-c-iosUITests
       gatherCoverageData: true
