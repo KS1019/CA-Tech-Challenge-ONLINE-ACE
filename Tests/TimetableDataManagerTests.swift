@@ -99,7 +99,7 @@ class TimeTableManager {
                 self?.datas = datas
                 print("success")
                 completion()
-            case .failure:
+            case .failure(_):
                 print("失敗")
 
             }

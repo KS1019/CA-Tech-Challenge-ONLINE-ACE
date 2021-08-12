@@ -8,7 +8,9 @@ import Combine
 import SwiftUI
 
 // ViewModel
+
 class MockAPIViewModel: ObservableObject {
+
     var timetables = [MockTimeTable].init(repeating: MockTimeTable(), count: 10)
 }
 // View
