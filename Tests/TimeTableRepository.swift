@@ -22,10 +22,9 @@ class TimeTableRepositoryImpl {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-    
-    
+
     func fetchFailureTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
-        
+
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepositoryImpl.failedURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
@@ -38,12 +37,10 @@ class TimeTableRepositoryImpl {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-    
-    
-   
+
 }
 
 extension TimeTableRepositoryImpl {
-    static let baseURL = URL(string:"https://C.ACE.ace-c-ios/projects")!
+    static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
 }
