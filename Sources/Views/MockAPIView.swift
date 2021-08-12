@@ -43,6 +43,10 @@ struct MockTimeTable: TimeTableProtocol {
 
     var title: String
 
+    var highlight: String
+
+    var detailHighlight: String
+
     var startAt: Int
 
     var endAt: Int
@@ -54,6 +58,8 @@ struct MockTimeTable: TimeTableProtocol {
     init() {
         self.id = "EQYyywjosSkxUX"
         self.title = "ENLIGHT #1"
+        self.highlight = "Test Highlight"
+        self.detailHighlight = "Test detailHighlight"
         self.startAt = 1_627_232_880
         self.endAt = 1_627_237_860
         self.channelId = "fishing"
