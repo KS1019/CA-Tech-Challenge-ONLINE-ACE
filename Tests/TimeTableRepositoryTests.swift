@@ -15,7 +15,7 @@ class TimeTableRepositoryTests: XCTestCase {
     var isError = false
     private var subscriptions = Set<AnyCancellable>()
     var response: [TimeTable] = []
-    
+
     override func setUp() {
         super.setUp()
         // 成功用のスタブ
@@ -35,49 +35,49 @@ class TimeTableRepositoryTests: XCTestCase {
             )
         }
     }
-    
+
     func test_データ取得成功時にrecieveValueが呼ばれているか() {
-        
+
         let exp = expectation(description: #function)
         repository.fetchTimeTableData(channelId: "fishing")
             .sink { completion in
                 switch completion {
                 case .finished: break
-                    
+
                 case let .failure(error):
                     XCTAssertNotNil(error)
-                    
+
                 }
             } receiveValue: { timetables in
                 self.response += timetables
                 exp.fulfill()
             }
             .store(in: &self.subscriptions)
-        
+
         wait(for: [exp], timeout: 3.0)
-        
+
     }
-    
+
     func test_データ取得失敗時にfailureが呼ばれているか() {
         let exp = expectation(description: #function)
         repository.fetchFailureTimeTableData(channelId: "fishing")
             .sink { completion in
                 switch completion {
                 case .finished: break
-                    
+
                 case let .failure(error):
                     XCTAssertNotNil(error)
                     exp.fulfill()
                     self.isError = true
                     XCTAssertEqual(self.isError, true)
-                    
+
                 }
             } receiveValue: { timetables in
                 self.response += timetables
-                
+
             }
             .store(in: &self.subscriptions)
-        
+
         wait(for: [exp], timeout: 3.0)
     }
 }

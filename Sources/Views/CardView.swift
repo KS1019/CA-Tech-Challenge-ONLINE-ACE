@@ -16,7 +16,7 @@ struct CardView: View {
         }
         .cornerRadius(8)
     }
-
+    
     private var timeText: some View {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"

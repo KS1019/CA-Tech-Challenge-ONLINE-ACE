@@ -18,6 +18,7 @@ targets:
       - .gitignore
       - README.md
       - .swiftlint.yml
+      - Sample/
     postBuildScripts:
       - script: |
                 if which swiftlint >/dev/null; then

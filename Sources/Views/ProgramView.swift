@@ -16,11 +16,11 @@ struct ProgramView: View {
             //            Image("")
             //                .resizable()
             //                .aspectRatio(contentMode: .fill)
-
+            
             programDetailView
         }
     }
-
+    
     private var programDetailView: some View {
         VStack {
             Text(timeTable.title)
