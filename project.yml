@@ -8,6 +8,11 @@ packages:
   OHHTTPStubs:
     url: https://github.com/AliSoftware/OHHTTPStubs.git
     exactVersion: 9.1.0
+fileGroups:
+  - .gitignore
+  - README.md
+  - .swiftlint.yml
+  - project.yml
 
 targets:
   ace-c-ios:
@@ -15,9 +20,6 @@ targets:
     type: application
     sources:
       - Sources/
-      - .gitignore
-      - README.md
-      - .swiftlint.yml
       - Sample/
     postBuildScripts:
       - script: |
@@ -32,8 +34,8 @@ targets:
     type: bundle.unit-test
     sources:
       - Tests/
-      - Sources/Models/
-      - Sources/Extensions/
+      - path: Sources/Models
+      - path: Sources/Extensions
     scheme:
       testTargets:
         - ace-c-iosTests
