@@ -7,14 +7,14 @@
 import Combine
 import SwiftUI
 
-//ViewModel
+// ViewModel
 class MockAPIViewModel: ObservableObject {
     var timetables = [MockTimeTable].init(repeating: MockTimeTable(), count: 10)
 }
-//View
+// View
 struct MockAPIView: View {
     @StateObject var vm = MockAPIViewModel()
-    
+
     var body: some View {
         List(vm.timetables) { timetable in
             VStack(alignment: .leading) {
@@ -23,7 +23,7 @@ struct MockAPIView: View {
                 Text(timetable.id)
                 Text(timetable.channelId)
                     .foregroundColor(Color.red)
-                    
+
             }
         }
     }
@@ -35,25 +35,25 @@ struct MockAPIView_Previews: PreviewProvider {
     }
 }
 
-//Mock用のデータ構造
+// Mock用のデータ構造
 struct MockTimeTable: TimeTableProtocol {
     var id: String
-    
+
     var title: String
-    
+
     var startAt: Int
-    
+
     var endAt: Int
-    
+
     var channelId: String
-    
+
     var labels: [String: Bool]
-    
+
     init() {
         self.id = "EQYyywjosSkxUX"
         self.title = "ENLIGHT #1"
-        self.startAt = 1627232880
-        self.endAt = 1627237860
+        self.startAt = 1_627_232_880
+        self.endAt = 1_627_237_860
         self.channelId = "fishing"
         self.labels = [
             "live": false,
@@ -64,7 +64,7 @@ struct MockTimeTable: TimeTableProtocol {
             "pickup": false
         ]
     }
-    
+
 }
 
 struct MockTimeTableResult: Decodable {

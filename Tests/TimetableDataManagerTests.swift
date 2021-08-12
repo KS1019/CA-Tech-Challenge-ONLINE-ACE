@@ -7,8 +7,8 @@
 
 @testable import ace_c_ios
 import Combine
-import OHHTTPStubsSwift
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import XCTest
 
 class TimetableDataManager: XCTestCase {
@@ -19,13 +19,13 @@ class TimetableDataManager: XCTestCase {
         timeTableManager = TimeTableManager.shared
         stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
             return fixture(
+                // swiftlint:disable force_unwrapping
                 filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
                 headers: ["Content-Type": "application/json"]
             )
         }
     }
-    
-    
+
     override func tearDown() {
         timeTableManager = nil
         HTTPStubs.removeAllStubs()
@@ -34,66 +34,63 @@ class TimetableDataManager: XCTestCase {
 
     func testリクエストが正しく飛んでデータ変換できているか() {
         let exp = expectation(description: #function)
-        //スタブを準備
-        
+        // スタブを準備
+
         timeTableManager.fetchRecruitDatas {[weak self] in
             XCTAssertEqual(self?.timeTableManager.datas![0].id, "EQYyywjosSkxUX")
-//            XCTAssertEqual(self?.timeTableManager.datas![0].id, "わざと失敗させるコード")
-            XCTAssertEqual(self?.timeTableManager.datas![0].startAt, 1627232880)
+            //            XCTAssertEqual(self?.timeTableManager.datas![0].id, "わざと失敗させるコード")
+            XCTAssertEqual(self?.timeTableManager.datas![0].startAt, 1_627_232_880)
             exp.fulfill()
         }
-        
+
         wait(for: [exp], timeout: 3.0)
-        
+
     }
-    
-    
+
 }
 
-
 class APIManager {
-    
+
     func fetchUser(completion: @escaping ((Result<[TimeTable], Error>) -> Void)) {
         let url = URL(string: "https://C.ACE.ace-c-ios/projects")!
-        
+
         let request = URLRequest(url: url)
-        
+
         let session = URLSession.shared.dataTask(with: request) { data, response, error in
-            
+
             if let error = error {
                 completion(.failure(error))
                 return
-                
+
             }
-            
+
             guard let data = data else { return }
-            
+
             let decoder = JSONDecoder()
             do {
-                
+
                 let recruitData = try decoder.decode(TimeTableResult.self, from: data).data
                 debugPrint(recruitData)
                 completion(.success(recruitData))
-                
+
             } catch {
                 print(error.localizedDescription)
-                
+
                 //                completion(.failure(error))
-                
+
             }
-            
+
         }
-        
+
         session.resume()
     }
 }
-
 
 class TimeTableManager {
     static let shared = TimeTableManager()
     private init() {}
     private(set) var datas: [TimeTable]?
-    
+
     func fetchRecruitDatas(completion: @escaping () -> Void) {
         let apiManager = APIManager()
         apiManager.fetchUser { [weak self] result in
@@ -104,12 +101,9 @@ class TimeTableManager {
                 completion()
             case .failure(_):
                 print("失敗")
-                break
-                
+
             }
         }
     }
-    
+
 }
-
-
