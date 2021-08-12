@@ -69,7 +69,7 @@ class TimeTableRepositoryTests: XCTestCase {
                     XCTAssertNotNil(error)
                     exp.fulfill()
                     self.isError = true
-
+                    XCTAssertEqual(self.isError, true)
                     
                 }
             } receiveValue: { timetables in
