@@ -6,91 +6,17 @@
 //
 @testable import ace_c_ios
 import Combine
-import OHHTTPStubs
-import OHHTTPStubsSwift
 import XCTest
 
 // ViewModelのテスト
-class APIViewModelTests: XCTestCase {
+class APIReposTests: XCTestCase {
     var vm = APIViewModel(repository: TimeTableRepositoryImpl())
-    var reposotory = TimeTableRepositoryImpl()
-    var isError = false
-    private var subscriptions = Set<AnyCancellable>()
-    var response: [TimeTable] = []
-    override func setUp() {
-        super.setUp()
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-        stub(condition: isHost("failure.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("FailureTimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-        
-    }
 
     func test_チャンネルを指定したAPIを叩いて正常にクエリを変更出来ているか() {
         vm.channelId = "fishing"
         XCTAssertEqual(vm.channelId, "fishing")
     }
-    func test_データ取得成功時にrecieveValueが呼ばれているか() {
-
-        let exp = expectation(description: #function)
-        reposotory.fetchTimeTableData(channelId: "fishing")
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                   
-                case let .failure(error):
-                   XCTAssertNotNil(error)
-                    
-                }
-            } receiveValue: { timetables in
-                self.response += timetables
-                exp.fulfill()
-            }
-            .store(in: &self.subscriptions)
-        
-        wait(for: [exp], timeout: 3.0)
-        
-    }
-    
-    func test_データ取得失敗時にfailureが呼ばれているか() {
-        let exp = expectation(description: #function)
-        reposotory.fetchFailureTimeTableData(channelId: "fishing")
-            .sink { completion in
-                switch completion {
-                case .finished: break
-                    
-                case let .failure(error):
-                    XCTAssertNotNil(error)
-                    exp.fulfill()
-                    self.isError = true
-                    
-                    
-                }
-            } receiveValue: { timetables in
-                self.response += timetables
-               
-//                exp.fulfill() // わざと失敗
-            }
-            .store(in: &self.subscriptions)
-        
-        wait(for: [exp], timeout: 3.0)
-    }
-    
-    
-
 }
-
-
 
 // ViewModel
 
