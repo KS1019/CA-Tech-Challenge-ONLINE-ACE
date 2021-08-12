@@ -6,9 +6,9 @@
 //
 
 @testable import ace_c_ios
+import Combine
 import OHHTTPStubs
 import XCTest
-
 
 class TimetableDataManager: XCTestCase {
     // swiftlint:disable implicitly_unwrapped_optional
@@ -112,17 +112,3 @@ class TimeTableManager {
 }
 
 
-import Combine
-import Foundation
-
-struct TimeTableResult: Decodable {
-    let data: [TimeTable]
-}
-
-struct TimeTable: Decodable, Identifiable {
-    let id: String
-    let title: String
-    let startAt: Int
-    let endAt: Int
-    let channelId: String
-}
