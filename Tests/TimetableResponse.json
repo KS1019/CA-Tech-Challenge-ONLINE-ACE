@@ -1,0 +1,78 @@
+{"data":
+    [
+        {"id": "EQYyywjosSkxUX",
+            "title": "ENLIGHT #1",
+            "startAt": 1627232880,
+            "endAt": 1627237860,
+            "channelId": "fishing",
+            "groupId": "",
+            "highlight": "t",
+            "detailHighlight": "",
+            "content": "",
+            "labels": {
+                "live": false,
+                "first": false,
+                "last": false,
+                "bundle": false,
+                "new": false,
+                "pickup": false
+            },
+            "displayProgram": {
+                "id": "151-95_s0_p1",
+                "series": {
+                    "id": "151-95"
+                },
+                "credit": {
+                    "casts": [
+                        "川村光太郎"
+                    ],
+                    "crews": [
+                        "プロデューサー:松尾健司"
+                    ],
+                    "copyrights": [
+                        "(C)テレビ朝日"
+                    ]
+                },
+                "content": "「いつも通り、目一杯釣るだけ! 簡単にはいかないと思いますが、苦しむ僕を見てください!」と話す 日本最高レベルの岸釣りアングラー川村光大郎の新番組『ENLIGHT』初回は霞ケ浦の流入河川で40UPを狙う!"
+            }
+        },
+        {"id": "EQYyywjosSkxUX",
+            "title": "ENLIGHT #1",
+            "startAt": 1627232880,
+            "endAt": 1627237860,
+            "channelId": "fishing",
+            "groupId": "",
+            "highlight": "t",
+            "detailHighlight": "",
+            "content": "",
+            "labels": {
+                "live": false,
+                "first": false,
+                "last": false,
+                "bundle": false,
+                "new": false,
+                "pickup": false
+            },
+            "displayProgram": {
+                "id": "151-95_s0_p1",
+                "series": {
+                    "id": "151-95"
+                },
+                "credit": {
+                    "casts": [
+                        "川村光太郎"
+                    ],
+                    "crews": [
+                        "プロデューサー:松尾健司"
+                    ],
+                    "copyrights": [
+                        "(C)テレビ朝日"
+                    ]
+                },
+                "content": "「いつも通り、目一杯釣るだけ! 簡単にはいかないと思いますが、苦しむ僕を見てください!」と話す 日本最高レベルの岸釣りアングラー川村光大郎の新番組『ENLIGHT』初回は霞ケ浦の流入河川で40UPを狙う!"
+            }
+        }
+    ]
+}
+
+
