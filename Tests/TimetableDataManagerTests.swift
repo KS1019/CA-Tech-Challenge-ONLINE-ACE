@@ -34,22 +34,19 @@ class TimetableDataManager: XCTestCase {
     func testリクエストが正しく飛んでデータ変換できているか() {
         let exp = expectation(description: #function)
         //スタブを準備
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return HTTPStubsResponse(
-                fileAtPath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                statusCode: 200,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
         
         timeTableManager.fetchRecruitDatas {[weak self] in
-            XCTAssertEqual(self?.timeTableManager.datas![0].id, "EQYyywjosSkxUd")
+            XCTAssertEqual(self?.timeTableManager.datas![0].id, "EQYyywjosSkxUX")
+//            XCTAssertEqual(self?.timeTableManager.datas![0].id, "わざと失敗させるコード")
+            XCTAssertEqual(self?.timeTableManager.datas![0].startAt, 1627232880)
             exp.fulfill()
         }
         
         wait(for: [exp], timeout: 3.0)
         
     }
+    
+    
 }
 
 
@@ -118,14 +115,14 @@ class TimeTableManager {
 import Combine
 import Foundation
 
-struct TimeTableResult: Codable {
+struct TimeTableResult: Decodable {
     let data: [TimeTable]
 }
 
-struct TimeTable: Codable, Identifiable, Equatable {
-    let id: String?
-    let title: String?
-    let startAt: Int?
-    let endAt: Int?
-    let channelId: String?
+struct TimeTable: Decodable, Identifiable {
+    let id: String
+    let title: String
+    let startAt: Int
+    let endAt: Int
+    let channelId: String
 }
