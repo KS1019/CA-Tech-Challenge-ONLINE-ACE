@@ -12,7 +12,7 @@ extension URL {
     func queryItemAdded(name: String, value: String?) -> URL? {
         return self.queryItemsAdded([URLQueryItem(name: name, value: value)])
     }
-    
+
     /// クエリを複数追加した新しいURLを返す.
     /// [URLQueryItem]は自分で定義
     func queryItemsAdded(_ queryItems: [URLQueryItem]) -> URL? {
@@ -22,6 +22,5 @@ extension URL {
         components.queryItems = queryItems + (components.queryItems ?? [])
         return components.url
     }
-    
-}
 
+}
