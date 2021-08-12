@@ -16,6 +16,13 @@ class TimetableDataManager: XCTestCase {
     override func setUp() {
         super.setUp()
         timeTableManager = TimeTableManager.shared
+        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
+            return HTTPStubsResponse(
+                fileAtPath: OHPathForFile("TimetableResponse.json", type(of: self))!,
+                statusCode: 200,
+                headers: ["Content-Type": "application/json"]
+            )
+        }
     }
     
     override func tearDown() {
