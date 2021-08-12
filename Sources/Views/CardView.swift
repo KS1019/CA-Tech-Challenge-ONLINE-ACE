@@ -8,24 +8,13 @@
 import SwiftUI
 
 struct CardView: View {
-    var timeTable: TimeTable
+    let timeTable: TimeTable
     var body: some View {
         HStack {
             timeText
-            programInfo
+            ProgramView(timeTable: timeTable)
         }
-    }
-    
-    private var programInfo: some View {
-        ZStack {
-            Color.yellow
-            
-            // サムネイルがあればここに追加
-            Image("")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-            
-        }
+        .cornerRadius(8)
     }
     
     private var timeText: some View {
