@@ -32,6 +32,7 @@ targets:
     sources:
       - Tests/
       - Sources/Models/
+      - Sources/Extensions/
     scheme:
       testTargets:
         - ace-c-iosTests
