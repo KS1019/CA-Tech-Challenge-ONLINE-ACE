@@ -4,7 +4,10 @@ options:
   deploymentTarget:
     iOS: 14.0
   generateEmptyDirectories: true
-  postGenCommand: pod install
+packages:
+  OHHTTPStubs:
+    url: https://github.com/AliSoftware/OHHTTPStubs.git
+    exactVersion: 9.1.0
 
 targets:
   ace-c-ios:
@@ -27,10 +30,17 @@ targets:
     type: bundle.unit-test
     sources:
       - Tests/
+      - Sources/Models/
     scheme:
       testTargets:
         - ace-c-iosTests
       gatherCoverageData: true
+    dependencies:
+        - package: OHHTTPStubs
+          product: OHHTTPStubsSwift
+        - package: OHHTTPStubs
+          product: OHHTTPStubs
+        
   ace-c-iosUITests:
     platform: iOS
     type: bundle.ui-testing

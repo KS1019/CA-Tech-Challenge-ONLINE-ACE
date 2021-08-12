@@ -7,6 +7,7 @@
 
 @testable import ace_c_ios
 import Combine
+import OHHTTPStubsSwift
 import OHHTTPStubs
 import XCTest
 
@@ -17,13 +18,13 @@ class TimetableDataManager: XCTestCase {
         super.setUp()
         timeTableManager = TimeTableManager.shared
         stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return HTTPStubsResponse(
-                fileAtPath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                statusCode: 200,
+            return fixture(
+                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
                 headers: ["Content-Type": "application/json"]
             )
         }
     }
+    
     
     override func tearDown() {
         timeTableManager = nil
