@@ -16,7 +16,7 @@ struct CardView: View {
         }
         .cornerRadius(8)
     }
-    
+
     private var timeText: some View {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -37,7 +37,7 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(timeTable: TimeTable(id: "1234", title: "Test Title", startAt: 1627232880, endAt: 1627237860, channelId: "9876", labels: ["" : false]))
+        CardView(timeTable: TimeTable(id: "1234", title: "Test Title", startAt: 1_627_232_880, endAt: 1_627_237_860, channelId: "9876", labels: ["": false]))
             .previewLayout(.sizeThatFits)
     }
 }

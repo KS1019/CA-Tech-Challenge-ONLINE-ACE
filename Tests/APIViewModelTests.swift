@@ -26,13 +26,13 @@ class APIViewModel: ObservableObject {
     @Published var channelId = ""
     @Published var isError = false
     private var subscriptions = Set<AnyCancellable>()
-    
+
     private let repository: TimeTableRepositoryImpl
 
-    //TODO: 汎化させる
+    // TODO: 汎化させる
     init(repository: TimeTableRepositoryImpl) {
         self.repository = repository
-        
+
     }
 
     func getChannelResponse() {
@@ -42,7 +42,7 @@ class APIViewModel: ObservableObject {
                 case .finished:
                     self.state.isLoading = true
                     self.isError = false
-                    
+
                 case let .failure(error):
                     self.isError = true
                     print(error.localizedDescription)
