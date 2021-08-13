@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CardView: View {
-    let timeTable: TimeTable
+struct CardView<T: TimeTableProtocol>: View {
+    let timeTable: T
     var body: some View {
         HStack {
             timeText
@@ -37,7 +37,7 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(timeTable: TimeTable(id: "1234", title: "Test Title", highlight: "Test high light", detailHighlight: "test detailHighlight", startAt: 1_627_232_880, endAt: 1_627_237_860, channelId: "9876", labels: ["": false]))
+        CardView(timeTable: MockTimeTable())
             .previewLayout(.sizeThatFits)
     }
 }

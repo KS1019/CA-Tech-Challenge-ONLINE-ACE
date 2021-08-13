@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ProgramView: View {
-    let timeTable: TimeTable
+struct ProgramView<T: TimeTableProtocol>: View {
+    let timeTable: T
 
     @State private var showReserveAlert = false
 
@@ -56,7 +56,7 @@ struct ProgramView: View {
 
 struct ProgramView_Previews: PreviewProvider {
     static var previews: some View {
-        ProgramView(timeTable: TimeTable(id: "1234", title: "Test Title", highlight: "Test high light", detailHighlight: "test detailHighlight", startAt: 1_627_232_880, endAt: 1_627_237_860, channelId: "9876", labels: ["": false]))
+        ProgramView(timeTable: MockTimeTable())
             .previewLayout(.sizeThatFits)
     }
 }

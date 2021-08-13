@@ -9,25 +9,17 @@ import SwiftUI
 
 // MARK: モック用のViewModel [TimeTable]()を使える
 class MockTimeTableViewModel: TimeTableViewModelProtocol {
-    var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 10)
+    var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
 }
 
-// View
+// 1 .〇〇Viewを<T: TimeTableViewModelProtocol>に準拠させる。
 struct MockAPIView<T: TimeTableViewModelProtocol>: View {
-    // 1 .〇〇Viewを<T: TimeTableViewModelProtocol>に準拠させる。
-    // TimeTableViewModelProtocolをインスタンス化
-    @StateObject var vm: T
+   
+    @StateObject var vm: T  // 2. T(TimeTableViewModelProtocol)をインスタンス化
 
     var body: some View {
         List(vm.timetables) { timetable in
-            VStack(alignment: .leading) {
-                Text(timetable.title)
-                    .font(Font.system(size: 24).bold())
-                Text(timetable.id)
-                Text(timetable.channelId)
-                    .foregroundColor(Color.red)
-
-            }
+            CardView(timeTable: timetable)
         }
     }
 }
