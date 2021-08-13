@@ -7,73 +7,36 @@
 import Combine
 import SwiftUI
 
-// ViewModel
-
-class MockAPIViewModel: ObservableObject {
-
-    var timetables = [MockTimeTable].init(repeating: MockTimeTable(), count: 10)
+// MARK: モック用のViewModel [TimeTable]()を使える
+class MockTimeTableViewModel: TimeTableViewModelProtocol {
+    var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
 }
-// View
-struct MockAPIView: View {
-    @StateObject var vm = MockAPIViewModel()
+
+// 1 .〇〇Viewを<T: TimeTableViewModelProtocol>に準拠させる。
+struct MockAPIView<T: TimeTableViewModelProtocol>: View {
+   
+    @StateObject var vm: T  // 2. T(TimeTableViewModelProtocol)をインスタンス化
 
     var body: some View {
         List(vm.timetables) { timetable in
-            VStack(alignment: .leading) {
-                Text(timetable.title)
-                    .font(Font.system(size: 24).bold())
-                Text(timetable.id)
-                Text(timetable.channelId)
-                    .foregroundColor(Color.red)
-
-            }
+            CardView(timeTable: timetable)
         }
     }
 }
 
+protocol TimeTableViewModelProtocol: ObservableObject {
+    associatedtype ListData: TimeTableProtocol
+    var timetables: [ListData] { get set }
+}
+
 struct MockAPIView_Previews: PreviewProvider {
+
     static var previews: some View {
-        MockAPIView()
+        MockAPIView(vm: MockTimeTableViewModel())
     }
 }
 
 // Mock用のデータ構造
-struct MockTimeTable: TimeTableProtocol {
-    var id: String
-
-    var title: String
-
-    var highlight: String
-
-    var detailHighlight: String
-
-    var startAt: Int
-
-    var endAt: Int
-
-    var channelId: String
-
-    var labels: [String: Bool]
-
-    init() {
-        self.id = "EQYyywjosSkxUX"
-        self.title = "ENLIGHT #1"
-        self.highlight = "Test Highlight"
-        self.detailHighlight = "Test detailHighlight"
-        self.startAt = 1_627_232_880
-        self.endAt = 1_627_237_860
-        self.channelId = "fishing"
-        self.labels = [
-            "live": false,
-            "first": false,
-            "last": false,
-            "bundle": false,
-            "new": false,
-            "pickup": false
-        ]
-    }
-
-}
 
 struct MockTimeTableResult: Decodable {
     let data: [MockTimeTable]

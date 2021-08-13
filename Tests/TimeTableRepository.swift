@@ -7,7 +7,11 @@
 import Combine
 import Foundation
 
-class TimeTableRepositoryImpl {
+protocol TimeTableRepository {
+    func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
+}
+
+class TimeTableRepositoryImpl: TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
