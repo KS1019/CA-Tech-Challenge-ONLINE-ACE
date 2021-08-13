@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProgramView: View {
     let timeTable: TimeTable
+
+    @State private var showReserveAlert = false
+
     var body: some View {
         ZStack {
             Color.yellow
@@ -16,8 +19,28 @@ struct ProgramView: View {
             //            Image("")
             //                .resizable()
             //                .aspectRatio(contentMode: .fill)
+            HStack {
+                programDetailView
+                    .padding()
 
-            programDetailView
+                Button(action: {
+                    showReserveAlert = true
+                }, label: {
+                    Image(systemName: "calendar.badge.plus")
+                        .foregroundColor(.black)
+                })
+                .alert(isPresented: $showReserveAlert) {
+                    Alert(title: Text("この番組を予約しますか"),
+                          primaryButton: .default(
+                            Text("予約する"),
+                            action: {
+                                print("Send API Request here")
+                            }
+                          ),
+                          secondaryButton: .cancel())
+                }
+                .padding()
+            }
         }
     }
 
