@@ -9,18 +9,41 @@ import SwiftUI
 
 struct ProgramView: View {
     let timeTable: TimeTable
+
+    @State private var showReserveAlert = false
+
     var body: some View {
-        ZStack {
-            Color.yellow
-            // TODO: サムネイルについて対応が決まったら追加
-            //            Image("")
-            //                .resizable()
-            //                .aspectRatio(contentMode: .fill)
-            
+        // TODO: サムネイルについて対応が決まったら追加
+        //            Image("")
+        //                .resizable()
+        //                .aspectRatio(contentMode: .fill)
+        HStack {
             programDetailView
+            Spacer()
+            Button(action: {
+                showReserveAlert = true
+            }, label: {
+                Image(systemName: "calendar.badge.plus")
+                    .foregroundColor(.black)
+            })
+            .alert(isPresented: $showReserveAlert) {
+                Alert(title: Text("この番組を予約しますか"),
+                      primaryButton: .default(
+                        Text("予約する"),
+                        action: {
+                            print("Send API Request here")
+                        }
+                      ),
+                      secondaryButton: .cancel())
+            }
+
         }
+        .padding()
+        .background(Color.blue)
+        .cornerRadius(8.0)
+
     }
-    
+
     private var programDetailView: some View {
         VStack {
             Text(timeTable.title)

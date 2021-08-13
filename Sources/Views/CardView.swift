@@ -14,9 +14,9 @@ struct CardView: View {
             timeText
             ProgramView(timeTable: timeTable)
         }
-        .cornerRadius(8)
+        .padding([.top, .bottom, .trailing], 8.0)
     }
-    
+
     private var timeText: some View {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
