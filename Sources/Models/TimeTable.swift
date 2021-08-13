@@ -21,7 +21,7 @@ struct TimeTableResult: Decodable {
     let data: [TimeTable]
 }
 
-struct TimeTable: Decodable, Identifiable {
+struct TimeTable: Decodable, Identifiable, Equatable {
     let id: String
     let title: String
     let highlight: String
@@ -33,12 +33,12 @@ struct TimeTable: Decodable, Identifiable {
     let displayProgram: DisplayProgram
 }
 
-struct DisplayProgram: Decodable {
-    struct Credits: Decodable {
+struct DisplayProgram: Decodable, Equatable {
+    struct Credit: Decodable, Equatable {
         let casts: [String]
         let crews: [String]
         let copyrights: [String]
     }
-    let credits: Credits
+    let credit: Credit
     let content: String
 }
