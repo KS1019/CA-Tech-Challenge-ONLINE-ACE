@@ -30,4 +30,15 @@ struct TimeTable: Decodable, Identifiable {
     let endAt: Int
     let channelId: String
     let labels: [String: Bool]
+    let displayProgram: DisplayProgram
+}
+
+struct DisplayProgram: Decodable {
+    struct Credits: Decodable {
+        let casts: [String]
+        let crews: [String]
+        let copyrights: [String]
+    }
+    let credits: Credits
+    let content: String
 }
