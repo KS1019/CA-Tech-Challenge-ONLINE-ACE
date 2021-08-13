@@ -40,6 +40,7 @@ struct ProgramView: View {
         }
         .padding()
         .background(Color.blue)
+        .cornerRadius(8.0)
 
     }
 
