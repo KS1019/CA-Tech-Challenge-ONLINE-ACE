@@ -11,6 +11,7 @@ packages:
 fileGroups:
   - .gitignore
   - README.md
+  - ARCHITECTURE.md
   - .swiftlint.yml
   - project.yml
 
