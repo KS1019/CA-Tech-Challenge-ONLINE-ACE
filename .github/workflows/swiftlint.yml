@@ -23,7 +23,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Danger
-        uses: docker://ghcr.io/danger/danger-swift:3.7.2
+        uses: docker://ghcr.io/danger/danger-swift-with-swiftlint:3.10.2
         with:
             args: --failOnErrors --no-publish-check
         env:
