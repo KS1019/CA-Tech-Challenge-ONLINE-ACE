@@ -4,7 +4,7 @@
 //
 //  Created by TanakaHirokazu on 2021/08/12.
 //
-@testable import ace_c_ios
+@testable import App
 import Combine
 import XCTest
 

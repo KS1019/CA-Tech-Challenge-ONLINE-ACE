@@ -17,7 +17,7 @@ fileGroups:
   - Dangerfile.swift
 
 targets:
-  ace-c-ios:
+  App:
     platform: iOS
     type: application
     sources:
@@ -31,7 +31,7 @@ targets:
                 else
                   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
                 fi
-  ace-c-iosTests:
+  Tests:
     platform: iOS
     type: bundle.unit-test
     sources:
@@ -40,7 +40,7 @@ targets:
       - path: Sources/Extensions
     scheme:
       testTargets:
-        - ace-c-iosTests
+        - Tests
       gatherCoverageData: true
     dependencies:
         - package: OHHTTPStubs
@@ -48,12 +48,12 @@ targets:
         - package: OHHTTPStubs
           product: OHHTTPStubs
         
-  ace-c-iosUITests:
+  UITests:
     platform: iOS
     type: bundle.ui-testing
     sources:
       - UITests/
     scheme:
       testTargets:
-        - ace-c-iosUITests
+        - UITests
       gatherCoverageData: true
