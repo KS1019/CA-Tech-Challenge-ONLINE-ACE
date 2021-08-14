@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 
 class JSONConvertTest: XCTestCase {
-    func test_JSONConversion() throws {
+    func test_JSONの変換() throws {
         let valueFromJSON = try XCTUnwrap(JSONDecoder().decode(TimeTable.self, from: JSONConvertTest.json))
 
         let expectedValue = TimeTable(id: "EQYyywjosSkxUX", title: "ENLIGHT #1", highlight: "t", detailHighlight: "",
