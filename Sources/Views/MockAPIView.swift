@@ -14,7 +14,7 @@ class MockTimeTableViewModel: TimeTableViewModelProtocol {
 
 // 1 .〇〇Viewを<T: TimeTableViewModelProtocol>に準拠させる。
 struct MockAPIView<T: TimeTableViewModelProtocol>: View {
-   
+
     @StateObject var vm: T  // 2. T(TimeTableViewModelProtocol)をインスタンス化
 
     var body: some View {
