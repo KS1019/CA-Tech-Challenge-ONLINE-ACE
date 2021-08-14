@@ -7,6 +7,9 @@ on:
   # Triggers the workflow on pull request events but only for the main branch
   pull_request:
     branches: [ main ]
+    # .swiftファイルが変更にない場合は実行しない
+    paths:
+      - '**.swift'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
