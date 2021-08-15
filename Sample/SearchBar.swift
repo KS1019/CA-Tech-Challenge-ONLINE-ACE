@@ -21,7 +21,7 @@ struct SearchBar: View {
 
                           onEditingChanged: { begin in
 
-                            isEditing = begin ? true : false
+                            isEditing = begin
 
                           },
                           // リターンキーが押された時の処理
