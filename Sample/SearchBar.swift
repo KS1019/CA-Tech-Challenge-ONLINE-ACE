@@ -11,7 +11,7 @@ struct SearchBar: View {
     @Binding var query: String
     @Binding var isEditing: Bool
 
-    var finish: () -> Void
+    var onCommit: () -> Void
 
     var body: some View {
         HStack {
@@ -26,7 +26,7 @@ struct SearchBar: View {
                           },
                           // リターンキーが押された時の処理
                           onCommit: {
-                            finish()
+                            onCommit()
                           })
                     .foregroundColor(.primary)
                 Button(action: {
@@ -58,6 +58,6 @@ struct SearchBar_Previews: PreviewProvider {
     }
     static var previews: some View {
 
-        SearchBar(query: .constant(" "), isEditing: .constant(false), finish: getInfo)
+        SearchBar(query: .constant(" "), isEditing: .constant(false), onCommit: getInfo)
     }
 }
