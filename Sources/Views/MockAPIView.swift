@@ -9,6 +9,8 @@ import SwiftUI
 
 // MARK: モック用のViewModel [TimeTable]()を使える
 class MockTimeTableViewModel: TimeTableViewModelProtocol {
+    @Published var searchQuery = ""
+    @Published var isEditing = false
     var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
 }
 
@@ -18,15 +20,24 @@ struct MockAPIView<T: TimeTableViewModelProtocol>: View {
     @StateObject var vm: T  // 2. T(TimeTableViewModelProtocol)をインスタンス化
 
     var body: some View {
-        List(vm.timetables) { timetable in
-            CardView(timeTable: timetable)
+        VStack {
+            SearchBar(query: $vm.searchQuery, isEditing: $vm.isEditing) {
+                print("検索")
+            }
+
+            List(vm.timetables) { timetable in
+                CardView(timeTable: timetable)
+            }
         }
+
     }
 }
 
 protocol TimeTableViewModelProtocol: ObservableObject {
     associatedtype ListData: TimeTableProtocol
     var timetables: [ListData] { get set }
+    var searchQuery: String { get set }
+    var isEditing: Bool { get set }
 }
 
 struct MockAPIView_Previews: PreviewProvider {
