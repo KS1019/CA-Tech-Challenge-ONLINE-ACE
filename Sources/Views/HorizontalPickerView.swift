@@ -25,7 +25,7 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 0) {
+            HStack(spacing: 5) {
                 ForEach(selections.indices, id: \.self) { index in
                     if type(of: selections[index]) == Date.self {
                         PickerButton(item: selections[index] as! Date, index: index as! Int, selectedIndex: $selection) {
@@ -83,15 +83,16 @@ struct PickerButton<T>: View {
                 Text(buttonSubTextString)
                     .font(.system(size: 15, weight: .regular, design: .monospaced))
                     .foregroundColor(.black)
-                    .padding(.bottom, 5)
-                    .padding([.top, .leading, .trailing], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+                Spacer()
+                    .frame(width: 45, height: 10, alignment: .center)
 
                 Text(buttonTextString)
                     .foregroundColor(.black)
                     .font(.system(size: 40, weight: .bold, design: .default))
-                    .padding(.top, 5)
-                    .padding([.bottom, .leading, .trailing], /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+
             }
+            .padding(.top, 5)
+            .padding([.bottom, .leading, .trailing], 10)
             .background(index == selectedIndex ? Color.orange : Color.gray)
         }
     }
