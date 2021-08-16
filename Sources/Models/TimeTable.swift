@@ -21,7 +21,7 @@ struct TimeTableResult: Decodable {
     let data: [TimeTable]
 }
 
-struct TimeTable: Decodable, Identifiable, Equatable {
+struct TimeTable: TimeTableProtocol, Equatable {
     let id: String
     let title: String
     let highlight: String
