@@ -24,13 +24,13 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
                     }
                 }
                 if vm.isLoading {
-                    loadingIndicator
+                    activityIndicator
                 }
             }
 
         }
     }
-    private var loadingIndicator: some View {
+    private var activityIndicator: some View {
         ActivityIndicator(style: .medium)
             .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
     }
