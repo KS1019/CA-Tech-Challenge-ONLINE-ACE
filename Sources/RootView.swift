@@ -15,7 +15,7 @@ struct RootView: View {
             .tag(Tabs.calendar)
 
             ZStack {
-                Color.green
+                ChannelView()
             }
             .tabItem {
                 Label(Tabs.channel.description,

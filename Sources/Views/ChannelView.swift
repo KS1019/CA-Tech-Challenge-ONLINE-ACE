@@ -1,5 +1,5 @@
 //
-//  CalenderView.swift
+//  ChannelView.swift
 //  App
 //
 //  Created by TanakaHirokazu on 2021/08/16.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct CalendarView: View {
+struct ChannelView: View {
     var body: some View {
-        Text("CalendarView")
+        Text("ChannelView")
     }
 }
 
-struct CalendarView_Previews: PreviewProvider {
+struct ChannelView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView()
+        ChannelView()
     }
 }
