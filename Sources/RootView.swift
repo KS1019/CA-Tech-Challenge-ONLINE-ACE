@@ -43,7 +43,6 @@ struct RootView_Previews: PreviewProvider {
     }
 }
 
-
 // TODO: 変更項目がなくなれば、別ファイルに移動したい
 class RootViewModel: ObservableObject {
     @Published var tabSelection = Tabs.calendar
