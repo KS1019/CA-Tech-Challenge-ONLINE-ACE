@@ -110,7 +110,7 @@ extension PickerButton where T == Date {
         if Calendar.current.isDateInToday(item) {
             buttonSubTextString = "TODAY"
         } else {
-            formatter.dateFormat = "EEEE"
+            formatter.dateFormat = "EEE"
             buttonSubTextString = formatter.string(from: item)
         }
     }
