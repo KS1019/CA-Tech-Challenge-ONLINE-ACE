@@ -7,14 +7,24 @@
 
 import SwiftUI
 
-struct CalendarView: View {
+struct CalendarView<T: TimeTableViewModelProtocol>: View {
+    @ObservedObject var vm: T
     var body: some View {
-        Text("CalendarView")
+        VStack {
+            SearchBar(query: $vm.searchQuery, isEditing: $vm.isEditing) {
+                print("検索")
+            }
+
+            List(vm.timetables) { timetable in
+                CardView(timeTable: timetable)
+            }
+        }
     }
 }
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView()
+        var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
+        CalendarView(vm: MockTimeTableViewModel())
     }
 }
