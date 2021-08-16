@@ -57,6 +57,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var reserved = false
     @Published var timetables: [TimeTable] = []
     @Published var isEditing = false
+    @Published var isLoading = true
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
 
@@ -77,9 +78,11 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
                 switch completion {
                 case .finished:
                     print("終了コード")
+                    self.isLoading = false
 
                 case let .failure(error):
                     print(error)
+                    self.isLoading = true
                 }
 
             } receiveValue: { data in
