@@ -25,7 +25,7 @@ struct MockTimeTable: TimeTableProtocol {
     var labels: [String: Bool]
 
     init() {
-        self.id = "EQYyywjosSkxUX"
+        self.id = UUID().uuidString
         self.title = "ENLIGHT #1"
         self.highlight = "Test Highlight"
         self.detailHighlight = "Test detailHighlight"
