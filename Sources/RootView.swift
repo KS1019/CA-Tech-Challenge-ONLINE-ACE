@@ -24,7 +24,7 @@ struct RootView: View {
             .tag(Tabs.channel)
 
             ZStack {
-                Color.red
+                ReservedView()
             }
             .tabItem {
                 Label(Tabs.reserved.description,
