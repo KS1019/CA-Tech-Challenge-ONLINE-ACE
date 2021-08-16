@@ -8,9 +8,9 @@
 import Foundation
 
 enum Tabs: CustomStringConvertible {
-    
+
     case calendar, channel, reserved
-    
+
     var description: String {
         switch self {
         case .calendar:

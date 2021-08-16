@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct RootView: View {
-    @State var tabSelection: Tabs = Tabs.calendar
+
+    @ObservedObject var vm = RootViewModel()
     var body: some View {
-        TabView(selection: $tabSelection) {
+        TabView(selection: $vm.tabSelection) {
 
             ZStack {
                 CalendarView()
@@ -40,4 +41,8 @@ struct RootView_Previews: PreviewProvider {
     static var previews: some View {
         RootView()
     }
+}
+
+class RootViewModel: ObservableObject {
+    @Published var tabSelection = Tabs.calendar
 }
