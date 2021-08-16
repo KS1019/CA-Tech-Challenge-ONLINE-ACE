@@ -16,6 +16,8 @@ protocol TimeTableProtocol: Identifiable, Decodable {
     var channelId: String { get }
     var labels: [String: Bool] { get }
     var content: String { get }
+    var displayProgram: DisplayProgram { get }
+
 }
 
 struct TimeTableResult: Decodable {

@@ -21,7 +21,7 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
 
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.timetables, id: \.id) { timetable in
+                    ForEach(vm.timetables) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable)
                         }

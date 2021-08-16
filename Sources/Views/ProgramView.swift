@@ -48,7 +48,7 @@ struct ProgramView<T: TimeTableProtocol>: View {
         VStack {
             Text(timeTable.title)
                 .font(.title)
-            Text(timeTable.content)
+            Text(timeTable.displayProgram.content)
                 .font(.headline)
         }
     }
