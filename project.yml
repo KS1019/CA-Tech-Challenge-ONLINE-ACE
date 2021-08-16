@@ -31,6 +31,11 @@ targets:
                 else
                   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
                 fi
+    dependencies:
+        - package: OHHTTPStubs
+          product: OHHTTPStubsSwift
+        - package: OHHTTPStubs
+          product: OHHTTPStubs
   Tests:
     platform: iOS
     type: bundle.unit-test
@@ -38,6 +43,7 @@ targets:
       - Tests/
       - path: Sources/Models
       - path: Sources/Extensions
+      - path: Sources/Repositories
     scheme:
       testTargets:
         - Tests
