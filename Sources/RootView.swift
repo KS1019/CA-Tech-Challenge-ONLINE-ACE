@@ -5,7 +5,7 @@ struct RootView: View {
     @ObservedObject var vm = RootViewModel(repository: TimeTableRepositoryImpl())
     var body: some View {
         TabView(selection: $vm.tabSelection) {
-            ZStack {
+            VStack {
                 CalendarView(vm: vm)
             }
             .tabItem {

@@ -8,23 +8,46 @@
 import SwiftUI
 
 struct CalendarView<T: TimeTableViewModelProtocol>: View {
-    @ObservedObject var vm: T
+    @StateObject var vm: T
+    @State var aWeek: [Date]? = Date.getWeek()
     var body: some View {
         VStack {
             SearchBar(query: $vm.searchQuery, isEditing: $vm.isEditing) {
                 print("検索")
             }
 
-            List(vm.timetables) { timetable in
-                CardView(timeTable: timetable)
+            HorizontalPickerView(selections: aWeek ?? [Date()])
+                .previewLayout(.sizeThatFits)
+
+            ScrollView {
+                LazyVStack {
+                    ForEach(vm.timetables, id: \.id) { timetable in
+                        VStack(alignment: .leading) {
+                            CardView(timeTable: timetable)
+                        }
+                    }
+                }
             }
+
         }
     }
+
 }
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
         CalendarView(vm: MockTimeTableViewModel())
+    }
+}
+
+extension Date {
+    static func getWeek() -> [Date]? {
+        var aWeek: [Date] = []
+        let today = Date()
+        for i in -2..<7 {
+            guard let day = Calendar.current.date(byAdding: .day, value: i, to: today) else { return nil }
+            aWeek.append(day)
+        }
+        return aWeek
     }
 }
