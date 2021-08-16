@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct RootView: View {
     @State var tabSelection: Tabs = Tabs.calendar
     var body: some View {
         TabView(selection: $tabSelection) {
@@ -36,9 +36,9 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        RootView()
     }
 }
 

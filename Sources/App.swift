@@ -4,7 +4,7 @@ import SwiftUI
 struct AceCiOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
             //            MockAPIView(vm: MockTimeTableViewModel())
         }
     }
