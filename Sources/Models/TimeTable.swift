@@ -15,6 +15,7 @@ protocol TimeTableProtocol: Identifiable, Decodable {
     var endAt: Int { get }
     var channelId: String { get }
     var labels: [String: Bool] { get }
+    var content: String { get }
 }
 
 struct TimeTableResult: Decodable {
@@ -30,6 +31,7 @@ struct TimeTable: TimeTableProtocol, Equatable {
     let endAt: Int
     let channelId: String
     let labels: [String: Bool]
+    let content: String
     let displayProgram: DisplayProgram
 }
 
