@@ -6,7 +6,7 @@ struct RootView: View {
         TabView(selection: $tabSelection) {
 
             ZStack {
-                Color.yellow
+                CalendarView()
             }
             .tabItem {
                 Label(Tabs.calendar.description,
