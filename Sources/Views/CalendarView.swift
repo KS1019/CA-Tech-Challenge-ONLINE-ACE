@@ -12,10 +12,6 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
     @State var aWeek: [Date]? = Date.getWeek()
     var body: some View {
         VStack {
-            SearchBar(query: $vm.searchQuery, isEditing: $vm.isEditing) {
-                print("検索")
-            }
-
             HorizontalPickerView(selections: aWeek ?? [Date()])
                 .previewLayout(.sizeThatFits)
 
@@ -27,9 +23,16 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
                         }
                     }
                 }
+                if vm.isLoading {
+                    loadingIndicator
+                }
             }
 
         }
+    }
+    private var loadingIndicator: some View {
+        ActivityIndicator(style: .medium)
+            .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
     }
 
 }
