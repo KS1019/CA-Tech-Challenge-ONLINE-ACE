@@ -9,9 +9,15 @@ import SwiftUI
 
 // MARK: モック用のViewModel [TimeTable]()を使える
 class MockTimeTableViewModel: TimeTableViewModelProtocol {
+
+    func getChannelTimeTable() {
+        timetables = [MockTimeTable].init(repeating: MockTimeTable(), count: Int.random(in: 1 ... 5))
+    }
+
     @Published var searchQuery = ""
     @Published var isEditing = false
-    var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: 20)
+    @Published var isLoading = true
+    var timetables: [MockTimeTable] = [MockTimeTable].init(repeating: MockTimeTable(), count: Int.random(in: 1 ... 5))
 }
 
 // 1 .〇〇Viewを<T: TimeTableViewModelProtocol>に準拠させる。
@@ -38,6 +44,8 @@ protocol TimeTableViewModelProtocol: ObservableObject {
     var timetables: [ListData] { get set }
     var searchQuery: String { get set }
     var isEditing: Bool { get set }
+    var isLoading: Bool { get set }
+    func getChannelTimeTable()
 }
 
 struct MockAPIView_Previews: PreviewProvider {
