@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RootView: View {
 
-    @ObservedObject var vm = RootViewModel(repository: TimeTableRepositoryImpl())
+    @ObservedObject var vm = RootViewModel(repository: MockTimeTableRepositoryImpl())
     var body: some View {
         TabView(selection: $vm.tabSelection) {
             VStack {
@@ -46,8 +46,7 @@ struct RootView_Previews: PreviewProvider {
 }
 
 import Combine
-import OHHTTPStubs
-import OHHTTPStubsSwift
+
 // TODO: 変更項目がなくなれば、別ファイルに移動したい
 class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var tabSelection = Tabs.calendar
@@ -63,13 +62,6 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
 
     init(repository: TimeTableRepository) {
         self.repository = repository
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
     }
 
     func getChannelTimeTable() {
