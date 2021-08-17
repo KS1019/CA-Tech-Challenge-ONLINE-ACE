@@ -14,7 +14,7 @@ class JSONConvertTest: XCTestCase {
 
         let expectedValue = TimeTable(id: "EQYyywjosSkxUX", title: "ENLIGHT #1", highlight: "t", detailHighlight: "",
                                       startAt: 1_627_232_880, endAt: 1_627_237_860, channelId: "fishing",
-                                      labels: ["live": false, "first": false, "last": false, "bundle": false, "new": false, "pickup": false],
+                                      labels: ["live": false, "first": false, "last": false, "bundle": false, "new": false, "pickup": false], content: "",
                                       displayProgram: DisplayProgram(credit:
                                                                         DisplayProgram.Credit(casts: ["川村光太郎"],
                                                                                               crews: ["プロデューサー:松尾健司"],

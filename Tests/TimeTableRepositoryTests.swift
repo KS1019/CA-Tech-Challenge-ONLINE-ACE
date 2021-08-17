@@ -12,7 +12,7 @@ import XCTest
 
 class TimeTableRepositoryTests: XCTestCase {
     // テスト用なのでここでインスタンス化
-    var repository = TimeTableRepositoryImpl()
+    var repository = MockTimeTableRepositoryImpl()
     var isError = false
     private var subscriptions = Set<AnyCancellable>()
     var response: [TimeTable] = []
