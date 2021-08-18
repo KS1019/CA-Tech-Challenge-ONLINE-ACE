@@ -9,36 +9,35 @@ import Combine
 import Foundation
 import KeychainAccess
 
-protocol UUIDRepository {
-    func fetchUUID() -> AnyPublisher<UUID, Error>
-    func register(uuid: UUID)
-}
-
 struct UUIDRepositoryImpl {
     static let keychain = Keychain(service: "C.ACE.iOS")
     func fetchUUID() throws -> String {
         do {
-            guard let token = try UUIDRepositoryImpl.keychain.get("userid") else { throw UUIDRepositoryImplError.fetchFailed }
+            guard let token = try UUIDRepositoryImpl.keychain.get("userid") else { throw UUIDRepositoryImplError.neverHappenError }
             return token
         } catch let error {
-            print(error)
-            throw UUIDRepositoryImplError.fetchFailed
+            throw UUIDRepositoryImplError.fetchFailed(error)
         }
     }
 
     func register(uuid: UUID) throws {
         let key = uuid.uuidString
         if try UUIDRepositoryImpl.keychain.get("userid") != nil {
-            print("Token is already set")
             throw UUIDRepositoryImplError.tokenAlreadySet
         } else {
             do {
                 try UUIDRepositoryImpl.keychain.set(key, key: "userid")
-                print("\(key) saved")
             } catch let error {
-                print(error)
-                throw UUIDRepositoryImplError.registerFailed
+                throw UUIDRepositoryImplError.registerFailed(error)
             }
+        }
+    }
+    
+    func update(userID: UUID) throws {
+        do {
+            try UUIDRepositoryImpl.keychain.set(userID.uuidString, key: "userid")
+        } catch let error {
+            throw UUIDRepositoryImplError.updateFailed(error)
         }
     }
 }
@@ -46,7 +45,10 @@ struct UUIDRepositoryImpl {
 extension UUIDRepositoryImpl {
     enum UUIDRepositoryImplError: Error {
         case tokenAlreadySet
-        case registerFailed
-        case fetchFailed
+        case registerFailed(Error)
+        case fetchFailed(Error)
+        case updateFailed(Error)
+        // This error should never happen
+        case neverHappenError
     }
 }
