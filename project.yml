@@ -8,6 +8,9 @@ packages:
   OHHTTPStubs:
     url: https://github.com/AliSoftware/OHHTTPStubs.git
     exactVersion: 9.1.0
+  KeychainAccess:
+    url: https://github.com/kishikawakatsumi/KeychainAccess.git
+    exactVersion: 4.2.2
 fileGroups:
   - .gitignore
   - README.md
@@ -36,6 +39,7 @@ targets:
           product: OHHTTPStubsSwift
         - package: OHHTTPStubs
           product: OHHTTPStubs
+        - package: KeychainAccess
   Tests:
     platform: iOS
     type: bundle.unit-test
