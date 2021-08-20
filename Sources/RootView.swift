@@ -24,7 +24,7 @@ struct RootView: View {
             .tag(Tabs.channel)
 
             ZStack {
-                ReservedView()
+                ReservedView(vm: vm)
             }
             .tabItem {
                 Label(Tabs.reserved.description,
@@ -36,6 +36,7 @@ struct RootView: View {
         .onAppear {
             vm.getChannelTimeTable()
             vm.getChannels()
+            vm.getReservaions()
         }
     }
 }
@@ -59,6 +60,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var isEditing = false
     @Published var isLoading = true
     @Published var channels: [Channel] = []
+    @Published var reservations: [TimeTable] = []
     private let repository: TimeTableRepository
     private var channelList: [Channel] = []
     private var subscriptions = Set<AnyCancellable>()
@@ -125,5 +127,23 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
     }
-
+    
+    func getReservaions() {
+        self.repository
+            .fetchReservations(userId: "")
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+                    
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+            } receiveValue: { (data) in
+                self.reservations = data
+            }
+            .store(in: &self.subscriptions)
+    }
 }

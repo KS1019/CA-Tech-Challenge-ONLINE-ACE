@@ -11,6 +11,7 @@ protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchReservations(userId: String) -> AnyPublisher<[TimeTable], Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
@@ -65,6 +66,18 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .dataTaskPublisher(for: url)
             .tryMap { try
                 JSONDecoder().decode(ChannelListResult.self, from: $0.data).channels
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func fetchReservations(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        let url = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/userId/\(userId)")!
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap {
+                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
