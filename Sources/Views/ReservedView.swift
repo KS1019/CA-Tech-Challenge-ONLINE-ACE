@@ -18,9 +18,9 @@ struct ReservedView<T: TimeTableViewModelProtocol>: View {
             ScrollView {
                 LazyVStack {
                     ForEach(vm.reservations.filter {
-                                aWeek![selectedIndex] <= Date(timeIntervalSince1970: TimeInterval($0.startAt)) ||
-                                Date(timeIntervalSince1970: TimeInterval($0.endAt)) <= aWeek![selectedIndex] })
-                    { timetable in
+                        aWeek![selectedIndex] <= Date(timeIntervalSince1970: TimeInterval($0.startAt)) ||
+                            Date(timeIntervalSince1970: TimeInterval($0.endAt)) <= aWeek![selectedIndex]
+                    }) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable)
                         }
@@ -30,7 +30,7 @@ struct ReservedView<T: TimeTableViewModelProtocol>: View {
                     activityIndicator
                 }
             }
-            
+
         }
     }
     private var activityIndicator: some View {

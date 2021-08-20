@@ -77,6 +77,17 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
+    func fetchReservations(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        let url = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/userId/\(userId)")!
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap {
+                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension MockTimeTableRepositoryImpl {

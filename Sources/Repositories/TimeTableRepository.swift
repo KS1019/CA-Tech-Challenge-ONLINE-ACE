@@ -70,7 +70,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-    
+
     func fetchReservations(userId: String) -> AnyPublisher<[TimeTable], Error> {
         let url = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/userId/\(userId)")!
         return URLSession

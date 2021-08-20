@@ -48,7 +48,7 @@ class TestAPIViewModel: ObservableObject {
         repository.postReservationData(userId: userId, programId: programId) { result in
 
             switch result {
-            case .success():
+            case .success:
                 print("成功")
             case let .failure(error):
                 print(error)

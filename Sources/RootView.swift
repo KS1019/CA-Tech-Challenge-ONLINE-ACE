@@ -127,16 +127,24 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
     }
-    
+
     func getReservaions() {
+        var uuidStr: String
+        do {
+            uuidStr = try UUIDRepositoryImpl().fetchUUID()
+        } catch {
+            let uuid = UUID()
+            uuidStr = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepositoryImpl().register(uuid: uuid)
+        }
         self.repository
-            .fetchReservations(userId: "")
+            .fetchReservations(userId: uuidStr)
             .sink { completion in
                 switch completion {
                 case .finished:
                     print("終了コード")
                     self.isLoading = false
-                    
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
