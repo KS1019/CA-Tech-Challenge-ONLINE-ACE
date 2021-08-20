@@ -56,7 +56,7 @@ struct ChannelListResult: Decodable {
     let channels: [Channel]
 }
 
-struct Channel: Identifiable, Decodable {
+struct Channel: Identifiable, Decodable, Hashable {
     let id: String
     let title: String
 }

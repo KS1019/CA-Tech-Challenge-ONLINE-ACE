@@ -10,12 +10,11 @@ import SwiftUI
 
 struct TestAPI: View {
     @ObservedObject var vm: TestAPIViewModel
-    var body: some View {
-        LazyVStack {
-            ForEach(vm.channelList) { channel in
-                Text(channel.title)
-            }
+    let testList = [Channel(id: "d", title: "f"), Channel(id: "ff", title: "fdf")]
 
+    var body: some View {
+        List(vm.channelList, id: \.self) { channel in
+            Text(channel.title)
         }
         .onAppear {
             vm.getChannelList()
