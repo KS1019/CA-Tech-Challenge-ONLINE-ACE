@@ -11,6 +11,10 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepositoryImpl: TimeTableRepository {
+    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        completion(.failure(fatalError()))
+    }
+
     init() {
         stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
             return fixture(
