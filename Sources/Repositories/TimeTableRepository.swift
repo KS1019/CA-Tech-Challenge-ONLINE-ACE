@@ -46,6 +46,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
 }
 
 extension TimeTableRepositoryImpl {
+    /// TODO: 本番環境のURLに修正
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
 
@@ -55,7 +56,7 @@ struct ChannelListResult: Decodable {
     let channels: [Channel]
 }
 
-struct Channel: Decodable {
+struct Channel: Identifiable, Decodable {
     let id: String
     let title: String
 }
