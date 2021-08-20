@@ -31,11 +31,11 @@ class TimeTableRepositoryImpl: TimeTableRepository {
                 completion(.failure(error))
             }
 
-            guard let response = response as? HTTPURLResponse, response.statusCode == 201 else {
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
             }
 
-            completion(.success(print("")))
+            completion(.success(print("StatusCode: \(response.statusCode)")))
 
         }.resume()
     }
