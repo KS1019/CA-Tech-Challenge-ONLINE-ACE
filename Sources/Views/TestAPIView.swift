@@ -16,7 +16,8 @@ struct TestAPIView: View {
         VStack {
             Button("POST") {
                 do {
-                    try vm.postReservationData(userId: "550e8400-e29b-41d4-a716-446655440001", programId: "Dxgq71w1i9kofM")
+                    // TODO: 端末に紐づいたUUIDに変更
+                    try vm.postReservationData(userId: UUID().uuidString, programId: "Dxgq71w1i9kofM")
                 } catch {
                     print(error)
                 }
@@ -45,10 +46,15 @@ class TestAPIViewModel: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
 
     func postReservationData(userId: String, programId: String) {
-        do {
-            try repository.postReservationData(userId: userId, programId: programId)
-        } catch {
-            print(error.localizedDescription)
+
+        repository.postReservationData(userId: userId, programId: programId) { result in
+
+            switch result {
+            case .success():
+                print("成功")
+            case let .failure(error):
+                print(error)
+            }
         }
 
     }
