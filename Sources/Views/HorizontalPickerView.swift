@@ -23,7 +23,6 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
     private init() {
         self._selection = .constant(0)
         self.selections = [] as! T
-        self._selection = .constant(0)
     }
 
     var body: some View {
