@@ -57,6 +57,7 @@ targets:
           product: OHHTTPStubsSwift
         - package: OHHTTPStubs
           product: OHHTTPStubs
+        - package: KeychainAccess
         
   UITests:
     platform: iOS
