@@ -32,4 +32,11 @@ class TimeTableRepositoryImpl: TimeTableRepository {
 extension TimeTableRepositoryImpl {
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
 
+struct ChannelListResult: Decodable {
+    let channels: [ChannelList]
+}
+
+struct ChannelList: Decodable {
+    let id: String
+    let title: String
 }
