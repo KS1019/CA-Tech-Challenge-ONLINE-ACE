@@ -10,7 +10,6 @@ import SwiftUI
 struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Hashable, T.Index: Hashable {
     @Binding var selection: Int
     var selections: T
-
     init(selection: Binding<Int>, selections: T) where T.Element == String {
         self._selection = selection
         self.selections = selections

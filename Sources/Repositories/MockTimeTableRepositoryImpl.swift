@@ -11,7 +11,6 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepositoryImpl: TimeTableRepository {
-
     init() {
         stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
             return fixture(
