@@ -9,7 +9,7 @@ import Foundation
 
 protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
-    func fetchChannelData() -> AnyPublisher<[ChannelList], Error>
+    func fetchChannelData() -> AnyPublisher<[Channel], Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
@@ -28,7 +28,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
-    func fetchChannelData() -> AnyPublisher<[ChannelList], Error> {
+    func fetchChannelData() -> AnyPublisher<[Channel], Error> {
 
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepositoryImpl.getChannelURL
@@ -52,10 +52,10 @@ extension TimeTableRepositoryImpl {
 }
 
 struct ChannelListResult: Decodable {
-    let channels: [ChannelList]
+    let channels: [Channel]
 }
 
-struct ChannelList: Decodable {
+struct Channel: Decodable {
     let id: String
     let title: String
 }

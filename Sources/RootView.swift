@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RootView: View {
 
-    @ObservedObject var vm = RootViewModel(repository: MockTimeTableRepositoryImpl())
+    @ObservedObject var vm = RootViewModel(repository: TimeTableRepositoryImpl())
     var body: some View {
         TabView(selection: $vm.tabSelection) {
             VStack {
@@ -58,6 +58,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var isEditing = false
     @Published var isLoading = true
     private let repository: TimeTableRepository
+    private var channelList: [Channel] = []
     private var subscriptions = Set<AnyCancellable>()
 
     init(repository: TimeTableRepository) {
@@ -83,6 +84,26 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
 
+    }
+    
+    func getChannelList() {
+        self.repository.fetchChannelData()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+                    
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+                
+            } receiveValue: { data in
+                self.channelList += data
+                print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
     }
 
 }
