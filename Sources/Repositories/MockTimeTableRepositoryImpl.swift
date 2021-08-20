@@ -33,6 +33,27 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             )
         }
 
+        stub(condition: isHost("C.ACE.ace-c-ios-channel-list")) { _ in
+            return fixture(
+                // swiftlint:disable force_unwrapping
+                filePath: OHPathForFile("ChannelList.json", type(of: self))!,
+                headers: ["Content-Type": "application/json"]
+            )
+        }
+
+    }
+
+    func fetchChannelData() -> AnyPublisher<[Channel], Error> {
+        let url = TimeTableRepositoryImpl.getChannelURL
+        print(url)
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap { try
+                JSONDecoder().decode(ChannelListResult.self, from: $0.data).channels
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
@@ -70,4 +91,5 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
 extension MockTimeTableRepositoryImpl {
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
+    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")
 }

@@ -10,18 +10,18 @@ import SwiftUI
 struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Hashable, T.Index: Hashable {
     @Binding var selection: Int
     var selections: T
-
-    init(selection: Binding<Int> = .constant(0), selections: T) where T.Element == String {
+    init(selection: Binding<Int>, selections: T) where T.Element == String {
         self._selection = selection
         self.selections = selections
     }
 
-    init(selection: Binding<Int> = .constant(0), selections: T) where T.Element == Date {
+    init(selection: Binding<Int>, selections: T) where T.Element == Date {
         self._selection = selection
         self.selections = selections
     }
 
     private init() {
+        self._selection = .constant(0)
         self.selections = [] as! T
         self._selection = .constant(0)
     }
@@ -50,11 +50,11 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
 struct HorizontalPickerView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            HorizontalPickerView(selections: ["A", "B", "C", "D", "E", "F", "GGGG"])
+            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"])
                 .previewLayout(.sizeThatFits)
 
             // swiftlint:disable force_unwrapping line_length
-            HorizontalPickerView(selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!])
+            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!])
                 .previewLayout(.sizeThatFits)
 
             PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {

@@ -60,6 +60,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var isLoading = true
     @Published var channels: [ChannelModelImpl] = []
     private let repository: TimeTableRepository
+    private var channelList: [Channel] = []
     private var subscriptions = Set<AnyCancellable>()
 
     init(repository: TimeTableRepository) {
@@ -103,6 +104,26 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
 
+    }
+
+    func getChannelList() {
+        self.repository.fetchChannelData()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+
+            } receiveValue: { data in
+                self.channelList += data
+                print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
     }
 
 }

@@ -10,10 +10,10 @@ import SwiftUI
 struct CalendarView<T: TimeTableViewModelProtocol>: View {
     @StateObject var vm: T
     @State var aWeek: [Date]? = Date.getWeek()
+    @State private var selectedIndex: Int = 0
     var body: some View {
         VStack {
-            HorizontalPickerView(selections: aWeek ?? [Date()])
-                .previewLayout(.sizeThatFits)
+            HorizontalPickerView(selection: $selectedIndex, selections: aWeek ?? [Date()])
 
             ScrollView {
                 LazyVStack {
