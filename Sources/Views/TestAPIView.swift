@@ -49,7 +49,6 @@ class TestAPIViewModel: ObservableObject {
 
             switch result {
             case .success():
-                // TODO: 通信は行えているが、400番が帰ってくる処理を修正
                 print("成功")
             case let .failure(error):
                 print(error)
