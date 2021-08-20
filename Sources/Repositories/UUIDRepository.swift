@@ -32,7 +32,7 @@ struct UUIDRepositoryImpl {
             }
         }
     }
-    
+
     func update(userID: UUID) throws {
         do {
             try UUIDRepositoryImpl.keychain.set(userID.uuidString, key: "userid")
