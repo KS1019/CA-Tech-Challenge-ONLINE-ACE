@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Hashable, T.Index: Hashable {
-    @State var selection: Int = 0
+    @Binding var selection: Int
     var selections: T
 
-    init(selections: T) where T.Element == String {
+    init(selection: Binding<Int> = .constant(0), selections: T) where T.Element == String {
+        self._selection = selection
         self.selections = selections
     }
 
-    init(selections: T) where T.Element == Date {
+    init(selection: Binding<Int> = .constant(0), selections: T) where T.Element == Date {
+        self._selection = selection
         self.selections = selections
     }
 
     private init() {
         self.selections = [] as! T
+        self._selection = .constant(0)
     }
 
     var body: some View {
