@@ -58,7 +58,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var timetables: [TimeTable] = []
     @Published var isEditing = false
     @Published var isLoading = true
-    @Published var channels: [ChannelModelImpl] = []
+    @Published var channels: [Channel] = []
     private let repository: TimeTableRepository
     private var channelList: [Channel] = []
     private var subscriptions = Set<AnyCancellable>()
@@ -88,7 +88,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     }
 
     func getChannels() {
-        self.repository.fetchChannelsData()
+        self.repository.fetchChannelData()
             .sink { completion in
                 switch completion {
                 case .finished:
