@@ -13,8 +13,17 @@ struct TestAPIView: View {
     let testList = [Channel(id: "d", title: "f"), Channel(id: "ff", title: "fdf")]
 
     var body: some View {
-        List(vm.channelList, id: \.self) { channel in
-            Text(channel.title)
+        VStack {
+            Button("POST") {
+                do {
+                    try vm.postReservationData(userId: "550e8400-e29b-41d4-a716-446655440001", programId: "Dxgq71w1i9kofM")
+                } catch {
+                    print(error)
+                }
+            }
+            List(vm.channelList, id: \.self) { channel in
+                Text(channel.title)
+            }
         }
         .onAppear {
             vm.getChannelList()
@@ -35,6 +44,14 @@ class TestAPIViewModel: ObservableObject {
 
     private var subscriptions = Set<AnyCancellable>()
 
+    func postReservationData(userId: String, programId: String) {
+        do {
+            try repository.postReservationData(userId: userId, programId: programId)
+        } catch {
+            print(error.localizedDescription)
+        }
+
+    }
     func getChannelList() {
         repository.fetchChannelData()
             .sink { completion in
