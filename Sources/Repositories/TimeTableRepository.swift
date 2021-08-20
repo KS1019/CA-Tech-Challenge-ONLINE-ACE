@@ -14,9 +14,9 @@ protocol TimeTableRepository {
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
+
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
         let params: [String: Any] = ["user_id": userId, "program_id": programId]
-
         var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -27,16 +27,16 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         request.httpBody = httpBody
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
-            if error == nil, let response = response as? HTTPURLResponse {
-                // HTTPヘッダの取得
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                // HTTPステータスコード
-                print("statusCode: \(response.statusCode)")
-                completion(.success(print(response.statusCode)))
-            } else {
-                // swiftlint:disable force_unwrapping
-                completion(.failure(error!))
+            if let error = error {
+                completion(.failure(error))
             }
+
+            guard let response = response as? HTTPURLResponse, response.statusCode == 201 else {
+                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+            }
+
+            completion(.success( print("")))
+
         }.resume()
     }
 
@@ -81,6 +81,7 @@ extension TimeTableRepositoryImpl {
 
     enum HTTPError: Error {
         case httpBodyError
+        case statusCodeError
     }
 
 }
