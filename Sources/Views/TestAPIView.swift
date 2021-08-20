@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-struct TestAPI: View {
+struct TestAPIView: View {
     @ObservedObject var vm: TestAPIViewModel
     let testList = [Channel(id: "d", title: "f"), Channel(id: "ff", title: "fdf")]
 
@@ -25,7 +25,7 @@ struct TestAPI: View {
 
 struct TestAPI_Previews: PreviewProvider {
     static var previews: some View {
-        TestAPI(vm: TestAPIViewModel())
+        TestAPIView(vm: TestAPIViewModel())
     }
 }
 

@@ -51,12 +51,3 @@ extension TimeTableRepositoryImpl {
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
 
 }
-
-struct ChannelListResult: Decodable {
-    let channels: [Channel]
-}
-
-struct Channel: Identifiable, Decodable, Hashable {
-    let id: String
-    let title: String
-}
