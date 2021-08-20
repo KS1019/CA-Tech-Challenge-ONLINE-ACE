@@ -9,6 +9,7 @@ import SwiftUI
 
 // MARK: モック用のViewModel [TimeTable]()を使える
 class MockTimeTableViewModel: TimeTableViewModelProtocol {
+    @Published var channels: [ChannelModelImpl] = []
 
     func getChannelTimeTable() {
         timetables = [MockTimeTable].init(repeating: MockTimeTable(), count: Int.random(in: 1 ... 5))
@@ -45,6 +46,7 @@ protocol TimeTableViewModelProtocol: ObservableObject {
     var searchQuery: String { get set }
     var isEditing: Bool { get set }
     var isLoading: Bool { get set }
+    var channels: [ChannelModelImpl] { get set }
     func getChannelTimeTable()
 }
 

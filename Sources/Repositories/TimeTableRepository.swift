@@ -9,6 +9,7 @@ import Foundation
 
 protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
+    func fetchChannelsData() -> AnyPublisher<[ChannelModelImpl], Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
@@ -27,6 +28,18 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
+    func fetchChannelsData() -> AnyPublisher<[ChannelModelImpl], Error> {
+        let url = URL(string: "https://api.c.ace2108.net/api/v1/channel")!
+
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap {
+                try JSONDecoder().decode(ChannelResult.self, from: $0.data).channels
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension TimeTableRepositoryImpl {

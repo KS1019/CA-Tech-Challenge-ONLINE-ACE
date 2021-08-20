@@ -15,7 +15,7 @@ struct RootView: View {
             .tag(Tabs.calendar)
 
             ZStack {
-                ChannelView()
+                ChannelView(vm: vm)
             }
             .tabItem {
                 Label(Tabs.channel.description,
@@ -35,6 +35,7 @@ struct RootView: View {
         }
         .onAppear {
             vm.getChannelTimeTable()
+            vm.getChannels()
         }
     }
 }
@@ -57,6 +58,7 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var timetables: [TimeTable] = []
     @Published var isEditing = false
     @Published var isLoading = true
+    @Published var channels: [ChannelModelImpl] = []
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
 
@@ -80,6 +82,24 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             } receiveValue: { data in
                 self.timetables += data
                 print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
+    }
+
+    func getChannels() {
+        self.repository.fetchChannelsData()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+            } receiveValue: { channels in
+                self.channels = channels
             }
             .store(in: &self.subscriptions)
 

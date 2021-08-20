@@ -11,6 +11,18 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepositoryImpl: TimeTableRepository {
+    func fetchChannelsData() -> AnyPublisher<[ChannelModelImpl], Error> {
+        let url = URL(string: "https://api.c.ace2108.net/api/v1/channel")!
+
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap {
+                try JSONDecoder().decode(ChannelResult.self, from: $0.data).channels
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
 
     init() {
         stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
