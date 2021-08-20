@@ -69,7 +69,6 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-
 }
 
 extension TimeTableRepositoryImpl {
