@@ -35,7 +35,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
             }
 
-            completion(.success( print("")))
+            completion(.success(print("")))
 
         }.resume()
     }
