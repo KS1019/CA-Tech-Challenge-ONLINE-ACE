@@ -35,7 +35,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
             }
 
-            completion(.success(print("StatusCode: \(response.statusCode)")))
+            completion(.success(()))
 
         }.resume()
     }
