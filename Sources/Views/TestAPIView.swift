@@ -15,16 +15,14 @@ struct TestAPIView: View {
     var body: some View {
         VStack {
             Button("POST") {
-                do {
-                    // TODO: 端末に紐づいたUUIDに変更
-                    try vm.postReservationData(userId: UUID().uuidString, programId: "Dxgq71w1i9kofM")
-                } catch {
-                    print(error)
-                }
+                // TODO: 端末に紐づいたUUIDに変更
+                vm.postReservationData(userId: UUID().uuidString.lowercased(), programId: "Dxgq71w1i9kofM")
             }
+
             List(vm.channelList, id: \.self) { channel in
                 Text(channel.title)
             }
+
         }
         .onAppear {
             vm.getChannelList()
@@ -51,6 +49,7 @@ class TestAPIViewModel: ObservableObject {
 
             switch result {
             case .success():
+                // TODO: 通信は行えているが、400番が帰ってくる処理を修正
                 print("成功")
             case let .failure(error):
                 print(error)
