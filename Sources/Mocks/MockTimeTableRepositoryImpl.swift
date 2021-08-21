@@ -10,7 +10,15 @@ import Foundation
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
-class MockTimeTableRepositoryImpl: TimeTableRepository {
+// レビューのため,TimeTableRepositoryのプロトコルは外しています。
+class MockTimeTableRepositoryImpl {
+
+    //    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+    // テスト用に成功するものだけを返したい.
+    //        return AnyPublisher<Void, Error>
+
+    //    }
+
     func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
         let queryItems = [
             URLQueryItem(name: "user_id", value: userId),
