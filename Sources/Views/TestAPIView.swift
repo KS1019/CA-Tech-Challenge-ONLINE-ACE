@@ -11,12 +11,17 @@ import SwiftUI
 struct TestAPIView: View {
     @ObservedObject var vm: TestAPIViewModel
     let testList = [Channel(id: "d", title: "f"), Channel(id: "ff", title: "fdf")]
-
+    let userId = UUID().uuidString.lowercased()
     var body: some View {
         VStack {
             Button("POST") {
                 // TODO: 端末に紐づいたUUIDに変更
-                vm.postReservationData(userId: UUID().uuidString.lowercased(), programId: "Dxgq71w1i9kofM")
+                vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+                print(userId)
+            }
+
+            Button("DELETE") {
+                vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
             List(vm.channelList, id: \.self) { channel in
@@ -25,8 +30,8 @@ struct TestAPIView: View {
 
         }
         .onAppear {
-            vm.getChannelList()
-            vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
+            //            vm.getChannelList()
+            //            vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
         }
     }
 }
@@ -60,6 +65,20 @@ class TestAPIViewModel: ObservableObject {
                 print(self.timetables)
             }
             .store(in: &self.subscriptions)
+    }
+
+    func deleteReservationData(userId: String, programId: String) {
+
+        repository.deleteReservationData(userId: userId, programId: programId) { result in
+            switch result {
+            case .success:
+                print("成功")
+            case let .failure(error):
+                print(error)
+            }
+
+        }
+
     }
     func postReservationData(userId: String, programId: String) {
 
