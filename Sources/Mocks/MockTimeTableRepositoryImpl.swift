@@ -56,7 +56,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -71,7 +71,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
