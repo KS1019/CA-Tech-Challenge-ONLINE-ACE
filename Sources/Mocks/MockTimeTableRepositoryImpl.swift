@@ -11,8 +11,33 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepositoryImpl: TimeTableRepository {
+    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        let queryItems = [
+            URLQueryItem(name: "user_id", value: userId),
+            URLQueryItem(name: "program_id", value: programId)
+        ]
+        // swiftlint:disable force_unwrapping
+        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            }
+
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+            }
+            print(response.statusCode)
+            completion(.success(()))
+
+        }.resume()
+    }
+
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        completion(.failure(fatalError()))
+        completion(.failure(fatalError("postReservationData")))
     }
 
     init() {
