@@ -11,6 +11,7 @@ protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
