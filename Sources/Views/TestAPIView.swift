@@ -84,17 +84,21 @@ class TestAPIViewModel: ObservableObject {
     }
     func postReservationData(userId: String, programId: String) {
 
-        repository.postReservationData(userId: userId, programId: programId) { result in
-
-            switch result {
-            case .success:
-                print("成功")
-            case let .failure(error):
-                print(error)
-            }
-        }
+        repository.postReservationData(userId: userId, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    
+                case let .failure(error):
+                    print(error)
+                }
+                
+            } receiveValue: {}
+            .store(in: &self.subscriptions)
 
     }
+    
     func getChannelList() {
         repository.fetchChannelData()
             .sink { completion in
