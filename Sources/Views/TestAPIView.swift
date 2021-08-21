@@ -20,24 +20,27 @@ struct TestAPIView: View {
                 vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
 
             }
+            Button("RESERVED") {
+                vm.getReservationData(userId: userId)
+            }
 
             Button("DELETE") {
                 print(userId)
                 vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
-            Button("RESERVED") {
-                vm.getReservationData(userId: userId)
+            Button("GET TimeTable") {
+                vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
+            }
+
+            Button("GET Channel") {
+                vm.getChannelList()
             }
 
             List(vm.channelList) { channel in
                 Text(channel.title)
             }
 
-        }
-        .onAppear {
-            //            vm.getChannelList()
-            //            vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
         }
     }
 }
@@ -143,7 +146,9 @@ class TestAPIViewModel: ObservableObject {
 
             } receiveValue: { data in
                 self.channelList += data
-                print(self.channelList)
+                self.channelList.forEach { channel in
+                    print(channel.title)
+                }
             }
             .store(in: &self.subscriptions)
     }
