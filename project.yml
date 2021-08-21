@@ -48,16 +48,16 @@ targets:
       - path: Sources/Models
       - path: Sources/Extensions
       - path: Sources/Repositories
+      - path: Sources/Mocks
+        excludes:
+        - MockAPIView.swift
+        - MockTimeTable.swift
     scheme:
       testTargets:
         - Tests
       gatherCoverageData: true
     dependencies:
-        - package: OHHTTPStubs
-          product: OHHTTPStubsSwift
-        - package: OHHTTPStubs
-          product: OHHTTPStubs
-        - package: KeychainAccess
+      - target: App
         
   UITests:
     platform: iOS
