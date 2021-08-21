@@ -6,7 +6,6 @@ struct AceCiOSApp: App {
         WindowGroup {
             TestAPIView(vm: TestAPIViewModel())
             //            RootView()
-            //            MockAPIView(vm: MockTimeTableViewModel())
         }
     }
 }

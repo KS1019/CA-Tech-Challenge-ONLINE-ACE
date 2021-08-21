@@ -47,7 +47,7 @@ struct TestAPI_Previews: PreviewProvider {
 class TestAPIViewModel: ObservableObject {
     var channelList: [Channel] = []
     var timetables: [TimeTable] = []
-    let repository = TimeTableRepositoryImpl()
+    let repository = MockTimeTableRepositoryImpl()
 
     private var subscriptions = Set<AnyCancellable>()
     func getTimeTableData(firstAt: Int, lastAt: Int) {
@@ -110,7 +110,7 @@ class TestAPIViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                 case .finished:
-                   print("成功")
+                    print("成功")
 
                 case let .failure(error):
                     print(error)
