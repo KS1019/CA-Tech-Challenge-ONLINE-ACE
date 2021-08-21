@@ -22,9 +22,11 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+            //httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
             }
+            
             request.httpBody = httpBody
             let session = URLSession.shared
             session.dataTask(with: request) { (data, response, error) in
