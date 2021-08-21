@@ -55,6 +55,31 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
+    func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
+
+        var queryItems = [
+            URLQueryItem(name: "first_at", value: String(firstAt)),
+            URLQueryItem(name: "last_at", value: String(lastAt))
+        ]
+
+        if let channelId = channelId {
+            queryItems.append(URLQueryItem(name: "channel_id", value: channelId))
+        }
+        if let labels = labels {
+            queryItems.append(URLQueryItem(name: "labels", value: labels))
+        }
+        // swiftlint:disable force_unwrapping
+        let url = TimeTableRepositoryImpl.getTimetableURL.queryItemsAdded(queryItems)!
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap { try
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
 
         // swiftlint:disable force_unwrapping
@@ -74,6 +99,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
 extension TimeTableRepositoryImpl {
     /// TODO: 本番環境のURLに修正
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
+    static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
 
     static let postURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!

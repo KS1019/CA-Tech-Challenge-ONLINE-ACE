@@ -4,8 +4,8 @@ import SwiftUI
 struct AceCiOSApp: App {
     var body: some Scene {
         WindowGroup {
-            //            TestAPIVie w(vm: TestAPIViewModel())
-            RootView()
+            TestAPIView(vm: TestAPIViewModel())
+            //            RootView()
             //            MockAPIView(vm: MockTimeTableViewModel())
         }
     }

@@ -26,7 +26,7 @@ struct TestAPIView: View {
         }
         .onAppear {
             vm.getChannelList()
-
+            vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
         }
     }
 }
@@ -39,10 +39,28 @@ struct TestAPI_Previews: PreviewProvider {
 
 class TestAPIViewModel: ObservableObject {
     var channelList: [Channel] = []
+    var timetables: [TimeTable] = []
     let repository = TimeTableRepositoryImpl()
 
     private var subscriptions = Set<AnyCancellable>()
+    func getTimeTableData(firstAt: Int, lastAt: Int) {
+        repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
 
+                case let .failure(error):
+                    print(error)
+
+                }
+
+            } receiveValue: { data in
+                self.timetables += data
+                print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
+    }
     func postReservationData(userId: String, programId: String) {
 
         repository.postReservationData(userId: userId, programId: programId) { result in
