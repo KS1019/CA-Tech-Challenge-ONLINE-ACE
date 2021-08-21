@@ -14,13 +14,7 @@ class JSONConvertTest: XCTestCase {
 
         let expectedValue = TimeTable(id: "EQYyywjosSkxUX", title: "ENLIGHT #1", highlight: "t", detailHighlight: "",
                                       startAt: 1_627_232_880, endAt: 1_627_237_860, channelId: "fishing",
-                                      labels: ["live": false, "first": false, "last": false, "bundle": false, "new": false, "pickup": false], content: "",
-                                      displayProgram: DisplayProgram(credit:
-                                                                        DisplayProgram.Credit(casts: ["川村光太郎"],
-                                                                                              crews: ["プロデューサー:松尾健司"],
-                                                                                              copyrights: ["(C)テレビ朝日"]),
-                                                                     // swiftlint:disable line_length
-                                                                     content: "「いつも通り、目一杯釣るだけ! 簡単にはいかないと思いますが、苦しむ僕を見てください!」と話す 日本最高レベルの岸釣りアングラー川村光大郎の新番組『ENLIGHT』初回は霞ケ浦の流入河川で40UPを狙う!"))
+                                      labels: ["live", "new"], content: "content")
 
         XCTAssertEqual(valueFromJSON, expectedValue)
     }
