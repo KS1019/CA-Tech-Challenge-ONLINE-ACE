@@ -16,11 +16,13 @@ struct TestAPIView: View {
         VStack {
             Button("POST") {
                 // TODO: 端末に紐づいたUUIDに変更
-                vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
                 print(userId)
+                vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+
             }
 
             Button("DELETE") {
+                print(userId)
                 vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
