@@ -16,7 +16,6 @@ protocol TimeTableProtocol: Identifiable, Decodable {
     var content: String { get }
     var startAt: Int { get }
     var endAt: Int { get }
-
 }
 
 struct TimeTableResult: Decodable {

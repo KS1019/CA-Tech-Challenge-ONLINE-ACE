@@ -26,7 +26,7 @@ struct TestAPIView: View {
                 vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
-            List(vm.channelList, id: \.self) { channel in
+            List(vm.channelList) { channel in
                 Text(channel.title)
             }
 
@@ -87,7 +87,7 @@ class TestAPIViewModel: ObservableObject {
         repository.postReservationData(userId: userId, programId: programId) { result in
 
             switch result {
-            case .success():
+            case .success:
                 print("成功")
             case let .failure(error):
                 print(error)

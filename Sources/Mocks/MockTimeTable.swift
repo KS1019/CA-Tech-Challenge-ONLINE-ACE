@@ -25,7 +25,6 @@ struct MockTimeTable: TimeTableProtocol {
     var endAt: Int
 
     var channelId: String
-
     var displayProgram: DisplayProgram
     init() {
         self.id = UUID().uuidString
