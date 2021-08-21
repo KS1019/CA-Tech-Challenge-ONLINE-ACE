@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RootView: View {
 
-    @ObservedObject var vm = RootViewModel(repository: TimeTableRepositoryImpl())
+    @ObservedObject var vm = RootViewModel(repository: MockTimeTableRepositoryImpl())
     var body: some View {
         TabView(selection: $vm.tabSelection) {
             VStack {
