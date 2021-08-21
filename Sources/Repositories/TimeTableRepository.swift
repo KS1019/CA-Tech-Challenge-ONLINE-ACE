@@ -10,11 +10,28 @@ import Foundation
 protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
-    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
+    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+        var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let session = URLSession.shared
+
+        return session.dataTaskPublisher(for: request)
+            .tryMap { data, response in
+                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                    throw TimeTableRepositoryImpl.HTTPError.statusCodeError
+                }
+                return
+            }
+            .mapError { error in error }
+            .eraseToAnyPublisher()
+    }
 
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
         let params: [String: Any] = ["user_id": userId, "program_id": programId]
