@@ -13,7 +13,19 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        platform:
+          - iOS
+        xcode:
+          - ^12
     runs-on: macos-latest
     steps:
       - uses: mxcl/xcodebuild@v1
-      # ^^ this is the simplest use, runs tests for whatever platform `xcodebuild` picks
+        with:
+          xcode: ${{ matrix.xcode }}
+          platform: ${{ matrix.platform }}
+          action: test # default = `test`
+          code-coverage: true # default = `false`
+          warnings-as-errors: true # default = `false`
+          configuration: TEST # no default, ie. `xcodebuild` decides itself
