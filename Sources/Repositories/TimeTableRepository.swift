@@ -22,11 +22,11 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            //httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
+            // httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
             }
-            
+
             request.httpBody = httpBody
             let session = URLSession.shared
             session.dataTask(with: request) { (data, response, error) in
@@ -44,33 +44,6 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         }
         return future.eraseToAnyPublisher()
 
-    }
-
-    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        let params: [String: Any] = ["user_id": userId, "program_id": programId]
-        var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
-            return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
-        }
-        request.httpBody = httpBody
-        let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
-
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
-            }
-
-            print(response.statusCode)
-
-            completion(.success(()))
-
-        }.resume()
     }
 
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
