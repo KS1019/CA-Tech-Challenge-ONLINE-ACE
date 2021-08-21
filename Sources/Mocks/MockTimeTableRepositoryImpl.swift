@@ -16,11 +16,10 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             URLQueryItem(name: "user_id", value: userId),
             URLQueryItem(name: "program_id", value: programId)
         ]
+        // swiftlint:disable force_unwrapping
         var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        print(request.url!)
 
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
@@ -38,7 +37,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        completion(.failure(fatalError()))
+        completion(.failure(fatalError("postReservationData")))
     }
 
     init() {
