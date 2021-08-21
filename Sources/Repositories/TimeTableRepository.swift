@@ -16,6 +16,21 @@ protocol TimeTableRepository {
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
+
+    func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        var url = TimeTableRepositoryImpl.getReservedURL
+        url.appendPathComponent(userId)
+        print(url)
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap { try
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
         let future = Future<Void, Error> { completion in
             let params: [String: Any] = ["user_id": userId, "program_id": programId]
@@ -69,10 +84,12 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .mapError { error in error }
             .eraseToAnyPublisher()
     }
+
+    /// MockURLを叩いている
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
-        let url = TimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
+        let url = TimeTableRepositoryImpl.mockURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
         return URLSession
             .shared
@@ -128,12 +145,12 @@ class TimeTableRepositoryImpl: TimeTableRepository {
 
 extension TimeTableRepositoryImpl {
     /// TODO: 本番環境のURLに修正
-    static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
+    static let mockURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
     static let deleteURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!
     static let postURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!
-
+    static let getReservedURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/user")!
     enum HTTPError: Error {
         case httpBodyError
         case statusCodeError

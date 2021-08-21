@@ -26,6 +26,10 @@ struct TestAPIView: View {
                 vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
+            Button("RESERVED") {
+                vm.getReservationData(userId: userId)
+            }
+
             List(vm.channelList) { channel in
                 Text(channel.title)
             }
@@ -47,9 +51,29 @@ struct TestAPI_Previews: PreviewProvider {
 class TestAPIViewModel: ObservableObject {
     var channelList: [Channel] = []
     var timetables: [TimeTable] = []
-    let repository = MockTimeTableRepositoryImpl()
+    let repository = TimeTableRepositoryImpl()
 
     private var subscriptions = Set<AnyCancellable>()
+
+    func getReservationData(userId: String) {
+        repository.fetchReservationData(userId: userId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+
+                case let .failure(error):
+                    print(error)
+
+                }
+
+            } receiveValue: { data in
+                self.timetables += data
+                print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
+
+    }
     func getTimeTableData(firstAt: Int, lastAt: Int) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
