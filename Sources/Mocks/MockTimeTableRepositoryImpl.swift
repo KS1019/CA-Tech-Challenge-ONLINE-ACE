@@ -60,7 +60,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
-        let url = TimeTableRepositoryImpl.getChannelURL
+        let url = MockTimeTableRepositoryImpl.channelListURL
         print(url)
         return URLSession
             .shared
@@ -107,5 +107,5 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
 extension MockTimeTableRepositoryImpl {
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
-    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")
+    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")!
 }
