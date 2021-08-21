@@ -11,7 +11,7 @@ protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    //    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
@@ -44,15 +44,17 @@ class TimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        let params: [String: Any] = ["program_id": programId, "user_id": userId]
-        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL)
+
+        let queryItems = [
+            URLQueryItem(name: "user_id", value: userId),
+            URLQueryItem(name: "program_id", value: programId)
+        ]
+        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
-            return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
-        }
-        request.httpBody = httpBody
+        print(request.url!)
+
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if let error = error {
@@ -62,7 +64,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
                 return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
             }
-
+            print(response.statusCode)
             completion(.success(()))
 
         }.resume()
