@@ -23,8 +23,9 @@ struct ChannelView<T: TimeTableViewModelProtocol>: View {
                 LazyVStack {
                     ForEach(
                         vm.timetables.filter { timetable in
-                            timetable.channelId == vm.channels[selectedIndex].id &&
-                                !timetable.labels.filter { label in selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label) }.isEmpty
+                            (timetable.channelId == vm.channels[selectedIndex].id &&
+                                !timetable.labels.filter { label in selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label) }.isEmpty)
+                                || !selectedGenreFilters.values.contains(true)
                         }) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable)
