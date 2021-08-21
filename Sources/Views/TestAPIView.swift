@@ -71,15 +71,20 @@ class TestAPIViewModel: ObservableObject {
 
     func deleteReservationData(userId: String, programId: String) {
 
-        repository.deleteReservationData(userId: userId, programId: programId) { result in
-            switch result {
-            case .success:
-                print("成功")
-            case let .failure(error):
-                print(error)
-            }
+        repository.deleteReservationData(userId: userId, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
 
-        }
+                case let .failure(error):
+                    print(error)
+
+                }
+
+            } receiveValue: {
+            }
+            .store(in: &self.subscriptions)
 
     }
     func postReservationData(userId: String, programId: String) {
@@ -88,17 +93,18 @@ class TestAPIViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print("終了コード")
-                    
+                    print("成功")
+
                 case let .failure(error):
                     print(error)
                 }
-                
-            } receiveValue: {}
+
+            } receiveValue: {
+            }
             .store(in: &self.subscriptions)
 
     }
-    
+
     func getChannelList() {
         repository.fetchChannelData()
             .sink { completion in

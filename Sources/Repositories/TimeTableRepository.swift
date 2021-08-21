@@ -11,26 +11,37 @@ protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
-        var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let future = Future<Void, Error> { completion in
+            let params: [String: Any] = ["user_id": userId, "program_id": programId]
+            var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let session = URLSession.shared
-
-        return session.dataTaskPublisher(for: request)
-            .tryMap { data, response in
-                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    throw TimeTableRepositoryImpl.HTTPError.statusCodeError
-                }
-                return
+            guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+                return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
             }
-            .mapError { error in error }
-            .eraseToAnyPublisher()
+            request.httpBody = httpBody
+            let session = URLSession.shared
+            session.dataTask(with: request) { (data, response, error) in
+                if let error = error {
+                    completion(.failure(error))
+                }
+
+                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                    return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+                }
+
+                completion(.success(()))
+
+            }.resume()
+        }
+        return future.eraseToAnyPublisher()
+
     }
 
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
@@ -60,7 +71,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         }.resume()
     }
 
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+    func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
 
         let queryItems = [
             URLQueryItem(name: "user_id", value: userId),
@@ -70,21 +81,16 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        print(request.url!)
-
         let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
+        return session.dataTaskPublisher(for: request)
+            .tryMap { data, response in
+                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                    throw TimeTableRepositoryImpl.HTTPError.statusCodeError
+                }
+                return
             }
-
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
-            }
-            print(response.statusCode)
-            completion(.success(()))
-
-        }.resume()
+            .mapError { error in error }
+            .eraseToAnyPublisher()
     }
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
