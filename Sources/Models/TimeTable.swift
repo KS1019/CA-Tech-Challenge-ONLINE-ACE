@@ -14,7 +14,7 @@ protocol TimeTableProtocol: Identifiable, Decodable {
     var startAt: Int { get }
     var endAt: Int { get }
     var channelId: String { get }
-    var labels: [String: Bool] { get }
+    var labels: [String] { get }
     var content: String { get }
     var displayProgram: DisplayProgram { get }
 
@@ -32,7 +32,7 @@ struct TimeTable: TimeTableProtocol, Equatable {
     let startAt: Int
     let endAt: Int
     let channelId: String
-    let labels: [String: Bool]
+    let labels: [String]
     let content: String
     let displayProgram: DisplayProgram
 }
