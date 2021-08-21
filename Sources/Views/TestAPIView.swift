@@ -110,7 +110,7 @@ class TestAPIViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print("終了コード")
+                   print("成功")
 
                 case let .failure(error):
                     print(error)
