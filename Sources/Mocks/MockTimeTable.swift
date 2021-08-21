@@ -34,11 +34,7 @@ struct MockTimeTable: TimeTableProtocol {
         self.startAt = 1_627_232_880
         self.endAt = 1_627_237_860
         self.channelId = "fishing"
-        self.labels = [
-            "live",
-            "new",
-            "pickup"
-        ]
+        self.labels = ["live", "now"]
         self.displayProgram = DisplayProgram(credit: DisplayProgram.Credit(casts: [], crews: [], copyrights: []), content: "「いつも通り、目一杯釣るだけ! 簡単にはいかないと思いますが、苦しむ僕を見てください!」と話す 日本最高レベルの岸釣りアングラー川村光大郎の新番組『ENLIGHT』初回は霞ケ浦の流入河川で40UPを狙う!")
         self.content = ""
 
