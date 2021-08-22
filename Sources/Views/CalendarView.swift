@@ -72,7 +72,6 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     func onAppear() {
         getTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
-        getChannelData()
 
         labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
         selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
