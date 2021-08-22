@@ -15,7 +15,6 @@ struct RootView: View {
             .tag(Tabs.calendar)
 
             ZStack {
-
                 ChannelView()
             }
             .tabItem {
@@ -104,7 +103,6 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
                 self.channels = channels
             }
             .store(in: &self.subscriptions)
-
     }
 
     func getChannelList() {
