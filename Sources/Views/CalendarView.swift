@@ -18,7 +18,7 @@ struct CalendarView: View {
                 LazyVStack {
                     ForEach(vm.timetables) { timetable in
                         VStack(alignment: .leading) {
-                            //カードのProgramIdをクロージャーから受け取る
+                            // カードのProgramIdをクロージャーから受け取る
                             CardView(timeTable: timetable, onCommit: { programId in
                                 vm.postReservedData(programId)
                             })
@@ -92,7 +92,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
                 switch completion {
                 case .finished:
                     print("Post成功")
-                    //紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
+                    // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
                     self.reservedFlag = true
 
                 case let .failure(error):
