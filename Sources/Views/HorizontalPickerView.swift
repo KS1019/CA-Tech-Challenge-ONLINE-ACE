@@ -10,20 +10,25 @@ import SwiftUI
 struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Hashable, T.Index: Hashable {
     @Binding var selection: Int
     var selections: T
-    init(selection: Binding<Int>, selections: T) where T.Element == String {
+    var onChange: () -> Void
+    init(selection: Binding<Int>, selections: T, onChange: @escaping () -> Void ) where T.Element == String {
         self._selection = selection
         self.selections = selections
+        self.onChange = onChange
     }
 
-    init(selection: Binding<Int>, selections: T) where T.Element == Date {
+    init(selection: Binding<Int>, selections: T, onChange: @escaping () -> Void ) where T.Element == Date {
         self._selection = selection
         self.selections = selections
+        self.onChange = onChange
     }
 
-    private init() {
-        self._selection = .constant(0)
-        self.selections = [] as! T
-    }
+    // 実装時間の関係上コメントアウト
+    //    private init() {
+    //        self._selection = .constant(0)
+    //        self.selections = [] as! T
+    //
+    //    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -32,11 +37,13 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
                     if type(of: selections[index]) == Date.self {
                         PickerButton(item: selections[index] as! Date, index: index as! Int, selectedIndex: $selection) {
                             selection = index as! Int
+                            onChange()
                         }
                         .padding(0)
                     } else if type(of: selections[index]) == String.self {
                         PickerButton(item: selections[index] as! String, index: index as! Int, selectedIndex: $selection) {
                             selection = index as! Int
+                            onChange()
                         }
                         .padding(0)
                     }
@@ -45,29 +52,30 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
         }
     }
 }
+// 実装時間の関係でコメントアウト
+// struct HorizontalPickerView_Previews: PreviewProvider {
+//    static var previews: some View {
 
-struct HorizontalPickerView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"])
-                .previewLayout(.sizeThatFits)
-
-            // swiftlint:disable force_unwrapping line_length
-            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!])
-                .previewLayout(.sizeThatFits)
-
-            PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {
-                print("Test String")
-            }
-            .previewLayout(.sizeThatFits)
-
-            PickerButton(item: Date(), index: 1, selectedIndex: .constant(1)) {
-                print("Test Date")
-            }
-            .previewLayout(.sizeThatFits)
-        }
-    }
-}
+//        Group {
+//            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"])
+//                .previewLayout(.sizeThatFits)
+//
+//            // swiftlint:disable force_unwrapping line_length
+//            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!])
+//                .previewLayout(.sizeThatFits)
+//
+//            PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {
+//                print("Test String")
+//            }
+//            .previewLayout(.sizeThatFits)
+//
+//            PickerButton(item: Date(), index: 1, selectedIndex: .constant(1)) {
+//                print("Test Date")
+//            }
+//            .previewLayout(.sizeThatFits)
+//        }
+//    }
+// }
 
 struct PickerButton<T>: View {
     private var buttonTextString: String = ""

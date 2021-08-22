@@ -11,7 +11,10 @@ struct CalendarView: View {
     @StateObject var vm = CalendarViewModel(repository: TimeTableRepositoryImpl())
     var body: some View {
         VStack {
-            HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.aWeek)
+            HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.aWeek) {
+                print("#インデックスが変化しているか\(vm.selectedIndex)")
+                vm.onChangeDate()
+            }
 
             GenreFilterView(selectedGenres: $vm.selectedGenreFilters)
 
@@ -62,20 +65,16 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     }
 
     func onAppear() {
-        getTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
 
-        labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-        selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-            var newResult = result
-            newResult[label] = false
-            return newResult
+    }
 
-        }
+    func onChangeDate() {
+        getTimeTableData(firstAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
-        let selectTimestamp = Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!)
-        repository.fetchTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
+        repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -88,7 +87,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
                 }
 
             } receiveValue: { data in
-                self.timetables = data
+                self.timetables = data.sorted { $0.startAt < $1.startAt }
                 print("calendarview:\(self.timetables)")
             }
             .store(in: &self.subscriptions)
@@ -99,12 +98,15 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 extension Date {
     static var aWeek: [Date]? = Date.getWeek()
 
-    static func getWeek() -> [Date]? {
+    static func getWeek() -> [Date] {
         var aWeek: [Date] = []
-        let today = Date()
+        let calendar = Calendar(identifier: .gregorian)
+        let today = calendar.date(from: DateComponents(year: 2_021, month: 7, day: 22))!
         for i in -2..<7 {
-            guard let day = Calendar.current.date(byAdding: .day, value: i, to: today) else { return nil }
-            aWeek.append(day)
+            if let day = Calendar.current.date(byAdding: .day, value: i, to: today) {
+                aWeek.append(day)
+            }
+
         }
         return aWeek
     }
