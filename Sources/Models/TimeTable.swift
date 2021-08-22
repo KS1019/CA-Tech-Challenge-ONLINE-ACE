@@ -6,7 +6,7 @@
 //
 import Foundation
 
-protocol TimeTableProtocol: Identifiable, Decodable {
+protocol TimeTableProtocol: Identifiable, Decodable, Equatable {
     var id: String { get }
     var title: String { get }
     var channelId: String { get }
@@ -22,7 +22,7 @@ struct TimeTableResult: Decodable {
     let programs: [TimeTable]
 }
 
-struct TimeTable: TimeTableProtocol, Equatable {
+struct TimeTable: TimeTableProtocol {
 
     let id: String
     let title: String
