@@ -98,7 +98,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
                 }
 
             } receiveValue: { data in
-                self.timetables += data
+                self.timetables = data
                 print("calendarview:\(self.timetables)")
             }
             .store(in: &self.subscriptions)
