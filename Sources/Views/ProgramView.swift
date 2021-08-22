@@ -11,7 +11,7 @@ struct ProgramView<T: TimeTableProtocol>: View {
     let timeTable: T
 
     @State private var showReserveAlert = false
-
+    let onCommit: (String) -> Void
     var body: some View {
         // TODO: サムネイルについて対応が決まったら追加
         //            Image("")
@@ -31,6 +31,7 @@ struct ProgramView<T: TimeTableProtocol>: View {
                       primaryButton: .default(
                         Text("予約する"),
                         action: {
+                            onCommit(timeTable.id)
                             print("Send API Request here")
                         }
                       ),
@@ -56,7 +57,7 @@ struct ProgramView<T: TimeTableProtocol>: View {
 
 struct ProgramView_Previews: PreviewProvider {
     static var previews: some View {
-        ProgramView(timeTable: MockTimeTable())
+        ProgramView(timeTable: MockTimeTable()) { _ in }
             .previewLayout(.sizeThatFits)
     }
 }

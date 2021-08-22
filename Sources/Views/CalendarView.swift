@@ -22,7 +22,11 @@ struct CalendarView: View {
                 LazyVStack {
                     ForEach(vm.timetables) { timetable in
                         VStack(alignment: .leading) {
-                            CardView(timeTable: timetable)
+                            // カードのProgramIdをクロージャーから受け取る
+                            CardView(timeTable: timetable, onCommit: { programId in
+                                vm.postReservedData(programId)
+                            })
+
                         }
                     }
                 }
@@ -48,16 +52,17 @@ struct CalendarView_Previews: PreviewProvider {
 }
 
 class CalendarViewModel: TimeTableViewModelProtocol {
-
+    let userId = UUID().uuidString.lowercased()
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
 
-    @Published var selectedIndex: Int = 0
-    @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published var reservedFlag = false
+    @Published var selectedIndex: Int = 2
     @Published var isLoading: Bool = true
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
+    @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Date.aWeek ?? [Date()]
 
     init(repository: TimeTableRepository) {
@@ -89,6 +94,25 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             } receiveValue: { data in
                 self.timetables = data.sorted { $0.startAt < $1.startAt }
                 print("calendarview:\(self.timetables)")
+            }
+            .store(in: &self.subscriptions)
+    }
+
+    func postReservedData(_ programId: String) {
+        repository.postReservationData(userId: userId, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("Post成功")
+                    // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
+                    self.reservedFlag = true
+
+                case let .failure(error):
+                    print(error)
+                    self.reservedFlag = false
+                }
+
+            } receiveValue: {
             }
             .store(in: &self.subscriptions)
     }

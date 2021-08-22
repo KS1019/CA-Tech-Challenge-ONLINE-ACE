@@ -9,10 +9,13 @@ import SwiftUI
 
 struct CardView<T: TimeTableProtocol>: View {
     let timeTable: T
+    let onCommit: (String) -> Void
     var body: some View {
         HStack {
             timeText
-            ProgramView(timeTable: timeTable)
+            ProgramView(timeTable: timeTable, onCommit: { programId in
+                onCommit(programId)
+            })
         }
         .padding([.top, .bottom, .trailing], 8.0)
     }
@@ -37,7 +40,7 @@ struct CardView<T: TimeTableProtocol>: View {
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(timeTable: MockTimeTable())
+        CardView(timeTable: MockTimeTable()) { _ in }
             .previewLayout(.sizeThatFits)
     }
 }

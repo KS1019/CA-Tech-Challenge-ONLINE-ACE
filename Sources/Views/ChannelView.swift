@@ -30,7 +30,9 @@ struct ChannelView: View {
                                 || !vm.selectedGenreFilters.values.contains(true))
                         }) { timetable in
                         VStack(alignment: .leading) {
-                            CardView(timeTable: timetable)
+                            CardView(timeTable: timetable, onCommit: { programId in
+                                print(programId)
+                            })
                         }
                     }
                 }

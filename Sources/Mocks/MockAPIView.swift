@@ -29,7 +29,9 @@ struct MockAPIView<T: TimeTableViewModelProtocol>: View {
     var body: some View {
         VStack {
             List(vm.timetables) { timetable in
-                CardView(timeTable: timetable)
+                CardView(timeTable: timetable) { programId in
+                    print("予約:\(programId)")
+                }
             }
         }
 
