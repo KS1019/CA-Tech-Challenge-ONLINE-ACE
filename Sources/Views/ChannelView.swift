@@ -11,13 +11,22 @@ struct ChannelView<T: TimeTableViewModelProtocol>: View {
     @StateObject var vm: T
     @State private var selectedIndex: Int = 0
     @State private var selectedGenreFilters: [String: Bool] = [:]
-    @State private var filteredTimetables: [T.ListData] = []
     var body: some View {
         VStack {
             // vmからチャンネル一覧を取得
             HorizontalPickerView(selection: $selectedIndex, selections: vm.channels.map { $0.title })
 
             GenreFilterView(selectedGenres: $selectedGenreFilters)
+                .onAppear {
+                    // TODO: 別の場所で管理したい vmとか
+                    let labels: [String] = Array(Set(vm.timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+                    selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+                        var newResult = result
+                        newResult[label] = false
+                        print("newResult \(newResult)")
+                        return newResult
+                    }
+                }
 
             ScrollView {
                 LazyVStack {
@@ -37,14 +46,6 @@ struct ChannelView<T: TimeTableViewModelProtocol>: View {
                 }
             }
 
-        }
-        .onAppear {
-            let labels: [String] = Array(Set(vm.timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-            selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-                var newResult = result
-                newResult[label] = false
-                return newResult
-            }
         }
     }
     private var activityIndicator: some View {
