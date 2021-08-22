@@ -19,8 +19,10 @@ struct CalendarView: View {
                 LazyVStack {
                     ForEach(
                         vm.timetables.filter { timetable in
-                            (vm.aWeek[vm.selectedIndex] <= Date(timeIntervalSince1970: TimeInterval(timetable.startAt))
-                                || Date(timeIntervalSince1970: TimeInterval(timetable.startAt)) <= vm.aWeek[vm.selectedIndex])
+                            ((vm.aWeek[vm.selectedIndex] <= Date(timeIntervalSince1970: TimeInterval(timetable.startAt))
+                                && Date(timeIntervalSince1970: TimeInterval(timetable.startAt)) <= vm.aWeek[vm.selectedIndex])
+                                || (vm.aWeek[vm.selectedIndex] <= Date(timeIntervalSince1970: TimeInterval(timetable.endAt))
+                                        && Date(timeIntervalSince1970: TimeInterval(timetable.endAt)) <= vm.aWeek[vm.selectedIndex]))
                                 && (!timetable.labels.filter { label in
                                     vm.selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
                                 }.isEmpty || !vm.selectedGenreFilters.values.contains(true))
