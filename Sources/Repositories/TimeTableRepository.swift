@@ -13,6 +13,7 @@ protocol TimeTableRepository {
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error>
+    func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
@@ -24,8 +25,8 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+            .tryMap {
+                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -140,7 +141,6 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-
 }
 
 extension TimeTableRepositoryImpl {

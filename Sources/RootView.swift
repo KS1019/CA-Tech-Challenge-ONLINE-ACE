@@ -124,5 +124,4 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
     }
-
 }

@@ -12,6 +12,15 @@ import OHHTTPStubsSwift
 
 // レビューのため,TimeTableRepositoryのプロトコルは外しています。
 class MockTimeTableRepositoryImpl: TimeTableRepository {
+    func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        // テスト用に成功するものだけを返す
+        let future = Future<[TimeTable], Error> { c in
+            c(.success([]))
+        }
+
+        return future.eraseToAnyPublisher()
+
+    }
 
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
         // テスト用に成功するものだけを返す
@@ -107,6 +116,17 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
+    func fetchReservations(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        let url = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/userId/\(userId)")!
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap {
+                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension MockTimeTableRepositoryImpl {
