@@ -11,13 +11,32 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
     @StateObject var vm: T
     @State var aWeek: [Date]? = Date.getWeek()
     @State private var selectedIndex: Int = 0
+    @State private var selectedGenreFilters: [String: Bool] = [:]
     var body: some View {
         VStack {
             HorizontalPickerView(selection: $selectedIndex, selections: aWeek ?? [Date()])
 
+            GenreFilterView(selectedGenres: $selectedGenreFilters)
+                .onAppear {
+                    // TODO: 別の場所で管理したい
+                    let labels: [String] = Array(Set(vm.timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+                    selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+                        var newResult = result
+                        newResult[label] = false
+                        print("newResult \(newResult)")
+                        return newResult
+                    }
+                }
+
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.timetables) { timetable in
+                    ForEach(
+                        vm.timetables.filter { timetable in
+                            timetable.channelId == vm.channels[selectedIndex].id &&
+                                (!timetable.labels.filter { label in selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label) }.isEmpty
+                                    || !selectedGenreFilters.values.contains(true))
+                        }
+                    ) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable)
                         }
