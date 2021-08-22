@@ -14,7 +14,7 @@ struct UUIDRepositoryImpl {
     func fetchUUID() throws -> String {
         do {
             guard let token = try UUIDRepositoryImpl.keychain.get("userid") else { throw UUIDRepositoryImplError.neverHappenError }
-            return token
+            return token.lowercased()
         } catch let error {
             throw UUIDRepositoryImplError.fetchFailed(error)
         }

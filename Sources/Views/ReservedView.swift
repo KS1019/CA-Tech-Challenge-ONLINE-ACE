@@ -16,7 +16,9 @@ struct ReservedView: View {
                 LazyVStack {
                     ForEach(vm.timetables) { timetable in
                         VStack(alignment: .leading) {
-                            CardView(timeTable: timetable)
+                            CardView(timeTable: timetable) { programId in
+                                vm.deleteReservation(programId: programId)
+                            }
                         }
                     }
                 }
@@ -88,5 +90,32 @@ class ReservedViewModel: TimeTableViewModelProtocol {
                 self.timetables = data
             }
             .store(in: &self.subscriptions)
+    }
+
+    func deleteReservation(programId: String) {
+        var uuidStr: String
+        do {
+            uuidStr = try UUIDRepositoryImpl().fetchUUID()
+        } catch {
+            let uuid = UUID()
+            uuidStr = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepositoryImpl().register(uuid: uuid)
+        }
+        self.repository
+            .deleteReservationData(userId: uuidStr, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+            } receiveValue: {
+            }
+            .store(in: &self.subscriptions)
+
     }
 }

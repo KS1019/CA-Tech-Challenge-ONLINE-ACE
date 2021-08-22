@@ -31,7 +31,7 @@ struct ChannelView: View {
                         }) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable, onCommit: { programId in
-                                print(programId)
+                                vm.postReservedData(programId)
                             })
                         }
                     }
@@ -57,7 +57,7 @@ struct ChannelView_Previews: PreviewProvider {
 }
 
 class ChannelViewModel: TimeTableViewModelProtocol {
-
+    var userId: String
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
@@ -68,8 +68,17 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     @Published var filteredTimetables: [TimeTable] = []
     // private(set)にしたいがTimeTableViewModelProtocolを継承しておりprivateを宣言できない
     @Published var isLoading: Bool = true
+    @Published var reservedFlag = false
     init(repository: TimeTableRepository) {
         self.repository = repository
+        do {
+            userId = try UUIDRepositoryImpl().fetchUUID()
+        } catch {
+            let uuid = UUID()
+            userId = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepositoryImpl().register(uuid: uuid)
+        }
     }
 
     func onAppear() {
@@ -126,4 +135,22 @@ class ChannelViewModel: TimeTableViewModelProtocol {
             .store(in: &self.subscriptions)
     }
 
+    func postReservedData(_ programId: String) {
+        repository.postReservationData(userId: userId, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("Post成功")
+                    // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
+                    self.reservedFlag = true
+
+                case let .failure(error):
+                    print(error)
+                    self.reservedFlag = false
+                }
+
+            } receiveValue: {
+            }
+            .store(in: &self.subscriptions)
+    }
 }
