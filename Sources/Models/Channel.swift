@@ -7,11 +7,15 @@
 
 import Foundation
 
-struct ChannelListResult: Decodable {
+class ChannelListResult: ObservableObject, Decodable {
     let channels: [Channel]
 }
 
-struct Channel: Identifiable, Decodable, Hashable {
+class Channel: ObservableObject, Identifiable, Decodable {
+    internal init(id: String, title: String) {
+        self.id = id
+        self.title = title
+    }
     let id: String
     let title: String
 }

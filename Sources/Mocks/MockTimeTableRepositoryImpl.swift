@@ -11,8 +11,33 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepositoryImpl: TimeTableRepository {
+    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        let queryItems = [
+            URLQueryItem(name: "user_id", value: userId),
+            URLQueryItem(name: "program_id", value: programId)
+        ]
+        // swiftlint:disable force_unwrapping
+        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            }
+
+            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+            }
+            print(response.statusCode)
+            completion(.success(()))
+
+        }.resume()
+    }
+
     func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        completion(.failure(fatalError()))
+        completion(.failure(fatalError("postReservationData")))
     }
 
     init() {
@@ -35,7 +60,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
-        let url = TimeTableRepositoryImpl.getChannelURL
+        let url = MockTimeTableRepositoryImpl.channelListURL
         print(url)
         return URLSession
             .shared
@@ -56,7 +81,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -71,7 +96,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -83,7 +108,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap {
-                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).data
+                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -93,5 +118,5 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
 extension MockTimeTableRepositoryImpl {
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
-    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")
+    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")!
 }

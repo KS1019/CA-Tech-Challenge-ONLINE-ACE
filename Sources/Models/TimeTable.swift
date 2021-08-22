@@ -9,22 +9,21 @@ import Foundation
 protocol TimeTableProtocol: Identifiable, Decodable {
     var id: String { get }
     var title: String { get }
+    var channelId: String { get }
+    var labels: [String] { get }
     var highlight: String { get }
     var detailHighlight: String { get }
+    var content: String { get }
     var startAt: Int { get }
     var endAt: Int { get }
-    var channelId: String { get }
-    var labels: [String: Bool] { get }
-    var content: String { get }
-    var displayProgram: DisplayProgram { get }
-
 }
 
 struct TimeTableResult: Decodable {
-    let data: [TimeTable]
+    let programs: [TimeTable]
 }
 
 struct TimeTable: TimeTableProtocol, Equatable {
+
     let id: String
     let title: String
     let highlight: String
@@ -32,9 +31,21 @@ struct TimeTable: TimeTableProtocol, Equatable {
     let startAt: Int
     let endAt: Int
     let channelId: String
-    let labels: [String: Bool]
+    let labels: [String]
     let content: String
-    let displayProgram: DisplayProgram
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case highlight
+        case detailHighlight = "detail_highlight"
+        case startAt = "start_at"
+        case endAt = "end_at"
+        case channelId = "channel_id"
+        case labels
+        case content
+    }
+
 }
 
 struct DisplayProgram: Decodable, Equatable {
