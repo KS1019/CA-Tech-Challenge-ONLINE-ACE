@@ -104,26 +104,6 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             .store(in: &self.subscriptions)
     }
 
-    func getChannelData() {
-        repository.fetchChannelData()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("CalendarViewModelのデータ取得成功 \(#function)")
-                    self.isLoading = false
-
-                case let .failure(error):
-                    print(error)
-                    self.isLoading = true
-                }
-
-            } receiveValue: { data in
-                self.channels += data
-                print("calendarview:\(self.channels)")
-            }
-            .store(in: &self.subscriptions)
-    }
-
 }
 
 extension Date {
