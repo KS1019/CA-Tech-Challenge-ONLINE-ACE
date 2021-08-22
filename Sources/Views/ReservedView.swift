@@ -43,14 +43,14 @@ struct ReservedView_Previews: PreviewProvider {
 }
 
 class ReservedViewModel: TimeTableViewModelProtocol {
-    private let repository: TimeTableRepository
+    private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
     @Published var timetables: [TimeTable] = []
     @Published var isLoading: Bool = true
     @Published var selectedGenreFilters: [String: Bool] = [:]
 
-    init(repository: TimeTableRepository) {
+    init(repository: TimeTableRepositoryProtocol) {
         self.repository = repository
     }
 
@@ -68,12 +68,12 @@ class ReservedViewModel: TimeTableViewModelProtocol {
     func getReservaions() {
         var uuidStr: String
         do {
-            uuidStr = try UUIDRepositoryImpl().fetchUUID()
+            uuidStr = try UUIDRepository().fetchUUID()
         } catch {
             let uuid = UUID()
             uuidStr = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepositoryImpl().register(uuid: uuid)
+            try! UUIDRepository().register(uuid: uuid)
         }
         self.repository
             .fetchReservationData(userId: uuidStr.lowercased())
@@ -95,12 +95,12 @@ class ReservedViewModel: TimeTableViewModelProtocol {
     func deleteReservation(programId: String) {
         var uuidStr: String
         do {
-            uuidStr = try UUIDRepositoryImpl().fetchUUID()
+            uuidStr = try UUIDRepository().fetchUUID()
         } catch {
             let uuid = UUID()
             uuidStr = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepositoryImpl().register(uuid: uuid)
+            try! UUIDRepository().register(uuid: uuid)
         }
         self.repository
             .deleteReservationData(userId: uuidStr, programId: programId)

@@ -9,11 +9,11 @@ import Combine
 import Foundation
 import KeychainAccess
 
-struct UUIDRepositoryImpl {
+struct UUIDRepository {
     static let keychain = Keychain(service: "C.ACE.iOS")
     func fetchUUID() throws -> String {
         do {
-            guard let token = try UUIDRepositoryImpl.keychain.get("userid") else { throw UUIDRepositoryImplError.neverHappenError }
+            guard let token = try UUIDRepository.keychain.get("userid") else { throw UUIDRepositoryImplError.neverHappenError }
             return token.lowercased()
         } catch let error {
             throw UUIDRepositoryImplError.fetchFailed(error)
@@ -22,11 +22,11 @@ struct UUIDRepositoryImpl {
 
     func register(uuid: UUID) throws {
         let key = uuid.uuidString
-        if try UUIDRepositoryImpl.keychain.get("userid") != nil {
+        if try UUIDRepository.keychain.get("userid") != nil {
             throw UUIDRepositoryImplError.tokenAlreadySet
         } else {
             do {
-                try UUIDRepositoryImpl.keychain.set(key, key: "userid")
+                try UUIDRepository.keychain.set(key, key: "userid")
             } catch let error {
                 throw UUIDRepositoryImplError.registerFailed(error)
             }
@@ -35,14 +35,14 @@ struct UUIDRepositoryImpl {
 
     func update(userID: UUID) throws {
         do {
-            try UUIDRepositoryImpl.keychain.set(userID.uuidString, key: "userid")
+            try UUIDRepository.keychain.set(userID.uuidString, key: "userid")
         } catch let error {
             throw UUIDRepositoryImplError.updateFailed(error)
         }
     }
 }
 
-extension UUIDRepositoryImpl {
+extension UUIDRepository {
     enum UUIDRepositoryImplError: Error {
         case tokenAlreadySet
         case registerFailed(Error)
