@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RootView: View {
 
-    @ObservedObject var vm = RootViewModel(repository: MockTimeTableRepository())
+    @ObservedObject var vm = RootViewModel()
     var body: some View {
         TabView(selection: $vm.tabSelection) {
             VStack {
@@ -33,10 +33,6 @@ struct RootView: View {
             .tag(Tabs.reserved)
 
         }
-        .onAppear {
-            vm.getChannelTimeTable()
-            vm.getChannels()
-        }
     }
 }
 
@@ -49,79 +45,6 @@ struct RootView_Previews: PreviewProvider {
 import Combine
 
 // TODO: 変更項目がなくなれば、別ファイルに移動したい
-class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
+class RootViewModel: ObservableObject {
     @Published var tabSelection = Tabs.calendar
-    @Published var searchQuery = ""
-    @Published var calendar = ""
-    @Published var channelID = ""
-    @Published var reserved = false
-    @Published var timetables: [TimeTable] = []
-    @Published var isEditing = false
-    @Published var isLoading = true
-    @Published var channels: [Channel] = []
-    private let repository: TimeTableRepositoryProtocol
-    private var channelList: [Channel] = []
-    private var subscriptions = Set<AnyCancellable>()
-
-    init(repository: TimeTableRepositoryProtocol) {
-        self.repository = repository
-    }
-
-    func getChannelTimeTable() {
-        self.repository.fetchTimeTableData(channelId: channelID)
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("終了コード")
-                    self.isLoading = false
-
-                case let .failure(error):
-                    print(error)
-                    self.isLoading = true
-                }
-
-            } receiveValue: { data in
-                self.timetables += data
-                print(self.timetables)
-            }
-            .store(in: &self.subscriptions)
-    }
-
-    func getChannels() {
-        self.repository.fetchChannelData()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("終了コード")
-                    self.isLoading = false
-
-                case let .failure(error):
-                    print(error)
-                    self.isLoading = true
-                }
-            } receiveValue: { channels in
-                self.channels = channels
-            }
-            .store(in: &self.subscriptions)
-    }
-
-    func getChannelList() {
-        self.repository.fetchChannelData()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("終了コード")
-                    self.isLoading = false
-
-                case let .failure(error):
-                    print(error)
-                    self.isLoading = true
-                }
-
-            } receiveValue: { data in
-                self.channelList += data
-                print(self.timetables)
-            }
-            .store(in: &self.subscriptions)
-    }
 }
