@@ -47,13 +47,13 @@ struct CalendarView: View {
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepositoryImpl()))
+        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository()))
     }
 }
 
 class CalendarViewModel: TimeTableViewModelProtocol {
     var userId: String
-    private let repository: TimeTableRepository
+    private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
 
@@ -65,15 +65,15 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Date.aWeek ?? [Date()]
 
-    init(repository: TimeTableRepository) {
+    init(repository: TimeTableRepositoryProtocol) {
         self.repository = repository
         do {
-            userId = try UUIDRepositoryImpl().fetchUUID()
+            userId = try UUIDRepository().fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepositoryImpl().register(uuid: uuid)
+            try! UUIDRepository().register(uuid: uuid)
         }
     }
 

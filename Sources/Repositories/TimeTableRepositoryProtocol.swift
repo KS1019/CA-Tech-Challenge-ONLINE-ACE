@@ -7,7 +7,7 @@
 import Combine
 import Foundation
 
-protocol TimeTableRepository {
+protocol TimeTableRepositoryProtocol {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
@@ -16,7 +16,7 @@ protocol TimeTableRepository {
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error>
 }
 
-class TimeTableRepositoryImpl: TimeTableRepository {
+class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
 
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         var url = TimeTableRepositoryImpl.getReservedURL

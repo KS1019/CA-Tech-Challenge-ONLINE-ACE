@@ -58,7 +58,7 @@ struct ChannelView_Previews: PreviewProvider {
 
 class ChannelViewModel: TimeTableViewModelProtocol {
     var userId: String
-    private let repository: TimeTableRepository
+    private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
     var timetables: [TimeTable] = []
@@ -69,15 +69,15 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     // private(set)にしたいがTimeTableViewModelProtocolを継承しておりprivateを宣言できない
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
-    init(repository: TimeTableRepository) {
+    init(repository: TimeTableRepositoryProtocol) {
         self.repository = repository
         do {
-            userId = try UUIDRepositoryImpl().fetchUUID()
+            userId = try UUIDRepository().fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepositoryImpl().register(uuid: uuid)
+            try! UUIDRepository().register(uuid: uuid)
         }
     }
 

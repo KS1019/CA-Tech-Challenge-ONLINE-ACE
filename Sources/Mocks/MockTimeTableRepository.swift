@@ -11,7 +11,7 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 // レビューのため,TimeTableRepositoryのプロトコルは外しています。
-class MockTimeTableRepositoryImpl: TimeTableRepository {
+class MockTimeTableRepository: TimeTableRepositoryProtocol {
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         // テスト用に成功するものだけを返す
         let future = Future<[TimeTable], Error> { c in
@@ -59,7 +59,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
-        let url = MockTimeTableRepositoryImpl.channelListURL
+        let url = MockTimeTableRepository.channelListURL
         print(url)
         return URLSession
             .shared
@@ -75,7 +75,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
+        let url = MockTimeTableRepository.baseURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
         return URLSession
             .shared
@@ -89,7 +89,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
 
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
         // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
+        let url = MockTimeTableRepository.baseURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
         return URLSession
             .shared
@@ -104,7 +104,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     func fetchFailureTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepositoryImpl.failedURL.queryItemAdded(name: "channelId", value: channelId)!
+        let url = MockTimeTableRepository.failedURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
         return URLSession
             .shared
@@ -129,7 +129,7 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 }
 
-extension MockTimeTableRepositoryImpl {
+extension MockTimeTableRepository {
     static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
     static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")!
