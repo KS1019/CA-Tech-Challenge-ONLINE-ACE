@@ -29,10 +29,6 @@ struct MockAPIView<T: TimeTableViewModelProtocol>: View {
 
     var body: some View {
         VStack {
-            SearchBar(query: $vm.searchQuery, isEditing: $vm.isEditing) {
-                print("検索")
-            }
-
             List(vm.timetables) { timetable in
                 CardView(timeTable: timetable)
             }
@@ -44,12 +40,7 @@ struct MockAPIView<T: TimeTableViewModelProtocol>: View {
 protocol TimeTableViewModelProtocol: ObservableObject {
     associatedtype ListData: TimeTableProtocol
     var timetables: [ListData] { get set }
-    var searchQuery: String { get set }
-    var isEditing: Bool { get set }
     var isLoading: Bool { get set }
-    var channels: [Channel] { get set }
-    var reservations: [ListData] { get set }
-    func getChannelTimeTable()
 }
 
 struct MockAPIView_Previews: PreviewProvider {

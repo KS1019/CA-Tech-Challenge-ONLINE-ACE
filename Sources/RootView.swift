@@ -6,7 +6,7 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $vm.tabSelection) {
             VStack {
-                CalendarView(vm: vm)
+                CalendarView()
             }
             .tabItem {
                 Label(Tabs.calendar.description,
@@ -15,7 +15,7 @@ struct RootView: View {
             .tag(Tabs.calendar)
 
             ZStack {
-                ChannelView(vm: vm)
+                ChannelView()
             }
             .tabItem {
                 Label(Tabs.channel.description,
@@ -24,7 +24,7 @@ struct RootView: View {
             .tag(Tabs.channel)
 
             ZStack {
-                ReservedView(vm: vm)
+                ReservedView()
             }
             .tabItem {
                 Label(Tabs.reserved.description,
@@ -36,7 +36,6 @@ struct RootView: View {
         .onAppear {
             vm.getChannelTimeTable()
             vm.getChannels()
-            vm.getReservaions()
         }
     }
 }
@@ -60,7 +59,6 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
     @Published var isEditing = false
     @Published var isLoading = true
     @Published var channels: [Channel] = []
-    @Published var reservations: [TimeTable] = []
     private let repository: TimeTableRepository
     private var channelList: [Channel] = []
     private var subscriptions = Set<AnyCancellable>()
@@ -105,7 +103,6 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
                 self.channels = channels
             }
             .store(in: &self.subscriptions)
-
     }
 
     func getChannelList() {
@@ -126,32 +123,5 @@ class RootViewModel: ObservableObject, TimeTableViewModelProtocol {
                 print(self.timetables)
             }
             .store(in: &self.subscriptions)
-    }
-
-    func getReservaions() {
-        var uuidStr: String
-        do {
-            uuidStr = try UUIDRepositoryImpl().fetchUUID()
-        } catch {
-            let uuid = UUID()
-            uuidStr = uuid.uuidString
-            // swiftlint:disable force_try
-            try! UUIDRepositoryImpl().register(uuid: uuid)
-        }
-        //        self.repository
-        //            .fetchReservations(userId: uuidStr)
-        //            .sink { completion in
-        //                switch completion {
-        //                case .finished:
-        //                    print("終了コード")
-        //                    self.isLoading = false
-        //                case let .failure(error):
-        //                    print(error)
-        //                    self.isLoading = true
-        //                }
-        //            } receiveValue: { (data) in
-        //                self.reservations = data
-        //            }
-        //            .store(in: &self.subscriptions)
     }
 }

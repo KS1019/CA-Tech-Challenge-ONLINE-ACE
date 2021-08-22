@@ -5,22 +5,16 @@
 //  Created by TanakaHirokazu on 2021/08/16.
 //
 
+import Combine
 import SwiftUI
 
-struct ReservedView<T: TimeTableViewModelProtocol>: View {
-    @StateObject var vm: T
-    @State var aWeek: [Date]? = Date.getWeek()
-    @State private var selectedIndex: Int = 0
+struct ReservedView: View {
+    @StateObject var vm: ReservedViewModel = ReservedViewModel(repository: TimeTableRepositoryImpl())
     var body: some View {
         VStack {
-            HorizontalPickerView(selection: $selectedIndex, selections: aWeek ?? [Date()])
-
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.reservations.filter {
-                        aWeek![selectedIndex] <= Date(timeIntervalSince1970: TimeInterval($0.startAt)) ||
-                            Date(timeIntervalSince1970: TimeInterval($0.endAt)) <= aWeek![selectedIndex]
-                    }) { timetable in
+                    ForEach(vm.timetables) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable)
                         }
@@ -32,6 +26,7 @@ struct ReservedView<T: TimeTableViewModelProtocol>: View {
             }
 
         }
+        .onAppear(perform: vm.onAppear)
     }
     private var activityIndicator: some View {
         ActivityIndicator(style: .medium)
@@ -41,6 +36,57 @@ struct ReservedView<T: TimeTableViewModelProtocol>: View {
 
 struct ReservedView_Previews: PreviewProvider {
     static var previews: some View {
-        ReservedView(vm: MockTimeTableViewModel())
+        ReservedView()
+    }
+}
+
+class ReservedViewModel: TimeTableViewModelProtocol {
+    private let repository: TimeTableRepository
+    private var subscriptions = Set<AnyCancellable>()
+    @Published var labels: [String] = []
+    @Published var timetables: [TimeTable] = []
+    @Published var isLoading: Bool = true
+    @Published var selectedGenreFilters: [String: Bool] = [:]
+
+    init(repository: TimeTableRepository) {
+        self.repository = repository
+    }
+
+    func onAppear() {
+        getReservaions()
+        labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+        selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+            var newResult = result
+            newResult[label] = false
+            return newResult
+
+        }
+    }
+
+    func getReservaions() {
+        var uuidStr: String
+        do {
+            uuidStr = try UUIDRepositoryImpl().fetchUUID()
+        } catch {
+            let uuid = UUID()
+            uuidStr = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepositoryImpl().register(uuid: uuid)
+        }
+        self.repository
+            .fetchReservationData(userId: uuidStr.lowercased())
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+                    self.isLoading = false
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+            } receiveValue: { (data) in
+                self.timetables = data
+            }
+            .store(in: &self.subscriptions)
     }
 }

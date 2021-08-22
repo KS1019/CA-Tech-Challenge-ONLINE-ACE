@@ -10,34 +10,33 @@ import Foundation
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
+// レビューのため,TimeTableRepositoryのプロトコルは外しています。
 class MockTimeTableRepositoryImpl: TimeTableRepository {
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        let queryItems = [
-            URLQueryItem(name: "user_id", value: userId),
-            URLQueryItem(name: "program_id", value: programId)
-        ]
-        // swiftlint:disable force_unwrapping
-        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
-        request.httpMethod = "DELETE"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        // テスト用に成功するものだけを返す
+        let future = Future<[TimeTable], Error> { c in
+            c(.success([]))
+        }
 
-        let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
+        return future.eraseToAnyPublisher()
 
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
-            }
-            print(response.statusCode)
-            completion(.success(()))
-
-        }.resume()
     }
 
-    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        completion(.failure(fatalError("postReservationData")))
+    func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+        // テスト用に成功するものだけを返す
+        let future = Future<Void, Error> { completion in
+            completion(.success(print("必ず成功します")))
+        }
+        return future.eraseToAnyPublisher()
+    }
+
+    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+        // テスト用に成功するものだけを返す
+        let future = Future<Void, Error> { completion in
+            completion(.success(print("必ず成功します")))
+        }
+        return future.eraseToAnyPublisher()
+
     }
 
     init() {
@@ -72,8 +71,23 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
+    // TODO: 他のViewに依存されているコード　VMに切り出し終えた時に破棄
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
+        // swiftlint:disable force_unwrapping
+        let url = MockTimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
+        print(url)
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap { try
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
         // swiftlint:disable force_unwrapping
         let url = MockTimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)

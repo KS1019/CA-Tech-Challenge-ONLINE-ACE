@@ -20,20 +20,27 @@ struct TestAPIView: View {
                 vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
 
             }
+            Button("RESERVED") {
+                vm.getReservationData(userId: userId)
+            }
 
             Button("DELETE") {
                 print(userId)
                 vm.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             }
 
+            Button("GET TimeTable") {
+                vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
+            }
+
+            Button("GET Channel") {
+                vm.getChannelList()
+            }
+
             List(vm.channelList) { channel in
                 Text(channel.title)
             }
 
-        }
-        .onAppear {
-            //            vm.getChannelList()
-            //            vm.getTimeTableData(firstAt: 1_426_323_200, lastAt: 1_626_285_600)
         }
     }
 }
@@ -50,6 +57,26 @@ class TestAPIViewModel: ObservableObject {
     let repository = TimeTableRepositoryImpl()
 
     private var subscriptions = Set<AnyCancellable>()
+
+    func getReservationData(userId: String) {
+        repository.fetchReservationData(userId: userId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+
+                case let .failure(error):
+                    print(error)
+
+                }
+
+            } receiveValue: { data in
+                self.timetables += data
+                print(self.timetables)
+            }
+            .store(in: &self.subscriptions)
+
+    }
     func getTimeTableData(firstAt: Int, lastAt: Int) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
@@ -71,32 +98,7 @@ class TestAPIViewModel: ObservableObject {
 
     func deleteReservationData(userId: String, programId: String) {
 
-        repository.deleteReservationData(userId: userId, programId: programId) { result in
-            switch result {
-            case .success:
-                print("成功")
-            case let .failure(error):
-                print(error)
-            }
-
-        }
-
-    }
-    func postReservationData(userId: String, programId: String) {
-
-        repository.postReservationData(userId: userId, programId: programId) { result in
-
-            switch result {
-            case .success:
-                print("成功")
-            case let .failure(error):
-                print(error)
-            }
-        }
-
-    }
-    func getChannelList() {
-        repository.fetchChannelData()
+        repository.deleteReservationData(userId: userId, programId: programId)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -107,9 +109,46 @@ class TestAPIViewModel: ObservableObject {
 
                 }
 
+            } receiveValue: {
+            }
+            .store(in: &self.subscriptions)
+
+    }
+    func postReservationData(userId: String, programId: String) {
+
+        repository.postReservationData(userId: userId, programId: programId)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("成功")
+
+                case let .failure(error):
+                    print(error)
+                }
+
+            } receiveValue: {
+            }
+            .store(in: &self.subscriptions)
+
+    }
+
+    func getChannelList() {
+        repository.fetchChannelData()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("成功")
+
+                case let .failure(error):
+                    print(error)
+
+                }
+
             } receiveValue: { data in
                 self.channelList += data
-                print(self.channelList)
+                self.channelList.forEach { channel in
+                    print(channel.title)
+                }
             }
             .store(in: &self.subscriptions)
     }
