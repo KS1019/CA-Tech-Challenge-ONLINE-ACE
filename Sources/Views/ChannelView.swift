@@ -134,7 +134,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
     }
-    
+
     func postReservedData(_ programId: String) {
         repository.postReservationData(userId: userId, programId: programId)
             .sink { completion in
@@ -143,12 +143,12 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                     print("Post成功")
                     // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
                     self.reservedFlag = true
-                    
+
                 case let .failure(error):
                     print(error)
                     self.reservedFlag = false
                 }
-                
+
             } receiveValue: {
             }
             .store(in: &self.subscriptions)

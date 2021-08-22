@@ -40,7 +40,7 @@ struct ProgramView<T: TimeTableProtocol>: View {
 
         }
         .padding()
-        .background(Color.blue)
+        .background(Color("Color"))
         .cornerRadius(8.0)
 
     }
