@@ -59,16 +59,11 @@ class MockTimeTableRepositoryImpl: TimeTableRepository {
     }
 
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
-        let url = MockTimeTableRepositoryImpl.channelListURL
-        print(url)
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(ChannelListResult.self, from: $0.data).channels
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+        let future = Future<[Channel], Error> { c in
+            c(.success([Channel(id: "test-id", title: "test-title")]))
+        }
+
+        return future.eraseToAnyPublisher()
     }
 
     // TODO: 他のViewに依存されているコード　VMに切り出し終えた時に破棄

@@ -129,7 +129,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                 }
 
             } receiveValue: { data in
-                self.channels += data
+                self.channels = data
                 print("calendarview:\(self.channels)")
             }
             .store(in: &self.subscriptions)
