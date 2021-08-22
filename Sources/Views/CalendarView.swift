@@ -4,16 +4,15 @@
 //
 //  Created by TanakaHirokazu on 2021/08/16.
 //
-
+import Combine
 import SwiftUI
 
-struct CalendarView<T: TimeTableViewModelProtocol>: View {
-    @StateObject var vm: T
-    @State var aWeek: [Date]? = Date.getWeek()
-    @State private var selectedIndex: Int = 0
+struct CalendarView: View {
+    @StateObject var vm = CalendarViewModel(repository: TimeTableRepositoryImpl())
+
     var body: some View {
         VStack {
-            HorizontalPickerView(selection: $selectedIndex, selections: aWeek ?? [Date()])
+            HorizontalPickerView(selection: $vm.selectedIndex, selections: Date.aWeek ?? [Date()])
 
             ScrollView {
                 LazyVStack {
@@ -29,6 +28,7 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
             }
 
         }
+        .onAppear(perform: vm.onAppear)
     }
     private var activityIndicator: some View {
         ActivityIndicator(style: .medium)
@@ -39,11 +39,54 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView(vm: MockTimeTableViewModel())
+        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepositoryImpl()))
     }
 }
 
+class CalendarViewModel: TimeTableViewModelProtocol {
+
+    private let repository: TimeTableRepository
+    private var subscriptions = Set<AnyCancellable>()
+    var timetables: [TimeTable] = []
+
+    @Published var selectedIndex: Int = 0
+    @Published var isLoading: Bool = true
+
+    init(repository: TimeTableRepository) {
+        self.repository = repository
+    }
+
+    func onAppear() {
+        getTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
+    }
+
+    func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
+        let selectTimestamp = Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!)
+        repository.fetchTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("CalendarViewModelのデータ取得成功")
+                    self.isLoading = false
+
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+
+            } receiveValue: { data in
+                self.timetables += data
+                print("calendarview:\(self.timetables)")
+            }
+            .store(in: &self.subscriptions)
+
+    }
+
+}
+
 extension Date {
+    static var aWeek: [Date]? = Date.getWeek()
+
     static func getWeek() -> [Date]? {
         var aWeek: [Date] = []
         let today = Date()
