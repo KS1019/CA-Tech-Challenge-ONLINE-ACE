@@ -56,11 +56,13 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
+
     @Published var reservedFlag = false
     @Published var selectedIndex: Int = 2
     @Published var isLoading: Bool = true
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
+    @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Date.aWeek ?? [Date()]
 
     init(repository: TimeTableRepository) {
