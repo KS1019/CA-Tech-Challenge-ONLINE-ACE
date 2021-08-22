@@ -39,12 +39,6 @@ struct MockAPIView<T: TimeTableViewModelProtocol>: View {
     }
 }
 
-protocol TimeTableViewModelProtocol: ObservableObject {
-    associatedtype ListData: TimeTableProtocol
-    var timetables: [ListData] { get set }
-    var isLoading: Bool { get set }
-}
-
 struct MockAPIView_Previews: PreviewProvider {
 
     static var previews: some View {
