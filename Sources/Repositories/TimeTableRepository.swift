@@ -85,7 +85,7 @@ class TimeTableRepositoryImpl: TimeTableRepository {
             .eraseToAnyPublisher()
     }
 
-    /// MockURLを叩いている
+    // MockURLを叩いている
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
