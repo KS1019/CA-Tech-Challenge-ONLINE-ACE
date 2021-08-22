@@ -10,40 +10,60 @@ import Foundation
 protocol TimeTableRepository {
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
-    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
+    func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
+    func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error>
 }
 
 class TimeTableRepositoryImpl: TimeTableRepository {
 
-    func postReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        let params: [String: Any] = ["user_id": userId, "program_id": programId]
-        var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
-            return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
-        }
-        request.httpBody = httpBody
-        let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
+    func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
+        var url = TimeTableRepositoryImpl.getReservedURL
+        url.appendPathComponent(userId)
+        print(url)
+        return URLSession
+            .shared
+            .dataTaskPublisher(for: url)
+            .tryMap { try
+                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
             }
-
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
-            }
-
-            print(response.statusCode)
-
-            completion(.success(()))
-
-        }.resume()
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
-    func deleteReservationData(userId: String, programId: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+        let future = Future<Void, Error> { completion in
+            let params: [String: Any] = ["user_id": userId, "program_id": programId]
+            var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            // httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
+            guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+                return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
+            }
+
+            request.httpBody = httpBody
+            let session = URLSession.shared
+            session.dataTask(with: request) { (data, response, error) in
+                if let error = error {
+                    completion(.failure(error))
+                }
+
+                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                    return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+                }
+                print(response.statusCode)
+
+                completion(.success(()))
+
+            }.resume()
+        }
+        return future.eraseToAnyPublisher()
+
+    }
+
+    func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
 
         let queryItems = [
             URLQueryItem(name: "user_id", value: userId),
@@ -53,26 +73,23 @@ class TimeTableRepositoryImpl: TimeTableRepository {
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        print(request.url!)
-
         let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
+        return session.dataTaskPublisher(for: request)
+            .tryMap { data, response in
+                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+                    throw TimeTableRepositoryImpl.HTTPError.statusCodeError
+                }
+                return
             }
-
-            guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
-            }
-            print(response.statusCode)
-            completion(.success(()))
-
-        }.resume()
+            .mapError { error in error }
+            .eraseToAnyPublisher()
     }
+
+    // MockURLを叩いている
     func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
 
         // swiftlint:disable force_unwrapping
-        let url = TimeTableRepositoryImpl.baseURL.queryItemAdded(name: "channelId", value: channelId)!
+        let url = TimeTableRepositoryImpl.mockURL.queryItemAdded(name: "channelId", value: channelId)!
         print(url)
         return URLSession
             .shared
@@ -128,12 +145,12 @@ class TimeTableRepositoryImpl: TimeTableRepository {
 
 extension TimeTableRepositoryImpl {
     /// TODO: 本番環境のURLに修正
-    static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
+    static let mockURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
     static let deleteURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!
     static let postURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!
-
+    static let getReservedURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record/user")!
     enum HTTPError: Error {
         case httpBodyError
         case statusCodeError
