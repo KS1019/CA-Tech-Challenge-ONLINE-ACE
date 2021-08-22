@@ -52,10 +52,81 @@ struct ChannelView<T: TimeTableViewModelProtocol>: View {
             .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
     }
 
-}
-
 struct ChannelView_Previews: PreviewProvider {
     static var previews: some View {
-        ChannelView(vm: MockTimeTableViewModel())
+        ChannelView(vm: ChannelViewModel(repository: TimeTableRepositoryImpl()))
     }
+}
+
+class ChannelViewModel: TimeTableViewModelProtocol {
+
+    private let repository: TimeTableRepository
+    private var subscriptions = Set<AnyCancellable>()
+    @Published var labels: [String] = []
+    var timetables: [TimeTable] = []
+    var channels: [Channel] = []
+    @Published var selectedIndex: Int = 0
+    @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published var filteredTimetables: [TimeTable] = []
+    // private(set)にしたいがTimeTableViewModelProtocolを継承しておりprivateを宣言できない
+    @Published var isLoading: Bool = true
+    init(repository: TimeTableRepository) {
+        self.repository = repository
+    }
+
+    func onAppear() {
+        getChannelData()
+        getTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
+
+        //        labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+        //        selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+        //            var newResult = result
+        //            newResult[label] = false
+        //            return newResult
+
+    }
+
+    func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
+        let selectTimestamp = Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!)
+        repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("CalendarViewModelのデータ取得成功")
+                    self.isLoading = false
+
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+
+            } receiveValue: { data in
+                self.timetables += data
+                print("calendarview:\(self.timetables)")
+            }
+            .store(in: &self.subscriptions)
+
+    }
+
+    func getChannelData() {
+        repository.fetchChannelData()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("CalendarViewModelのデータ取得成功")
+                    self.isLoading = false
+
+                case let .failure(error):
+                    print(error)
+                    self.isLoading = true
+                }
+
+            } receiveValue: { data in
+                self.channels += data
+                print("calendarview:\(self.channels)")
+            }
+            .store(in: &self.subscriptions)
+
+    }
+
 }
