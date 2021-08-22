@@ -7,13 +7,12 @@
 import Combine
 import SwiftUI
 
-struct CalendarView<T: TimeTableViewModelProtocol>: View {
-    @StateObject var vm: T
-    @State var aWeek: [Date]? = Date.getWeek()
-    @State private var selectedIndex: Int = 0
+struct CalendarView: View {
+    @StateObject var vm = CalendarViewModel(repository: TimeTableRepositoryImpl())
+
     var body: some View {
         VStack {
-            HorizontalPickerView(selection: $selectedIndex, selections: aWeek ?? [Date()])
+            HorizontalPickerView(selection: $vm.selectedIndex, selections: Date.aWeek ?? [Date()])
 
             ScrollView {
                 LazyVStack {
@@ -29,6 +28,7 @@ struct CalendarView<T: TimeTableViewModelProtocol>: View {
             }
 
         }
+        .onAppear(perform: vm.onAppear)
     }
     private var activityIndicator: some View {
         ActivityIndicator(style: .medium)
