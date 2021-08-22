@@ -52,7 +52,7 @@ struct CalendarView_Previews: PreviewProvider {
 }
 
 class CalendarViewModel: TimeTableViewModelProtocol {
-    let userId = UUID().uuidString.lowercased()
+    var userId: String
     private let repository: TimeTableRepository
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
@@ -67,6 +67,14 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     init(repository: TimeTableRepository) {
         self.repository = repository
+        do {
+            userId = try UUIDRepositoryImpl().fetchUUID()
+        } catch {
+            let uuid = UUID()
+            userId = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepositoryImpl().register(uuid: uuid)
+        }
     }
 
     func onAppear() {
