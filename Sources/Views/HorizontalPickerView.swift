@@ -23,13 +23,6 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
         self.onChange = onChange
     }
 
-    // 実装時間の関係上コメントアウト
-    //    private init() {
-    //        self._selection = .constant(0)
-    //        self.selections = [] as! T
-    //
-    //    }
-
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 5) {
@@ -52,30 +45,34 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
         }
     }
 }
-// 実装時間の関係でコメントアウト
-// struct HorizontalPickerView_Previews: PreviewProvider {
-//    static var previews: some View {
 
-//        Group {
-//            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"])
-//                .previewLayout(.sizeThatFits)
-//
-//            // swiftlint:disable force_unwrapping line_length
-//            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!])
-//                .previewLayout(.sizeThatFits)
-//
-//            PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {
-//                print("Test String")
-//            }
-//            .previewLayout(.sizeThatFits)
-//
-//            PickerButton(item: Date(), index: 1, selectedIndex: .constant(1)) {
-//                print("Test Date")
-//            }
-//            .previewLayout(.sizeThatFits)
-//        }
-//    }
-// }
+struct HorizontalPickerView_Previews: PreviewProvider {
+
+    static func onChange() {
+        print(#function)
+    }
+    static var previews: some View {
+
+        Group {
+            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"], onChange: onChange)
+                .previewLayout(.sizeThatFits)
+
+            // swiftlint:disable force_unwrapping line_length
+            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!], onChange: onChange)
+                .previewLayout(.sizeThatFits)
+
+            PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {
+                print("Test String")
+            }
+            .previewLayout(.sizeThatFits)
+
+            PickerButton(item: Date(), index: 1, selectedIndex: .constant(1)) {
+                print("Test Date")
+            }
+            .previewLayout(.sizeThatFits)
+        }
+    }
+}
 
 struct PickerButton<T>: View {
     private var buttonTextString: String = ""
