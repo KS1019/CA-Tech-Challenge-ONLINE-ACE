@@ -11,6 +11,8 @@ import OHHTTPStubsSwift
 import XCTest
 
 class TimeTableRepositoryTests: XCTestCase {
+    let userId = UUID().uuidString.lowercased()
+
     func test_Channelデータ取得成功時にrecieveValueが呼ばれているか() {
         var repository = TimeTableRepositoryImpl()
         var subscriptions = Set<AnyCancellable>()
@@ -41,9 +43,7 @@ class TimeTableRepositoryTests: XCTestCase {
             .sink { completion in
                 switch completion {
                 case .finished: break
-
-                case let .failure(error):
-                    XCTAssertNotNil(error)
+                case .failure: break
 
                 }
             } receiveValue: { timetables in
@@ -57,15 +57,37 @@ class TimeTableRepositoryTests: XCTestCase {
 
     }
 
+    func test_postReservationData() {
+        let repository = TimeTableRepositoryImpl()
+        var subscriptions = Set<AnyCancellable>()
+        let exp = expectation(description: #function)
+        repository.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード\(#function)")
+
+                case let .failure(error):
+                    print(error)
+                }
+
+            } receiveValue: {
+                exp.fulfill()
+            }
+            .store(in: &subscriptions)
+
+        wait(for: [exp], timeout: 20.0)
+    }
+
     func test_deleteReservationData() {
         let repository = TimeTableRepositoryImpl()
         var subscriptions = Set<AnyCancellable>()
         let exp = expectation(description: #function)
-        repository.deleteReservationData(userId: UUID().uuidString.lowercased(), programId: "aaa")
+        repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print("終了コード")
+                    print("終了コード\(#function)")
 
                 case let .failure(error):
                     print(error)
@@ -76,7 +98,7 @@ class TimeTableRepositoryTests: XCTestCase {
                 exp.fulfill()
             }
             .store(in: &subscriptions)
-        wait(for: [exp], timeout: 10.0)
+        wait(for: [exp], timeout: 20.0)
     }
 
 }
