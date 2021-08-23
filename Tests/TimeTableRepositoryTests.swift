@@ -79,26 +79,50 @@ class TimeTableRepositoryTests: XCTestCase {
         wait(for: [exp], timeout: 20.0)
     }
 
-    func test_deleteReservationData() {
+    func test_getReservationData() {
         let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
+        var response: [TimeTable] = []
         let exp = expectation(description: #function)
-        repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+        repository.fetchReservationData(userId: userId)
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print("終了コード\(#function)")
+                    print("終了コード")
 
                 case let .failure(error):
                     print(error)
 
                 }
 
-            } receiveValue: {
+            } receiveValue: { timetables in
+                response += timetables
                 exp.fulfill()
             }
             .store(in: &subscriptions)
-        wait(for: [exp], timeout: 20.0)
+        wait(for: [exp], timeout: 40.0)
     }
+    
+        func test_deleteReservationData() {
+            let repository = TimeTableRepository()
+            var subscriptions = Set<AnyCancellable>()
+            let exp = expectation(description: #function)
+            repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        print("終了コード\(#function)")
+    
+                    case let .failure(error):
+                        print(error)
+    
+                    }
+    
+                } receiveValue: {
+                    exp.fulfill()
+                }
+                .store(in: &subscriptions)
+            wait(for: [exp], timeout: 20.0)
+        }
 
 }
