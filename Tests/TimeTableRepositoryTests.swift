@@ -30,7 +30,7 @@ class TimeTableRepositoryTests: XCTestCase {
             }
             .store(in: &subscriptions)
 
-        wait(for: [exp], timeout: 3.0)
+        wait(for: [exp], timeout: 10.0)
 
     }
 
@@ -66,13 +66,13 @@ class TimeTableRepositoryTests: XCTestCase {
                 switch completion {
                 case .finished:
                     print("終了コード\(#function)")
+                    exp.fulfill()
 
                 case let .failure(error):
                     print(error)
                 }
 
             } receiveValue: {
-                exp.fulfill()
             }
             .store(in: &subscriptions)
 
@@ -100,29 +100,30 @@ class TimeTableRepositoryTests: XCTestCase {
                 exp.fulfill()
             }
             .store(in: &subscriptions)
-        wait(for: [exp], timeout: 40.0)
+        wait(for: [exp], timeout: 20.0)
     }
-    
-        func test_deleteReservationData() {
-            let repository = TimeTableRepository()
-            var subscriptions = Set<AnyCancellable>()
-            let exp = expectation(description: #function)
-            repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
-                .sink { completion in
-                    switch completion {
-                    case .finished:
-                        print("終了コード\(#function)")
-    
-                    case let .failure(error):
-                        print(error)
-    
-                    }
-    
-                } receiveValue: {
+
+    func test_deleteReservationData() {
+        let repository = TimeTableRepository()
+        var subscriptions = Set<AnyCancellable>()
+        let exp = expectation(description: #function)
+        repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード\(#function)")
                     exp.fulfill()
+
+                case let .failure(error):
+                    print(error)
+
                 }
-                .store(in: &subscriptions)
-            wait(for: [exp], timeout: 20.0)
-        }
+
+            } receiveValue: {
+
+            }
+            .store(in: &subscriptions)
+        wait(for: [exp], timeout: 20.0)
+    }
 
 }
