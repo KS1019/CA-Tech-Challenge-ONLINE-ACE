@@ -65,7 +65,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         } catch {
             let uuid = UUID()
             uuidStr = uuid.uuidString
-            // swiftlint:disable force_try
+
             try! UUIDRepository().register(uuid: uuid)
         }
         self.repository
