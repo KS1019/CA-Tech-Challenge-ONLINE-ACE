@@ -15,10 +15,10 @@ protocol TimeTableRepositoryProtocol {
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error>
 }
 
-class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
+class TimeTableRepository: TimeTableRepositoryProtocol {
 
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
-        var url = TimeTableRepositoryImpl.getReservedURL
+        var url = TimeTableRepository.getReservedURL
         url.appendPathComponent(userId)
 
         return URLSession
@@ -34,13 +34,13 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
         let future = Future<Void, Error> { completion in
             let params: [String: Any] = ["user_id": userId, "program_id": programId]
-            var request = URLRequest(url: TimeTableRepositoryImpl.postURL)
+            var request = URLRequest(url: TimeTableRepository.postURL)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             // httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
-                return completion(.failure(TimeTableRepositoryImpl.HTTPError.httpBodyError))
+                return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
             }
 
             request.httpBody = httpBody
@@ -51,7 +51,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
                 }
 
                 guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    return completion(.failure(TimeTableRepositoryImpl.HTTPError.statusCodeError))
+                    return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
                 }
                 print(response.statusCode)
 
@@ -69,7 +69,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
             URLQueryItem(name: "user_id", value: userId),
             URLQueryItem(name: "program_id", value: programId)
         ]
-        var request = URLRequest(url: TimeTableRepositoryImpl.deleteURL.queryItemsAdded(queryItems)!)
+        var request = URLRequest(url: TimeTableRepository.deleteURL.queryItemsAdded(queryItems)!)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
@@ -77,7 +77,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
         return session.dataTaskPublisher(for: request)
             .tryMap { data, response in
                 guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    throw TimeTableRepositoryImpl.HTTPError.statusCodeError
+                    throw TimeTableRepository.HTTPError.statusCodeError
                 }
                 return
             }
@@ -99,7 +99,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
             queryItems.append(URLQueryItem(name: "labels", value: labels))
         }
         // swiftlint:disable force_unwrapping
-        let url = TimeTableRepositoryImpl.getTimetableURL.queryItemsAdded(queryItems)!
+        let url = TimeTableRepository.getTimetableURL.queryItemsAdded(queryItems)!
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
@@ -113,7 +113,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
 
         // swiftlint:disable force_unwrapping
-        let url = TimeTableRepositoryImpl.getChannelURL
+        let url = TimeTableRepository.getChannelURL
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
@@ -125,7 +125,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
     }
 }
 
-extension TimeTableRepositoryImpl {
+extension TimeTableRepository {
     /// TODO: mockURLの削除
     static let mockURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!

@@ -10,7 +10,7 @@ import XCTest
 
 // ViewModelのテスト
 class APIReposTests: XCTestCase {
-    var vm = APIViewModel(repository: TimeTableRepositoryImpl())
+    var vm = APIViewModel(repository: TimeTableRepository())
 
     func test_チャンネルを指定したAPIを叩いて正常にクエリを変更出来ているか() {
         vm.channelId = "fishing"
@@ -27,9 +27,9 @@ class APIViewModel: ObservableObject {
     @Published var isError = false
     private var subscriptions = Set<AnyCancellable>()
 
-    private let repository: TimeTableRepositoryImpl
+    private let repository: TimeTableRepository
 
-    init(repository: TimeTableRepositoryImpl) {
+    init(repository: TimeTableRepository) {
         self.repository = repository
 
     }

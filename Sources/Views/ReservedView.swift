@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 struct ReservedView: View {
-    @StateObject var vm: ReservedViewModel = ReservedViewModel(repository: TimeTableRepositoryImpl())
+    @StateObject var vm: ReservedViewModel = ReservedViewModel(repository: TimeTableRepository())
     var body: some View {
         VStack {
             ScrollView {

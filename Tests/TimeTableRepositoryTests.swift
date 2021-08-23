@@ -14,7 +14,7 @@ class TimeTableRepositoryTests: XCTestCase {
     let userId = UUID().uuidString.lowercased()
 
     func test_Channelデータ取得成功時にrecieveValueが呼ばれているか() {
-        var repository = TimeTableRepositoryImpl()
+        var repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
 
         let exp = expectation(description: #function)
@@ -35,7 +35,7 @@ class TimeTableRepositoryTests: XCTestCase {
     }
 
     func test_データ取得成功時にrecieveValueが呼ばれているか() {
-        let repository = TimeTableRepositoryImpl()
+        let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
         var response: [TimeTable] = []
         let exp = expectation(description: #function)
@@ -58,7 +58,7 @@ class TimeTableRepositoryTests: XCTestCase {
     }
 
     func test_postReservationData() {
-        let repository = TimeTableRepositoryImpl()
+        let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
         let exp = expectation(description: #function)
         repository.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
@@ -80,7 +80,7 @@ class TimeTableRepositoryTests: XCTestCase {
     }
 
     func test_deleteReservationData() {
-        let repository = TimeTableRepositoryImpl()
+        let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
         let exp = expectation(description: #function)
         repository.deleteReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
