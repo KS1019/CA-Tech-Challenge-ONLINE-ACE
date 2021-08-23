@@ -20,7 +20,7 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         var url = TimeTableRepositoryImpl.getReservedURL
         url.appendPathComponent(userId)
-        print(url)
+
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
@@ -114,7 +114,6 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
 
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepositoryImpl.getChannelURL
-        print(url)
         return URLSession
             .shared
             .dataTaskPublisher(for: url)

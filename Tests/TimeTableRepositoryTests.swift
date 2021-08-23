@@ -23,7 +23,7 @@ class TimeTableRepositoryTests: XCTestCase {
                 case .failure(_): break
                 }
             } receiveValue: { channelList in
-                print(channelList)
+
                 exp.fulfill()
             }
             .store(in: &subscriptions)
@@ -53,8 +53,30 @@ class TimeTableRepositoryTests: XCTestCase {
             }
             .store(in: &subscriptions)
 
-        wait(for: [exp], timeout: 10.0)
+        wait(for: [exp], timeout: 1.0)
 
+    }
+
+    func test_deleteReservationData() {
+        let repository = TimeTableRepositoryImpl()
+        var subscriptions = Set<AnyCancellable>()
+        let exp = expectation(description: #function)
+        repository.deleteReservationData(userId: UUID().uuidString.lowercased(), programId: "aaa")
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("終了コード")
+
+                case let .failure(error):
+                    print(error)
+
+                }
+
+            } receiveValue: {
+                exp.fulfill()
+            }
+            .store(in: &subscriptions)
+        wait(for: [exp], timeout: 10.0)
     }
 
 }
