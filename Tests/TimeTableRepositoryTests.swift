@@ -12,8 +12,10 @@ import XCTest
 
 class TimeTableRepositoryTests: XCTestCase {
     let userId = UUID().uuidString.lowercased()
-
+    
+    //関数の中にrepositoryやsubscriberインスタンスを宣言
     func test_Channelデータ取得成功時にrecieveValueが呼ばれているか() {
+        
         var repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
 
@@ -33,7 +35,7 @@ class TimeTableRepositoryTests: XCTestCase {
         wait(for: [exp], timeout: 10.0)
 
     }
-
+    //関数の中にrepositoryやsubscriberインスタンスを宣言
     func test_データ取得成功時にrecieveValueが呼ばれているか() {
         let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
@@ -56,7 +58,7 @@ class TimeTableRepositoryTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
 
     }
-
+    //関数の中にrepositoryやsubscriberインスタンスを宣言
     func test_postReservationData() {
         let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
@@ -78,7 +80,7 @@ class TimeTableRepositoryTests: XCTestCase {
 
         wait(for: [exp], timeout: 20.0)
     }
-
+    //関数の中にrepositoryやsubscriberインスタンスを宣言
     func test_getReservationData() {
         let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
@@ -102,7 +104,8 @@ class TimeTableRepositoryTests: XCTestCase {
             .store(in: &subscriptions)
         wait(for: [exp], timeout: 20.0)
     }
-
+    //関数の中にrepositoryやsubscriberインスタンスを宣言
+    //postが終わった後にこの関数を呼び出したい。
     func test_deleteReservationData() {
         let repository = TimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
