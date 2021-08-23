@@ -8,7 +8,6 @@ import Combine
 import Foundation
 
 protocol TimeTableRepositoryProtocol {
-    func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error>
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
@@ -83,22 +82,6 @@ class TimeTableRepositoryImpl: TimeTableRepositoryProtocol {
                 return
             }
             .mapError { error in error }
-            .eraseToAnyPublisher()
-    }
-
-    // MockURLを叩いている
-    func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
-
-        // swiftlint:disable force_unwrapping
-        let url = TimeTableRepositoryImpl.mockURL.queryItemAdded(name: "channelId", value: channelId)!
-        print(url)
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
-            }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 

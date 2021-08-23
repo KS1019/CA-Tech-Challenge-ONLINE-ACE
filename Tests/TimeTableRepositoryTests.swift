@@ -73,7 +73,7 @@ class TimeTableRepositoryTests: XCTestCase {
     func test_データ取得成功時にrecieveValueが呼ばれているか() {
 
         let exp = expectation(description: #function)
-        repository.fetchTimeTableData(channelId: "fishing")
+        repository.fetchTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {
                 case .finished: break

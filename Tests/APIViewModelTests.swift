@@ -35,7 +35,7 @@ class APIViewModel: ObservableObject {
     }
 
     func getChannelResponse() {
-        repository.fetchTimeTableData(channelId: channelId)
+        repository.fetchTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {
                 case .finished:
