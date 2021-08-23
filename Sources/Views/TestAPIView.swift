@@ -15,7 +15,6 @@ struct TestAPIView: View {
     var body: some View {
         VStack {
             Button("POST") {
-                // TODO: 端末に紐づいたUUIDに変更
                 print(userId)
                 vm.postReservationData(userId: userId, programId: "Ep6mk79qcVwQCw")
 

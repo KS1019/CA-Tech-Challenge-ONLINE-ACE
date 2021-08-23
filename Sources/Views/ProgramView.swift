@@ -13,10 +13,6 @@ struct ProgramView<T: TimeTableProtocol>: View {
     @State private var showReserveAlert = false
     let onCommit: (String) -> Void
     var body: some View {
-        // TODO: サムネイルについて対応が決まったら追加
-        //            Image("")
-        //                .resizable()
-        //                .aspectRatio(contentMode: .fill)
         HStack {
             programDetailView
             Spacer()

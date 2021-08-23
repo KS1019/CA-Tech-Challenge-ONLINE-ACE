@@ -29,7 +29,6 @@ class APIViewModel: ObservableObject {
 
     private let repository: TimeTableRepositoryImpl
 
-    // TODO: 汎化させる
     init(repository: TimeTableRepositoryImpl) {
         self.repository = repository
 

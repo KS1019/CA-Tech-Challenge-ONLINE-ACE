@@ -10,7 +10,6 @@ import Foundation
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
-// レビューのため,TimeTableRepositoryのプロトコルは外しています。
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         // テスト用に成功するものだけを返す
