@@ -11,69 +11,33 @@ import OHHTTPStubsSwift
 import XCTest
 
 class TimeTableRepositoryTests: XCTestCase {
-    // テスト用なのでここでインスタンス化
-    var repository = MockTimeTableRepository()
-    var isError = false
-    private var subscriptions = Set<AnyCancellable>()
-    var response: [TimeTable] = []
-    var channelList: [Channel] = []
-
-    override func setUp() {
-        super.setUp()
-        // 成功用のスタブ
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-        // 失敗用のスタブ
-        stub(condition: isHost("failure.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("FailureTimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-        stub(condition: isHost("C.ACE.ace-c-ios-channel-list")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("ChannelList.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-    }
-
     func test_Channelデータ取得成功時にrecieveValueが呼ばれているか() {
+        var repository = TimeTableRepositoryImpl()
+        var subscriptions = Set<AnyCancellable>()
 
         let exp = expectation(description: #function)
         repository.fetchChannelData()
             .sink { completion in
                 switch completion {
                 case .finished: break
-
-                case let .failure(error):
-                    XCTAssertNotNil(error)
-
+                case .failure(_): break
                 }
-            } receiveValue: { channellist in
-                self.channelList += channellist
-                print(channellist)
+            } receiveValue: { channelList in
+                print(channelList)
                 exp.fulfill()
             }
-            .store(in: &self.subscriptions)
+            .store(in: &subscriptions)
 
         wait(for: [exp], timeout: 3.0)
 
     }
 
     func test_データ取得成功時にrecieveValueが呼ばれているか() {
-
+        let repository = TimeTableRepositoryImpl()
+        var subscriptions = Set<AnyCancellable>()
+        var response: [TimeTable] = []
         let exp = expectation(description: #function)
-        repository.fetchTimeTableData(firstAt: 0, lastAt: 0, channelId: nil, labels: nil)
+        repository.fetchTimeTableData(firstAt: Int((Date.aWeek?[0].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[1].timeIntervalSince1970)!), channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {
                 case .finished: break
@@ -83,35 +47,14 @@ class TimeTableRepositoryTests: XCTestCase {
 
                 }
             } receiveValue: { timetables in
-                self.response += timetables
+                response += timetables
+
                 exp.fulfill()
             }
-            .store(in: &self.subscriptions)
+            .store(in: &subscriptions)
 
-        wait(for: [exp], timeout: 3.0)
+        wait(for: [exp], timeout: 10.0)
 
     }
 
-    func test_データ取得失敗時にfailureが呼ばれているか() {
-        let exp = expectation(description: #function)
-        repository.fetchFailureTimeTableData(channelId: "fishing")
-            .sink { completion in
-                switch completion {
-                case .finished: break
-
-                case let .failure(error):
-                    XCTAssertNotNil(error)
-                    exp.fulfill()
-                    self.isError = true
-                    XCTAssertEqual(self.isError, true)
-
-                }
-            } receiveValue: { timetables in
-                self.response += timetables
-
-            }
-            .store(in: &self.subscriptions)
-
-        wait(for: [exp], timeout: 3.0)
-    }
 }
