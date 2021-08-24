@@ -32,7 +32,7 @@ class TimeTableRepositoryTests: XCTestCase {
             }
             .store(in: &subscriptions)
 
-        wait(for: [exp], timeout: 10.0)
+        wait(for: [exp], timeout: 100.0)
 
     }
     // 関数の中にrepositoryやsubscriberインスタンスを宣言
