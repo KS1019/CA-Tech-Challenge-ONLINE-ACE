@@ -6,8 +6,6 @@
 //
 @testable import App
 import Combine
-import OHHTTPStubs
-import OHHTTPStubsSwift
 import XCTest
 
 class TimeTableRepositoryTests: XCTestCase {
