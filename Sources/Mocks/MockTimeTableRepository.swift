@@ -75,7 +75,7 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         }
 
         return future.eraseToAnyPublisher()
-      
+
     }
 
     func fetchFailureTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {

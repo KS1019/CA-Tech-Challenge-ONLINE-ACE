@@ -15,21 +15,20 @@ class CaneldarViewModelTests: XCTestCase {
     }
 
     func test_updateRepositoriesWhenOnAppear() {
-    
         let vm = CalendarViewModel(repository: MockTimeTableRepository())
         vm.onAppear()
         XCTAssertTrue(!vm.timetables.isEmpty)
     }
 
-            } receiveValue: { data in
-                XCTAssertNotNil(data)
+    func test_changeDataWhenChangeDate() {
+        let vm = CalendarViewModel(repository: MockTimeTableRepository())
 
-            }
-            .store(in: &subscriptions)
+        vm.selectedIndex = 3
+        let tmpTimetable = vm.timetables
+        vm.onChangeDate()
+        let changeTimetable = vm.timetables
 
-        wait(for: [exp], timeout: 10)
-
+        XCTAssertNotEqual(tmpTimetable, changeTimetable)
     }
-    
 
 }
