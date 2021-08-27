@@ -65,22 +65,6 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         return future.eraseToAnyPublisher()
     }
 
-    // TODO: 他のViewに依存されているコード　VMに切り出し終えた時に破棄
-    func fetchTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
-
-        // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepository.baseURL.queryItemAdded(name: "channelId", value: channelId)!
-        print(url)
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
         // swiftlint:disable force_unwrapping
         let url = MockTimeTableRepository.baseURL.queryItemAdded(name: "channelId", value: channelId)!
