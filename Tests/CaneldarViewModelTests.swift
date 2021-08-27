@@ -16,6 +16,8 @@ class CaneldarViewModelTests: XCTestCase {
 
     func test_updateRepositoriesWhenOnAppear() {
         //        let vm = CalendarViewModel(repository: MockTimeTableRepository())
+        //        vm.onAppear()
+        //        XCTAssertTrue(!vm.timetables.isEmpty)  onAppearが非同期のためテストできない。
         //        以下はvm.onAppear()の処理
         let repository = MockTimeTableRepository()
         var subscriptions = Set<AnyCancellable>()
@@ -40,4 +42,8 @@ class CaneldarViewModelTests: XCTestCase {
         wait(for: [exp], timeout: 10)
 
     }
+    
+    
+    
+    
 }
