@@ -68,28 +68,14 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
-        // swiftlint:disable force_unwrapping
-        var queryItems = [
-            URLQueryItem(name: "first_at", value: String(firstAt)),
-            URLQueryItem(name: "last_at", value: String(lastAt))
-        ]
 
-        if let channelId = channelId {
-            queryItems.append(URLQueryItem(name: "channel_id", value: channelId))
+        // MockのTimetableを返す
+        let future = Future<[TimeTable], Error> { completion in
+            completion(.success([TimeTable(id: "mockTimetable", title: "mockTimetable", highlight: "mockTimetable", detailHighlight: "mockTimetable", startAt: 100, endAt: 200, channelId: "mockTimetable", labels: ["mockTimetable"], content: "mockTimetable")]))
         }
-        if let labels = labels {
-            queryItems.append(URLQueryItem(name: "labels", value: labels))
-        }
-        // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepository.baseURL.queryItemsAdded(queryItems)!
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+
+        return future.eraseToAnyPublisher()
+      
     }
 
     func fetchFailureTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {
