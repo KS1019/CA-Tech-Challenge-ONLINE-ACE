@@ -31,4 +31,10 @@ class CaneldarViewModelTests: XCTestCase {
         XCTAssertNotEqual(tmpTimetable, changeTimetable)
     }
 
+    func test_postReservedData() {
+        let vm = CalendarViewModel(repository: MockTimeTableRepository())
+        vm.postReservedData("test")
+        // 戻り値がないためどうやってテストするかわからない。
+    }
+
 }
