@@ -47,7 +47,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
-        let selectTimestamp = Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!)
+        let selectTimestamp = Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!)
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {
