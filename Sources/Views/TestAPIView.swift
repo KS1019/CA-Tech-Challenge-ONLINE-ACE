@@ -53,7 +53,7 @@ struct TestAPI_Previews: PreviewProvider {
 class TestAPIViewModel: ObservableObject {
     var channelList: [Channel] = []
     var timetables: [TimeTable] = []
-    let repository = TimeTableRepositoryImpl()
+    let repository = TimeTableRepository()
 
     private var subscriptions = Set<AnyCancellable>()
 
