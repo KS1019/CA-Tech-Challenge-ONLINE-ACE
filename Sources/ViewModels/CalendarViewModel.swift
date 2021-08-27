@@ -20,7 +20,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
-    var aWeek: [Date] = Date.aWeek ?? [Date()]
+    var aWeek: [Date] = Calendar.aWeek ?? [Date()]
 
     init(repository: TimeTableRepositoryProtocol) {
         self.repository = repository
@@ -35,12 +35,12 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     }
 
     func onAppear() {
-        getTimeTableData(firstAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
 
     }
 
     func onChangeDate() {
-        getTimeTableData(firstAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {

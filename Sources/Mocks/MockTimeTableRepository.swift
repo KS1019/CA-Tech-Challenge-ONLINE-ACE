@@ -11,10 +11,31 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
+
+    // スタブの初期設定
+    init() {
+        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
+            return fixture(
+                // swiftlint:disable force_unwrapping
+                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
+                headers: ["Content-Type": "application/json"]
+            )
+        }
+
+        stub(condition: isHost("C.ACE.ace-c-ios-channel-list")) { _ in
+            return fixture(
+                // swiftlint:disable force_unwrapping
+                filePath: OHPathForFile("ChannelList.json", type(of: self))!,
+                headers: ["Content-Type": "application/json"]
+            )
+        }
+
+    }
+
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         // テスト用に成功するものだけを返す
-        let future = Future<[TimeTable], Error> { c in
-            c(.success([]))
+        let future = Future<[TimeTable], Error> { completion in
+            completion(.success([]))
         }
 
         return future.eraseToAnyPublisher()
@@ -38,45 +59,23 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
 
     }
 
-    init() {
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-        stub(condition: isHost("C.ACE.ace-c-ios-channel-list")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("ChannelList.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-    }
-
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {
-        let future = Future<[Channel], Error> { c in
-            c(.success([Channel(id: "test-id", title: "test-title")]))
+        let future = Future<[Channel], Error> { completion in
+            completion(.success([Channel(id: "test-id", title: "test-title")]))
         }
 
         return future.eraseToAnyPublisher()
     }
 
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
-        // swiftlint:disable force_unwrapping
-        let url = MockTimeTableRepository.baseURL.queryItemAdded(name: "channelId", value: channelId)!
-        print(url)
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
-            .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+
+        // MockのTimetableを返す
+        let future = Future<[TimeTable], Error> { completion in
+            completion(.success([TimeTable(id: "mockTimetable", title: "mockTimetable", highlight: "mockTimetable", detailHighlight: "mockTimetable", startAt: 100, endAt: 200, channelId: "mockTimetable", labels: ["mockTimetable"], content: "mockTimetable")]))
+        }
+
+        return future.eraseToAnyPublisher()
+
     }
 
     func fetchFailureTimeTableData(channelId: String) -> AnyPublisher<[TimeTable], Error> {

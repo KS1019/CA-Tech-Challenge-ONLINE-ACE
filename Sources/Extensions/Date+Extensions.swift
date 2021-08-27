@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Date {
-    static var aWeek: [Date]? = Date.getWeek()
+extension Calendar {
+    static var aWeek: [Date]? = Calendar.getWeek()
 
     static func getWeek() -> [Date] {
         var aWeek: [Date] = []
