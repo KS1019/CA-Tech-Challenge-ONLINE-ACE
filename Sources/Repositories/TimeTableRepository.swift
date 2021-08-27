@@ -126,8 +126,6 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 }
 
 extension TimeTableRepository {
-    /// TODO: mockURLの削除
-    static let mockURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
     static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
     static let deleteURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!
