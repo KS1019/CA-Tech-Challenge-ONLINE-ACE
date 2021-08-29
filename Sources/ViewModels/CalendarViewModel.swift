@@ -33,10 +33,22 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             try! UUIDRepository().register(uuid: uuid)
         }
     }
+    
+    func reloadData() {
+        let labelsLoaded = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+        if labelsLoaded.sorted() != labels.sorted() {
+            labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+            selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+                var newResult = result
+                newResult[label] = false
+                return newResult
+            }
+        }
+    }
 
     func onAppear() {
         getTimeTableData(firstAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
-
+        reloadData()
     }
 
     func onChangeDate() {
@@ -50,7 +62,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
                 case .finished:
                     print("CalendarViewModelのデータ取得成功\(#function)")
                     self.isLoading = false
-
+                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
@@ -69,6 +81,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
                 switch completion {
                 case .finished:
                     print("Post成功")
+                    self.reloadData()
                 case let .failure(error):
                     print(error)
 
