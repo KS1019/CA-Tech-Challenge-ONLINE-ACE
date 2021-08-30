@@ -33,7 +33,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             try! UUIDRepository().register(uuid: uuid)
         }
     }
-    
+
     func reloadData() {
         let labelsLoaded = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
         if labelsLoaded.sorted() != labels.sorted() {
