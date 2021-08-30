@@ -31,6 +31,10 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         }
     }
 
+    func reload() {
+        getReservaions()
+    }
+
     func getReservaions() {
         var uuidStr: String
         do {
@@ -75,6 +79,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
                 case .finished:
                     print("終了コード")
                     self.isLoading = false
+                    self.reload()
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
