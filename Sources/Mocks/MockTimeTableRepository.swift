@@ -12,7 +12,7 @@ import OHHTTPStubsSwift
 
 extension MockTimeTableRepository {
 
-    //初期化時にモードを指定できる。デフォルトはsuccess
+    // 初期化時にモードを指定できる。デフォルトはsuccess
     enum Mode {
         case success
         case failure
