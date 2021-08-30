@@ -82,7 +82,18 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
 
         // MockのTimetableを返す
         let future = Future<[TimeTable], Error> { completion in
-            completion(.success([TimeTable(id: "mockTimetable", title: "mockTimetable", highlight: "mockTimetable", detailHighlight: "mockTimetable", startAt: 100, endAt: 200, channelId: "mockTimetable", labels: ["mockTimetable"], content: "mockTimetable")]))
+            completion(.success([
+                TimeTable(
+                    id: "mockTimetable",
+                    title: "mockTimetable",
+                    highlight: "mockTimetable",
+                    detailHighlight: "mockTimetable",
+                    startAt: 100,
+                    endAt: 200,
+                    channelId: "mockTimetable",
+                    labels: ["mockTimetable"],
+                    content: "mockTimetable")
+            ]))
         }
 
         return future.eraseToAnyPublisher()
