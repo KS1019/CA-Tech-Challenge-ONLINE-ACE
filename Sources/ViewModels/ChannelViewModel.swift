@@ -32,18 +32,23 @@ class ChannelViewModel: TimeTableViewModelProtocol {
             try! UUIDRepository().register(uuid: uuid)
         }
     }
+    
+    func reloadData() {
+        let labelsLoaded = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+        if labelsLoaded.sorted() != labels.sorted() {
+            labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+            selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
+                var newResult = result
+                newResult[label] = false
+                return newResult
+            }
+        }
+    }
 
     func onAppear() {
         getChannelData()
         getTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
-
-        labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-        selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-            var newResult = result
-            newResult[label] = false
-            return newResult
-
-        }
+        reloadData()
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
@@ -62,6 +67,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
             } receiveValue: { data in
                 self.timetables = data
+                self.reloadData()
             }
             .store(in: &self.subscriptions)
 
@@ -74,7 +80,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                 case .finished:
                     print("CalendarViewModelのデータ取得成功\(#function)")
                     self.isLoading = false
-
+                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
@@ -82,7 +88,6 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
             } receiveValue: { data in
                 self.channels += data
-                print("calendarview:\(self.channels)")
             }
             .store(in: &self.subscriptions)
     }
@@ -95,7 +100,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                     print("Post成功")
                     // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
                     self.reservedFlag = true
-
+                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.reservedFlag = false
