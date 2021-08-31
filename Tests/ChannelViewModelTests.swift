@@ -10,27 +10,15 @@ import Combine
 import XCTest
 
 class ChannelViewModelTests: XCTestCase {
-    let channelViewModel = ChannelViewModel(repository: MockTimeTableRepository())
-}
+    var vm: ChannelViewModel!
 
-extension ChannelViewModelTests {
-    func test_onAppear() {
-        // TODO: テストの追加
-        //        channelViewModel.onAppear()
-        //        XCTAssertEqual(channelViewModel.channels, [Channel(id: "test-id", title: "test-title")])
-        //        XCTAssertEqual(channelViewModel.timetables, [TimeTable(id: "", title: "", highlight: "", detailHighlight: "", startAt: 0, endAt: 0, channelId: "", labels: [""], content: "")])
-        //        XCTAssertEqual(channelViewModel.labels, [""])
-        //        XCTAssertEqual(channelViewModel.selectedGenreFilters, ["": false])
+    override func setUp() {
+        super.setUp()
+        vm = ChannelViewModel(repository: MockTimeTableRepository())
     }
 
-    func test_getTimeTableData() {
+    override func tearDown() {
+        super.tearDown()
     }
 
-    func test_getChannelData() {
-        channelViewModel.getChannelData()
-        XCTAssertEqual(channelViewModel.channels, [Channel(id: "test-id", title: "test-title")])
-    }
-
-    func test_postReservedData() {
-    }
 }
