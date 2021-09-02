@@ -24,12 +24,12 @@ class ChannelViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_updateRepositoriesWhenOnAppear() {
+    func test_OnAppear時timetableが更新されているか() {
         vm.onAppear()
         XCTAssertTrue(!vm.timetables.isEmpty)
     }
 
-    func test_postReservedData() {
+    func test_postReservedData時repositoryの関数が正しくよばれているか() {
 
         vm.postReservedData("test")
         vm.postReservedData("test2")
@@ -37,7 +37,7 @@ class ChannelViewModelTests: XCTestCase {
 
     }
 
-    func test_switchreservedFlagWhenPostReservedData() {
+    func test_PostReservedData時reservedFlagが更新されているか() {
         repository.mode = .success
         vm.postReservedData("test")
         XCTAssertTrue(vm.reservedFlag)
