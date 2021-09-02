@@ -34,28 +34,19 @@ class ReservedViewModelTest: XCTestCase {
         vm.deleteReservation(programId: "mockTimetable")
         XCTAssertEqual(repository.deleteFuncCallCount, 0)
         XCTAssertFalse(vm.isLoading)
-        XCTAssertFalse(vm.isLoading)
 
     }
 
-    func test_予約取り消しの失敗時にisAlertが変更されているか() {
+    func test_予約取り消し時にisAlertが変更されているか() {
+        // 失敗時
+        repository.mode = .failure
+        vm.deleteReservation(programId: "mockTimetable")
+        XCTAssertTrue(vm.isAlert)
 
-        let failureVm = ReservedViewModel(repository: MockTimeTableRepository(mode: .failure))
-        failureVm.getReservaions()
-        XCTAssertTrue(failureVm.isAlert)
-        XCTAssertTrue(failureVm.isLoading)
-        failureVm.deleteReservation(programId: "mockTimetable")
-        XCTAssertTrue(failureVm.isAlert)
-        XCTAssertTrue(failureVm.labels.isEmpty)
-        XCTAssertTrue(failureVm.selectedGenreFilters.isEmpty)
-
-        let isAlert = failureVm.isAlert
-
-        let successVm = ReservedViewModel(repository: MockTimeTableRepository(mode: .success))
-        // 失敗時のisAlertを代入して失敗時を再現
-        successVm.isAlert = isAlert
-        successVm.deleteReservation(programId: "mockTimetable")
-        XCTAssertFalse(successVm.isAlert)
+        // 成功時
+        repository.mode = .success
+        vm.deleteReservation(programId: "mockTimetable")
+        XCTAssertFalse(vm.isAlert)
 
     }
 }
