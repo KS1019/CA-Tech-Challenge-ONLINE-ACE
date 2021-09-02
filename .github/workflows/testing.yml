@@ -14,10 +14,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install xcodegen
-        run: brew install xcodegen
+      - name: Install Mint
+        run: make bootstrap
       - name: Generate .xcodeproj
-        run: xcodegen
+        run: make xcodeproj
       - name: application test
         run: |
               set -o pipefail
