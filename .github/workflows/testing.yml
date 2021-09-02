@@ -15,6 +15,7 @@ jobs:
     env:
       MINT_PATH: mint/lib
       MINT_LINK_PATH: mint/bin
+    steps:
       - uses: actions/checkout@v2
       - name: Checkout tools repo
         uses: actions/checkout@v2
