@@ -8,9 +8,20 @@
 import XCTest
 
 class ReservedViewModelTest: XCTestCase {
+    var vm: ReservedViewModel!
+    var repository: MockTimeTableRepository!
 
-    func test_onAppear時timetableが更新されているか() {
-        let vm = ReservedViewModel(repository: MockTimeTableRepository())
+    override func setUp() {
+        super.setUp()
+        repository = MockTimeTableRepository()
+        vm = ReservedViewModel(repository: repository)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+    }
+
+    func test_onAppear時timetableに依存する値が更新されているか() {
         vm.onAppear()
         XCTAssertFalse(vm.timetables.isEmpty)
         XCTAssertFalse(vm.labels.isEmpty)
@@ -18,8 +29,6 @@ class ReservedViewModelTest: XCTestCase {
     }
 
     func test_予約を取り消した時にtimetableが更新されているか() {
-        let vm = ReservedViewModel(repository: MockTimeTableRepository())
-
         vm.onAppear()
 
         vm.deleteReservation(programId: "mockTimetable")
