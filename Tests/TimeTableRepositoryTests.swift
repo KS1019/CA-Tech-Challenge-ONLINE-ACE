@@ -39,7 +39,9 @@ class TimeTableRepositoryTests: XCTestCase {
     //        var subscriptions = Set<AnyCancellable>()
     //        var response: [TimeTable] = []
     //        let exp = expectation(description: #function)
-    //        repository.fetchTimeTableData(firstAt: Int((Date.aWeek?[0].timeIntervalSince1970)!), lastAt: Int((Date.aWeek?[1].timeIntervalSince1970)!), channelId: nil, labels: nil)
+    //        repository.fetchTimeTableData(firstAt: Int((Date.aWeek?[0].timeIntervalSince1970)!),
+    //    lastAt: Int((Date.aWeek?[1].timeIntervalSince1970)!),
+    //    channelId: nil, labels: nil)
     //            .sink { completion in
     //                switch completion {
     //                case .finished: break

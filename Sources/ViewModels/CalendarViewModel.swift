@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 class CalendarViewModel: TimeTableViewModelProtocol {
-    var userId: String
+    let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
@@ -20,17 +20,17 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
-    var aWeek: [Date] = Calendar.aWeek ?? [Date()]
+    var aWeek: [Date] = Calendar.aWeek
 
-    init(repository: TimeTableRepositoryProtocol) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
         self.repository = repository
         do {
-            userId = try UUIDRepository().fetchUUID()
+            userId = try UUIDRepo.fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepository().register(uuid: uuid)
+            try! UUIDRepo.register(uuid: uuid)
         }
     }
 
@@ -47,12 +47,16 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     }
 
     func onAppear() {
-        getTimeTableData(firstAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
+                         lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
+                         channelId: nil, labels: nil)
         reloadData()
     }
 
     func onChangeDate() {
-        getTimeTableData(firstAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!), lastAt: Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!) + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
+                         lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
+                         channelId: nil, labels: nil)
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {

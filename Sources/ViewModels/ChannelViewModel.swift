@@ -21,15 +21,16 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
-    init(repository: TimeTableRepositoryProtocol) {
+
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
         self.repository = repository
         do {
-            userId = try UUIDRepository().fetchUUID()
+            userId = try UUIDRepo.fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepository().register(uuid: uuid)
+            try! UUIDRepo.register(uuid: uuid)
         }
     }
 
@@ -47,12 +48,13 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func onAppear() {
         getChannelData()
-        getTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
+                         lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
+                         channelId: nil, labels: nil)
         reloadData()
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
-        let selectTimestamp = Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!)
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {

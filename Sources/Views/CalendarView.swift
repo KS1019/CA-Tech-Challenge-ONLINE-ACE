@@ -47,6 +47,6 @@ struct CalendarView: View {
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository()))
+        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository(), UUIDRepo: UUIDRepository()))
     }
 }

@@ -9,6 +9,7 @@ import Combine
 import Foundation
 
 class ReservedViewModel: TimeTableViewModelProtocol {
+    let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
@@ -17,8 +18,16 @@ class ReservedViewModel: TimeTableViewModelProtocol {
     @Published var isAlert: Bool = false
     @Published var selectedGenreFilters: [String: Bool] = [:]
 
-    init(repository: TimeTableRepositoryProtocol) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
         self.repository = repository
+        do {
+            userId = try UUIDRepo.fetchUUID()
+        } catch {
+            let uuid = UUID()
+            userId = uuid.uuidString
+            // swiftlint:disable force_try
+            try! UUIDRepo.register(uuid: uuid)
+        }
     }
 
     func onAppear() {

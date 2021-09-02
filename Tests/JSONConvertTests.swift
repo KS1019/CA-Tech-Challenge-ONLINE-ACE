@@ -9,12 +9,19 @@ import Foundation
 import XCTest
 
 class JSONConvertTest: XCTestCase {
-    func test_JSONの変換() throws {
+    func test_JSONが正しくTimetableに変換されているか() throws {
         let valueFromJSON = try XCTUnwrap(JSONDecoder().decode(TimeTable.self, from: JSONConvertTest.json))
 
-        let expectedValue = TimeTable(id: "EQYyywjosSkxUX", title: "黒子のバスケ 第1期 全話一挙", highlight: "黒子のバスケ 第1期 全話一挙", detailHighlight: "",
-                                      startAt: 1_626_238_800, endAt: 1_626_278_400, channelId: "abema-anime-2",
-                                      labels: ["bundle"], content: "")
+        let expectedValue = TimeTable(
+            id: "EQYyywjosSkxUX",
+            title: "黒子のバスケ 第1期 全話一挙",
+            highlight: "黒子のバスケ 第1期 全話一挙",
+            detailHighlight: "",
+            startAt: 1_626_238_800,
+            endAt: 1_626_278_400,
+            channelId: "abema-anime-2",
+            labels: ["bundle"], content: ""
+        )
 
         XCTAssertEqual(valueFromJSON, expectedValue)
     }

@@ -23,6 +23,7 @@ extension MockTimeTableRepository {
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
     var mode: Mode
     var postFuncCallCount = 0
+    var deleteFuncCallCount = 0
 
     init(mode: Mode = .success) {
         self.mode = mode
@@ -72,7 +73,8 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
-        // テスト用に成功するものだけを返す
+        // deleteが呼ばれた回数
+        deleteFuncCallCount += 1
         let future = Future<Void, Error> { completion in
             switch self.mode {
             case .success:
@@ -85,7 +87,7 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
-        // テスト用に成功するものだけを返す
+        // postがよばれた回数
         postFuncCallCount += 1
         let future = Future<Void, Error> { completion in
             switch self.mode {
