@@ -8,7 +8,7 @@
 import Foundation
 
 extension Calendar {
-    static var aWeek: [Date] = Calendar.getWeek()
+    static let aWeek: [Date] = Calendar.getWeek()
 
     static func getWeek() -> [Date] {
         var aWeek: [Date] = []
