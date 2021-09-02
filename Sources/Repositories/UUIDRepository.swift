@@ -9,7 +9,27 @@ import Combine
 import Foundation
 import KeychainAccess
 
-struct UUIDRepository {
+protocol UUIDRepositoryProtocol {
+    func fetchUUID() throws -> String
+    func register(uuid: UUID) throws
+    func update(userID: UUID) throws
+
+}
+struct MockUUIDRepository: UUIDRepositoryProtocol {
+    func fetchUUID() throws -> String {
+        return "testKeychain"
+    }
+
+    func register(uuid: UUID) throws {
+
+    }
+
+    func update(userID: UUID) throws {
+
+    }
+
+}
+struct UUIDRepository: UUIDRepositoryProtocol {
     static let keychain = Keychain(service: "C.ACE.iOS")
     func fetchUUID() throws -> String {
         do {

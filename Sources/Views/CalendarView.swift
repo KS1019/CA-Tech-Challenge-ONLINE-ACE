@@ -8,7 +8,7 @@ import Combine
 import SwiftUI
 
 struct CalendarView: View {
-    @StateObject var vm = CalendarViewModel(repository: TimeTableRepository())
+    @StateObject var vm = CalendarViewModel(repository: TimeTableRepository(), UUIDRepo: UUIDRepository())
     var body: some View {
         VStack {
             HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.aWeek) {
@@ -47,6 +47,6 @@ struct CalendarView: View {
 
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
-        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository()))
+        CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository(), UUIDRepo: UUIDRepository()))
     }
 }

@@ -9,12 +9,14 @@ import XCTest
 
 class CalendarViewModelTests: XCTestCase {
     var repository: MockTimeTableRepository!
+    var UUIDRepo: MockUUIDRepository!
     var vm: CalendarViewModel!
 
     override func setUp() {
         super.setUp()
         repository = MockTimeTableRepository()
-        vm = CalendarViewModel(repository: repository)
+        UUIDRepo = MockUUIDRepository()
+        vm = CalendarViewModel(repository: repository, UUIDRepo: UUIDRepo)
     }
     override func tearDown() {
         super.tearDown()
@@ -37,6 +39,10 @@ class CalendarViewModelTests: XCTestCase {
     func test_postReservedData() {
         vm.postReservedData("test")
         XCTAssertEqual(repository.postFuncCallCount, 1)
+    }
+
+    func test_fetchUUID時にvmに正しくuserIdが代入されているか() {
+        XCTAssertEqual(vm.userId, try UUIDRepo.fetchUUID())
     }
 
 }

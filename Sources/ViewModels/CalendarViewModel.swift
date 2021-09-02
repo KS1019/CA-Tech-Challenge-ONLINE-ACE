@@ -22,15 +22,15 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Calendar.aWeek ?? [Date()]
 
-    init(repository: TimeTableRepositoryProtocol) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol) {
         self.repository = repository
         do {
-            userId = try UUIDRepository().fetchUUID()
+            userId = try UUIDRepo.fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepository().register(uuid: uuid)
+            try! UUIDRepo.register(uuid: uuid)
         }
     }
 
