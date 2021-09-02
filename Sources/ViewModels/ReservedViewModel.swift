@@ -14,6 +14,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
     @Published var labels: [String] = []
     @Published var timetables: [TimeTable] = []
     @Published var isLoading: Bool = true
+    @Published var isAlert: Bool = false
     @Published var selectedGenreFilters: [String: Bool] = [:]
 
     init(repository: TimeTableRepositoryProtocol) {
@@ -29,6 +30,10 @@ class ReservedViewModel: TimeTableViewModelProtocol {
             return newResult
 
         }
+    }
+
+    func reload() {
+        getReservaions()
     }
 
     func getReservaions() {
@@ -51,6 +56,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
+                    self.isAlert = true
                 }
             } receiveValue: { (data) in
                 self.timetables = data
@@ -75,9 +81,12 @@ class ReservedViewModel: TimeTableViewModelProtocol {
                 case .finished:
                     print("終了コード")
                     self.isLoading = false
+                    self.reload()
+                    self.isAlert = false
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
+                    self.isAlert = true
                 }
             } receiveValue: {
             }

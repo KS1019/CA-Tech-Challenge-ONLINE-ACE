@@ -82,6 +82,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
                 return
             }
             .mapError { error in error }
+            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 
