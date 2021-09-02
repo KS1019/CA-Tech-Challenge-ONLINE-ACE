@@ -16,6 +16,10 @@ class CalendarViewModelTests: XCTestCase {
         repository = MockTimeTableRepository()
         vm = CalendarViewModel(repository: repository)
     }
+    override func tearDown() {
+        super.tearDown()
+    }
+
 
     func test_updateRepositoriesWhenOnAppear() {
         vm.onAppear()
