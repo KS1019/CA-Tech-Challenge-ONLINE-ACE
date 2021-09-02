@@ -10,7 +10,7 @@ import Foundation
 
 class ChannelViewModel: TimeTableViewModelProtocol {
     var userId: String
-    private let repository: TimeTableRepositoryProtocol
+    private(set) var repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
     var timetables: [TimeTable] = []
@@ -18,7 +18,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
     @Published var filteredTimetables: [TimeTable] = []
-    // private(set)にしたいがTimeTableViewModelProtocolを継承しておりprivateを宣言できない
+
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
     init(repository: TimeTableRepositoryProtocol) {
@@ -98,7 +98,6 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                 switch completion {
                 case .finished:
                     print("Post成功")
-                    // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
                     self.reservedFlag = true
                     self.reloadData()
                 case let .failure(error):

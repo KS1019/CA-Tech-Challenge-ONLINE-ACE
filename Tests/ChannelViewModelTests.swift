@@ -10,27 +10,41 @@ import Combine
 import XCTest
 
 class ChannelViewModelTests: XCTestCase {
-    let channelViewModel = ChannelViewModel(repository: MockTimeTableRepository())
-}
+    var vm: ChannelViewModel!
+    var repository: MockTimeTableRepository!
 
-extension ChannelViewModelTests {
-    func test_onAppear() {
-        // TODO: テストの追加
-        //        channelViewModel.onAppear()
-        //        XCTAssertEqual(channelViewModel.channels, [Channel(id: "test-id", title: "test-title")])
-        //        XCTAssertEqual(channelViewModel.timetables, [TimeTable(id: "", title: "", highlight: "", detailHighlight: "", startAt: 0, endAt: 0, channelId: "", labels: [""], content: "")])
-        //        XCTAssertEqual(channelViewModel.labels, [""])
-        //        XCTAssertEqual(channelViewModel.selectedGenreFilters, ["": false])
+    // repository
+    override func setUp() {
+        super.setUp()
+        repository = MockTimeTableRepository()
+        vm = ChannelViewModel(repository: repository)
     }
 
-    func test_getTimeTableData() {
+    override func tearDown() {
+        super.tearDown()
     }
 
-    func test_getChannelData() {
-        channelViewModel.getChannelData()
-        XCTAssertEqual(channelViewModel.channels, [Channel(id: "test-id", title: "test-title")])
+    func test_updateRepositoriesWhenOnAppear() {
+        vm.onAppear()
+        XCTAssertTrue(!vm.timetables.isEmpty)
     }
 
     func test_postReservedData() {
+
+        vm.postReservedData("test")
+        vm.postReservedData("test2")
+        XCTAssertEqual(repository.postFuncCallCount, 2)
+
     }
+
+    func test_switchreservedFlagWhenPostReservedData() {
+        repository.mode = .success
+        vm.postReservedData("test")
+        XCTAssertTrue(vm.reservedFlag)
+        repository.mode = .failure
+        vm.postReservedData("failedtest")
+        XCTAssertFalse(vm.reservedFlag)
+
+    }
+
 }

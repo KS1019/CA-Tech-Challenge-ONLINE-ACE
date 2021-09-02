@@ -21,7 +21,8 @@ extension MockTimeTableRepository {
 }
 
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
-    let mode: Mode
+    var mode: Mode
+    var postFuncCallCount = 0
 
     init(mode: Mode = .success) {
         self.mode = mode
@@ -85,6 +86,7 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
 
     func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
         // テスト用に成功するものだけを返す
+        postFuncCallCount += 1
         let future = Future<Void, Error> { completion in
             switch self.mode {
             case .success:
