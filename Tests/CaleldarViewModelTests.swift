@@ -20,7 +20,6 @@ class CalendarViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-
     func test_updateRepositoriesWhenOnAppear() {
         vm.onAppear()
         XCTAssertTrue(!vm.timetables.isEmpty)

@@ -32,6 +32,7 @@ class ReservedViewModelTest: XCTestCase {
         vm.onAppear()
 
         vm.deleteReservation(programId: "mockTimetable")
+        XCTAssertEqual(repository.deleteFuncCallCount, 0)
         XCTAssertFalse(vm.isLoading)
         XCTAssertFalse(vm.isLoading)
 
