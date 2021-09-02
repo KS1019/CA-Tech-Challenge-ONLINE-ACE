@@ -12,18 +12,12 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    env:
-      MINT_PATH: mint/lib
-      MINT_LINK_PATH: mint/bin
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout tools repo
-        uses: actions/checkout@v2
-        with:
-          repository: yonaskolb/Mint
-          path: Mint
+      - run: which make
+      # 一旦Homebrewでインストール
       - name: Install Mint
-        run: sudo make mint-install-ci 
+        run: brew install mint  
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
