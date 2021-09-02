@@ -98,7 +98,6 @@ class ChannelViewModel: TimeTableViewModelProtocol {
                 switch completion {
                 case .finished:
                     print("Post成功")
-                    // 紫のエラー Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
                     self.reservedFlag = true
                     self.reloadData()
                 case let .failure(error):

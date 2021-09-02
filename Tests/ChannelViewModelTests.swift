@@ -47,9 +47,4 @@ class ChannelViewModelTests: XCTestCase {
 
     }
 
-    func test_getTimeTableData() {
-        vm.getTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
-
-    }
-
 }
