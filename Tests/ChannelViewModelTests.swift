@@ -21,4 +21,9 @@ class ChannelViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_updateRepositoriesWhenOnAppear() {
+        vm.onAppear()
+        XCTAssertTrue(!vm.timetables.isEmpty)
+    }
+
 }
