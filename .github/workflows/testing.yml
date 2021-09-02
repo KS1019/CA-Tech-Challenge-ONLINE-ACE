@@ -12,6 +12,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
     steps:
       - uses: actions/checkout@v2
       - name: Install Mint
