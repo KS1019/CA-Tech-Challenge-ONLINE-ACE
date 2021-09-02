@@ -7,34 +7,33 @@
 import Combine
 import XCTest
 
-class CaneldarViewModelTests: XCTestCase {
+class CalendarViewModelTests: XCTestCase {
+    var repository: MockTimeTableRepository!
+    var vm: CalendarViewModel!
 
     override func setUp() {
         super.setUp()
-
+        repository = MockTimeTableRepository()
+        vm = CalendarViewModel(repository: repository)
     }
 
     func test_updateRepositoriesWhenOnAppear() {
-        let vm = CalendarViewModel(repository: MockTimeTableRepository())
         vm.onAppear()
         XCTAssertTrue(!vm.timetables.isEmpty)
     }
 
     func test_changeDataWhenChangeDate() {
-        let vm = CalendarViewModel(repository: MockTimeTableRepository())
 
         vm.selectedIndex = 3
         let tmpTimetable = vm.timetables
         vm.onChangeDate()
         let changeTimetable = vm.timetables
-
         XCTAssertNotEqual(tmpTimetable, changeTimetable)
     }
 
     func test_postReservedData() {
-        let vm = CalendarViewModel(repository: MockTimeTableRepository())
         vm.postReservedData("test")
-        // 戻り値がないためどうやってテストするかわからない。
+        XCTAssertEqual(repository.postFuncCallCount, 1)
     }
 
 }
