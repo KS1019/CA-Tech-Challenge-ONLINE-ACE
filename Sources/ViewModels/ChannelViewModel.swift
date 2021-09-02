@@ -15,7 +15,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     @Published var labels: [String] = []
     var timetables: [TimeTable] = []
     @Published var channels: [Channel] = []
-    @Published var selectedIndex: Int = 2
+    @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
     @Published var filteredTimetables: [TimeTable] = []
 
