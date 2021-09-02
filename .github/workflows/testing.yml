@@ -23,7 +23,7 @@ jobs:
           repository: yonaskolb/Mint
           path: Mint
       - name: Install Mint
-        run: make mint-install-ci 
+        run: sudo make mint-install-ci 
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
