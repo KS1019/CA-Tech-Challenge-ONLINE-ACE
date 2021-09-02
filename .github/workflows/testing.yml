@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install Mint
         run: make bootstrap
+      - run: ls
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
