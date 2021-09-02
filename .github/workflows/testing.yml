@@ -15,11 +15,14 @@ jobs:
     env:
       MINT_PATH: mint/lib
       MINT_LINK_PATH: mint/bin
-    steps:
       - uses: actions/checkout@v2
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
+        with:
+          repository: yonaskolb/Mint
+          path: Mint
       - name: Install Mint
-        run: make bootstrap
-      - run: ls
+        run: make mint-install-ci 
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
