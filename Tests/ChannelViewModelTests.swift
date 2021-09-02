@@ -11,10 +11,12 @@ import XCTest
 
 class ChannelViewModelTests: XCTestCase {
     var vm: ChannelViewModel!
-
+    var repository: MockTimeTableRepository!
+    
     override func setUp() {
         super.setUp()
-        vm = ChannelViewModel(repository: MockTimeTableRepository())
+        repository = MockTimeTableRepository()
+        vm = ChannelViewModel(repository: repository)
     }
 
     override func tearDown() {
@@ -24,6 +26,14 @@ class ChannelViewModelTests: XCTestCase {
     func test_updateRepositoriesWhenOnAppear() {
         vm.onAppear()
         XCTAssertTrue(!vm.timetables.isEmpty)
+    }
+
+    func test_postReservedData() {
+
+        vm.postReservedData("test")
+        vm.postReservedData("test2")
+        XCTAssertEqual(repository.postFuncCallCount, 2)
+
     }
 
 }
