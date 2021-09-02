@@ -30,14 +30,14 @@ class ReservedViewModelTest: XCTestCase {
 
     func test_予約を取り消した時にtimetableが更新されているか() {
         vm.onAppear()
-
         vm.deleteReservation(programId: "mockTimetable")
-        XCTAssertEqual(repository.deleteFuncCallCount, 0)
+        XCTAssertEqual(repository.deleteFuncCallCount, 1)
         XCTAssertFalse(vm.isLoading)
 
     }
 
     func test_予約取り消し時にisAlertが変更されているか() {
+        vm.onAppear()
         // 失敗時
         repository.mode = .failure
         vm.deleteReservation(programId: "mockTimetable")
