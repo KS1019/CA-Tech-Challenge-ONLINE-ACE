@@ -69,6 +69,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             URLQueryItem(name: "user_id", value: userId),
             URLQueryItem(name: "program_id", value: programId)
         ]
+        // swiftlint:disable force_unwrapping
         var request = URLRequest(url: TimeTableRepository.deleteURL.queryItemsAdded(queryItems)!)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

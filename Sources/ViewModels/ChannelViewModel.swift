@@ -15,7 +15,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
     @Published var labels: [String] = []
     var timetables: [TimeTable] = []
     @Published var channels: [Channel] = []
-    @Published var selectedIndex: Int = 0
+    @Published var selectedIndex: Int = 2
     @Published var selectedGenreFilters: [String: Bool] = [:]
     @Published var filteredTimetables: [TimeTable] = []
 
@@ -48,12 +48,13 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func onAppear() {
         getChannelData()
-        getTimeTableData(firstAt: 1_626_238_800, lastAt: 1_626_238_800 + 86_400, channelId: nil, labels: nil)
+        getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
+                         lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
+                         channelId: nil, labels: nil)
         reloadData()
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
-        let selectTimestamp = Int((Calendar.aWeek?[selectedIndex].timeIntervalSince1970)!)
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
             .sink { completion in
                 switch completion {

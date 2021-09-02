@@ -10,6 +10,7 @@ import Combine
 import XCTest
 
 class ChannelViewModelTests: XCTestCase {
+    // swiftlint:disable implicitly_unwrapped_optional
     var vm: ChannelViewModel!
     var repository: MockTimeTableRepository!
 

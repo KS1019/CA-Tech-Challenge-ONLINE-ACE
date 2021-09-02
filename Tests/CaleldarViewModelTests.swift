@@ -8,6 +8,7 @@ import Combine
 import XCTest
 
 class CalendarViewModelTests: XCTestCase {
+    // swiftlint:disable implicitly_unwrapped_optional
     var repository: MockTimeTableRepository!
     var UUIDRepo: MockUUIDRepository!
     var vm: CalendarViewModel!

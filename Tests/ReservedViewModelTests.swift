@@ -8,6 +8,7 @@
 import XCTest
 
 class ReservedViewModelTest: XCTestCase {
+    // swiftlint:disable implicitly_unwrapped_optional
     var vm: ReservedViewModel!
     var repository: MockTimeTableRepository!
 
