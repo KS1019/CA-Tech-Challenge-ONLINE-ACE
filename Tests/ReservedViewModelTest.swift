@@ -9,7 +9,7 @@ import XCTest
 
 class ReservedViewModelTest: XCTestCase {
 
-    func test_updateRepositoriesWhenOnAppear() {
+    func test_onAppear時timetableが更新されているか() {
         let vm = ReservedViewModel(repository: MockTimeTableRepository())
         vm.onAppear()
         XCTAssertFalse(vm.timetables.isEmpty)
@@ -17,7 +17,7 @@ class ReservedViewModelTest: XCTestCase {
         XCTAssertFalse(vm.selectedGenreFilters.isEmpty)
     }
 
-    func test_updateRespsitoryesWhenDeleteReservation() {
+    func test_予約を取り消した時にtimetableが更新されているか() {
         let vm = ReservedViewModel(repository: MockTimeTableRepository())
 
         vm.onAppear()
@@ -28,7 +28,7 @@ class ReservedViewModelTest: XCTestCase {
 
     }
 
-    func test_failureDeleteReservationWhenAlertIsOn() {
+    func test_予約取り消しの失敗時にisAlertが変更されているか() {
 
         let failureVm = ReservedViewModel(repository: MockTimeTableRepository(mode: .failure))
         failureVm.getReservaions()
