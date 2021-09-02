@@ -21,15 +21,16 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
-    init(repository: TimeTableRepositoryProtocol) {
+
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
         self.repository = repository
         do {
-            userId = try UUIDRepository().fetchUUID()
+            userId = try UUIDRepo.fetchUUID()
         } catch {
             let uuid = UUID()
             userId = uuid.uuidString
             // swiftlint:disable force_try
-            try! UUIDRepository().register(uuid: uuid)
+            try! UUIDRepo.register(uuid: uuid)
         }
     }
 

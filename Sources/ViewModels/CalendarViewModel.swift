@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 class CalendarViewModel: TimeTableViewModelProtocol {
-    var userId: String
+    let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
@@ -22,7 +22,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Calendar.aWeek ?? [Date()]
 
-    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
         self.repository = repository
         do {
             userId = try UUIDRepo.fetchUUID()
