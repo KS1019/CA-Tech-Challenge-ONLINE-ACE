@@ -9,16 +9,13 @@ mint:
 	cd ..
 	rm -rf Mint/
 
-mint-install-ci:
-	git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
-	ls
-	cd Mint/
-	ls
-	swift build --disable-sandbox -c release --arch x86_64
-	mkdir -p /usr/local/bin
-	cp -f .build/apple/Products/Release/mint /usr/local/bin/mint
-	cd ..
-	rm -rf Mint/
+# mint-install-ci:
+# 	cd Mint/
+# 	swift build --disable-sandbox -c release --arch x86_64
+# 	mkdir -p /usr/local/bin
+# 	cp -f .build/apple/Products/Release/mint /usr/local/bin/mint
+# 	cd ..
+# 	rm -rf Mint/
 
 xcodeproj:
 	mint run xcodegen
