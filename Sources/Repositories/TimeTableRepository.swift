@@ -40,8 +40,8 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
                 return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
-//                別の書き方もできる
-//                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
+                //                別の書き方もできる
+                //                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
             }
 
             request.httpBody = httpBody
