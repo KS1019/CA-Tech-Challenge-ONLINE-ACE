@@ -17,32 +17,34 @@ jobs:
       MINT_LINK_PATH: mint/bin
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout yonaskolb/Mint
-        uses: actions/checkout@v2
-        with:
-          repository: yonaskolb/Mint
-          path: Mint
-      - name: Build Mint
-        run: sudo make
-        working-directory: ./Mint
-      - name: Mint Version
-        id: mint-ver
-        run: |
-            echo "::set-output name=ver::$(mint --version)"
-      - name: Cache Mint bin
-        uses: actions/cache@v2
-        with:
-          path: /usr/local/bin/mint
-          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}-${{ hashFiles('**/Mintfile') }}
-          restore-keys: |
-            ${{ runner.os }}-mint-bin-
-      - name: Cache Mint packages
-        uses: actions/cache@v2
-        with:
-          path: mint
-          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
-          restore-keys: |
-            ${{ runner.os }}-mint-
+      # - name: Checkout yonaskolb/Mint
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: yonaskolb/Mint
+      #     path: Mint
+      # - name: Build Mint
+      #   run: sudo make
+      #   working-directory: ./Mint
+      # - name: Mint Version
+      #   id: mint-ver
+      #   run: |
+      #       echo "::set-output name=ver::$(mint --version)"
+      # - name: Cache Mint bin
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: /usr/local/bin/mint
+      #     key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}-${{ hashFiles('**/Mintfile') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-mint-bin-
+      # - name: Cache Mint packages
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: mint
+      #     key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-mint-
+
+      - run: brew install xcodegen
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
