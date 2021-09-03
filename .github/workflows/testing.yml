@@ -17,7 +17,7 @@ jobs:
       - run: echo $PATH 
       # 一旦Homebrewでインストール
       - name: Install Mint
-        run: brew install mint  
+        run: make mint-install-ci  
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
