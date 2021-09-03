@@ -4,6 +4,9 @@ options:
   deploymentTarget:
     iOS: 14.0
   generateEmptyDirectories: true
+  settings:
+    base:
+      CODE_SIGN_STYLE: Automatic
 packages:
   OHHTTPStubs:
     url: https://github.com/AliSoftware/OHHTTPStubs.git
