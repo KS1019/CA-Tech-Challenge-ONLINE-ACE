@@ -10,4 +10,7 @@ mint:
 	rm -rf Mint/
 
 xcodeproj:
+	xcodegen
+
+test:
 	mint run xcodegen
