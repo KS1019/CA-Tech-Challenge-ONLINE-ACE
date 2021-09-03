@@ -22,9 +22,9 @@ jobs:
       - name: Build Mint
         run: sudo make
         working-directory: ./Mint
-      # 一旦Homebrewでインストール
-      # - name: Install Mint
-      #   run: 
+      - name: Remove Mint/
+        run: rm -rf Mint/
+        working-directory: ./2108-ace-c-ios
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
