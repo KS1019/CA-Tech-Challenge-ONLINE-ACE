@@ -11,7 +11,8 @@ mint:
 
 mint-install-ci:
 	git clone https://github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
-	cd Mint
+	cd Mint/
+	cat Package.swift
 	swift build --disable-sandbox -c release --arch x86_64
 	mkdir -p /usr/local/bin
 	cp -f .build/apple/Products/Release/mint /usr/local/bin/mint
