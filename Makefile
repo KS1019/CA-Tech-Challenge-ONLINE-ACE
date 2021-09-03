@@ -10,6 +10,7 @@ mint:
 	rm -rf Mint/
 
 mint-install-ci:
+	git clone https://github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
 	cd Mint
 	swift build --disable-sandbox -c release --arch x86_64
 	mkdir -p /usr/local/bin
