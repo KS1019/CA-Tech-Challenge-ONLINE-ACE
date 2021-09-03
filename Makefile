@@ -10,7 +10,7 @@ mint:
 	rm -rf Mint/
 
 mint-install-ci:
-	git clone https://github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
+	git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
 	ls
 	cd Mint/
 	ls
