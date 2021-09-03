@@ -9,7 +9,7 @@ struct RootView: View {
                 CalendarView()
             }
             .tabItem {
-                Label(Tabs.calendar.description,
+                Label(Tabs.calendar.rawValue,
                       systemImage: Tabs.calendar.systemimage)
             }
             .tag(Tabs.calendar)
@@ -18,7 +18,7 @@ struct RootView: View {
                 ChannelView()
             }
             .tabItem {
-                Label(Tabs.channel.description,
+                Label(Tabs.channel.rawValue,
                       systemImage: Tabs.channel.systemimage)
             }
             .tag(Tabs.channel)
@@ -27,7 +27,7 @@ struct RootView: View {
                 ReservedView()
             }
             .tabItem {
-                Label(Tabs.reserved.description,
+                Label(Tabs.reserved.rawValue,
                       systemImage: Tabs.reserved.systemimage)
             }
             .tag(Tabs.reserved)
