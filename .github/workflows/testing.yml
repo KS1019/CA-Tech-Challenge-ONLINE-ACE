@@ -19,7 +19,15 @@ jobs:
       - name: Install Mint
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make mint-install-ci  
+        run: |
+              git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
+	            cd Mint/
+	            ls
+	            swift build --disable-sandbox -c release --arch x86_64
+	            mkdir -p /usr/local/bin
+	            cp -f .build/apple/Products/Release/mint /usr/local/bin/mint
+	            cd ..
+	            rm -rf Mint/
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
