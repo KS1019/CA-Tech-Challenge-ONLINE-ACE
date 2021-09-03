@@ -38,9 +38,10 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            // httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
                 return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
+//                別の書き方もできる
+//                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
             }
 
             request.httpBody = httpBody
