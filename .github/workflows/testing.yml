@@ -12,9 +12,12 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout tools repo
+      - name: Checkout yonaskolb/Mint
         uses: actions/checkout@v2
         with:
           repository: yonaskolb/Mint
@@ -22,12 +25,35 @@ jobs:
       - name: Build Mint
         run: sudo make
         working-directory: ./Mint
-      - name: Remove Mint/
-        run: rm -rf Mint/
-        working-directory: ./2108-ace-c-ios
+      - name: Mint Version
+        id: mint-ver
+        run: |
+            echo "::set-output name=ver::$(mint --version)"
+      - name: Cache Mint bin
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/bin/mint
+          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-bin-
+      - name: Cache Mint packages
+        uses: actions/cache@v2
+        with:
+          path: mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
         run: |
-              set -o pipefail
-              xcodebuild build-for-testing test-without-building -project ace-c-ios.xcodeproj -scheme Tests -configuration Debug -sdk iphonesimulator -destination "name=iPhone 12" ENABLE_TESTABILITY=YES | xcpretty -c
+            set -o pipefail &&
+            xcodebuild 
+            build-for-testing 
+            test-without-building 
+            -project ace-c-ios.xcodeproj 
+            -scheme Tests -configuration Debug 
+            -sdk iphonesimulator 
+            -destination "name=iPhone 12" ENABLE_TESTABILITY=YES 
+            -skip-testing:{UITests}
+            | xcpretty --report html
