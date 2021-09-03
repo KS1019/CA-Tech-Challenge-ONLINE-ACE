@@ -17,6 +17,8 @@ jobs:
       - run: echo $PATH 
       # 一旦Homebrewでインストール
       - name: Install Mint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make mint-install-ci  
       - name: Generate .xcodeproj
         run: make xcodeproj
