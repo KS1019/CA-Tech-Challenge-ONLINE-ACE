@@ -29,15 +29,15 @@ targets:
     sources:
       - Sources/
       - Sample/
-    # postBuildScripts:
-    #   - script: |
-    #             if which mint >/dev/null; then
-    #               xcrun --sdk macosx mint run swiftlint autocorrect --format
-    #               xcrun --sdk macosx mint run swiftlint
-    #             else
-    #               echo "error: Mint not installed, run `make mint`"
-    #               exit 1
-    #             fi
+    postBuildScripts:
+      - script: |
+                if which mint >/dev/null; then
+                  xcrun --sdk macosx mint run swiftlint autocorrect --format
+                  xcrun --sdk macosx mint run swiftlint
+                else
+                  echo "error: Mint not installed, run `make mint`"
+                  exit 1
+                fi
 
     dependencies:
         - package: OHHTTPStubs
