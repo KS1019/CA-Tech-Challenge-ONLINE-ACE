@@ -36,7 +36,7 @@ targets:
                   xcrun --sdk macosx mint run swiftlint autocorrect --format
                   xcrun --sdk macosx mint run swiftlint
                 else
-                  echo "error: Mint not installed, run `make mint`"
+                  echo "error: Mint not installed, run make mint"
                   exit 1
                 fi
 
