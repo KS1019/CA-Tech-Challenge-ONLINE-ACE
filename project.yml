@@ -31,7 +31,6 @@ targets:
       - Sample/
     postBuildScripts:
       - script: |
-                unset SDKROOT
                 if which mint >/dev/null; then
                   mint run swiftlint autocorrect --format
                   mint run swiftlint
