@@ -39,7 +39,8 @@ opt_in_rules:
 # 追加したOSSライブラリは対象に含めない
 excluded:
 - Pods/
-- .build
+- .build/
+- Packages/
 
 # 1行あたりの文字数制限変更
 line_length: 160
