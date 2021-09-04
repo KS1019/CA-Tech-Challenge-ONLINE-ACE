@@ -18,17 +18,18 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_12.4.0.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout yonaskolb/Mint
-        uses: actions/checkout@v2
+      - name: Mint Version
+        id: mint-ver
+        run: |
+            echo "::set-output name=ver::$(mint --version)"
+      - name: Cache Mint bin
+        id: cache-mint-bin
+        uses: actions/cache@v2
         with:
-          repository: yonaskolb/Mint
-          path: Mint
-      - name: Build Mint
-        run: sudo make
-        working-directory: ./Mint
-      - name: Remove Mint/
-        run: sudo rm -rf Mint/
-      - run: mint --version
+          path: /usr/local/bin/mint
+          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-bin-
       - name: Cache Mint packages
         uses: actions/cache@v2
         with:
@@ -36,6 +37,19 @@ jobs:
           key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
           restore-keys: |
             ${{ runner.os }}-mint-
+      - name: Checkout yonaskolb/Mint
+        uses: actions/checkout@v2
+        if: steps.cache-mint-bin.outputs.cache-hit != 'true'
+        with:
+          repository: yonaskolb/Mint
+          path: Mint
+      - name: Build Mint
+        if: steps.cache-mint-bin.outputs.cache-hit != 'true'
+        run: sudo make
+        working-directory: ./Mint
+      - name: Remove Mint/
+        run: sudo rm -rf Mint/
+      - run: mint --version
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test

@@ -39,8 +39,7 @@ opt_in_rules:
 # 追加したOSSライブラリは対象に含めない
 excluded:
 - Pods/
-- .build/
-- Packages/
+- .build
 - mint/ # CI用
 
 # 1行あたりの文字数制限変更
