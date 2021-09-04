@@ -50,5 +50,5 @@ jobs:
         run: make xcodeproj
       - name: application test
         run: |
-              set -o pipefail
-              xcodebuild build-for-testing test-without-building -project ace-c-ios.xcodeproj -scheme Tests -configuration Debug -sdk iphonesimulator -destination "name=iPhone 12" ENABLE_TESTABILITY=YES | xcpretty -c
+              set -o pipefail &&
+              xcodebuild -project ace-c-ios.xcodeproj -scheme Tests -configuration Debug -sdk iphonesimulator -destination "name=iPhone 12" ENABLE_TESTABILITY=YES clean test | xcpretty -c
