@@ -32,8 +32,9 @@ targets:
     postBuildScripts:
       - script: |
                 if which mint >/dev/null; then
-                  mint run swiftlint autocorrect --format
-                  mint run swiftlint
+                  xcrun --sdk macosx --show-sdk-path
+                  xcrun --sdk macosx mint run swiftlint autocorrect --format
+                  xcrun --sdk macosx mint run swiftlint
                 else
                   echo "error: Mint not installed, run `make mint`"
                   exit 1
