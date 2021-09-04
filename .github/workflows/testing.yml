@@ -18,26 +18,13 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_12.4.0.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
-      - name: Mint Version
-        id: mint-ver
-        run: |
-            echo "::set-output name=ver::$(mint --version)"
-      - name: Cache Mint bin
-        uses: actions/cache@v2
-        with:
-          path: /usr/local/bin/mint
-          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}
-          restore-keys: |
-            ${{ runner.os }}-mint-bin-
       - name: Checkout yonaskolb/Mint
-        if: steps.cache-mint-bin.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: yonaskolb/Mint
           path: Mint
       - name: Build Mint
-        if: steps.cache-mint-bin.outputs.cache-hit != 'true'
-        run: sudo make
+        run: swift run mint install yonaskolb/mint
         working-directory: ./Mint
       - run: mint --version
       - name: Cache Mint packages
