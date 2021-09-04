@@ -23,6 +23,7 @@ jobs:
           repository: yonaskolb/Mint
           path: Mint
       - name: Build Mint
+        if: steps.cache-mint-bin.outputs.cache-hit != 'true'
         run: sudo make
         working-directory: ./Mint
       - name: Mint Version
@@ -31,6 +32,7 @@ jobs:
             echo "::set-output name=ver::$(mint --version)"
       - run: mint --version
       - name: Cache Mint bin
+        id: cache-mint-bin
         uses: actions/cache@v2
         with:
           path: /usr/local/bin/mint
