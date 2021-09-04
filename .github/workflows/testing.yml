@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /usr/local/bin/mint
-          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}-${{ hashFiles('**/Mintfile') }}
+          key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}
           restore-keys: |
             ${{ runner.os }}-mint-bin-
       - name: Cache Mint packages
@@ -38,8 +38,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-mint-
       - name: Checkout yonaskolb/Mint
-        uses: actions/checkout@v2
         if: steps.cache-mint-bin.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
         with:
           repository: yonaskolb/Mint
           path: Mint
