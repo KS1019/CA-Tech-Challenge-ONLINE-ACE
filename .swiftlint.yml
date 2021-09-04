@@ -41,6 +41,7 @@ excluded:
 - Pods/
 - .build/
 - Packages/
+- mint/ # CI用
 
 # 1行あたりの文字数制限変更
 line_length: 160
