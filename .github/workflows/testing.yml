@@ -23,20 +23,12 @@ jobs:
         run: |
             echo "::set-output name=ver::$(mint --version)"
       - name: Cache Mint bin
-        id: cache-mint-bin
         uses: actions/cache@v2
         with:
           path: /usr/local/bin/mint
           key: ${{ runner.os }}-mint-bin-${{ steps.mint-ver.outputs.ver }}
           restore-keys: |
             ${{ runner.os }}-mint-bin-
-      - name: Cache Mint packages
-        uses: actions/cache@v2
-        with:
-          path: mint
-          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
-          restore-keys: |
-            ${{ runner.os }}-mint-
       - name: Checkout yonaskolb/Mint
         if: steps.cache-mint-bin.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
@@ -47,9 +39,14 @@ jobs:
         if: steps.cache-mint-bin.outputs.cache-hit != 'true'
         run: sudo make
         working-directory: ./Mint
-      - name: Remove Mint/
-        run: sudo rm -rf Mint/
       - run: mint --version
+      - name: Cache Mint packages
+        uses: actions/cache@v2
+        with:
+          path: mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
       - name: Generate .xcodeproj
         run: make xcodeproj
       - name: application test
