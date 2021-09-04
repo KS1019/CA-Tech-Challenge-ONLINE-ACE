@@ -16,15 +16,17 @@ jobs:
       MINT_PATH: mint/lib
       MINT_LINK_PATH: mint/bin
       DEVELOPER_DIR: /Applications/Xcode_12.4.0.app/Contents/Developer
+      MINT_VER: 0.16.0
     steps:
       - uses: actions/checkout@v2
       - name: Checkout yonaskolb/Mint
         uses: actions/checkout@v2
         with:
           repository: yonaskolb/Mint
+          ref: ${{ env.MINT_VER }}
           path: Mint
       - name: Build Mint
-        run: swift run mint install yonaskolb/mint
+        run: make
         working-directory: ./Mint
       - run: mint --version
       - name: Cache Mint packages
