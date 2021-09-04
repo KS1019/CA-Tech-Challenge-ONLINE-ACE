@@ -26,6 +26,8 @@ jobs:
       - name: Build Mint
         run: sudo make
         working-directory: ./Mint
+      - name: Remove Mint/
+        run: sudo rm -rf Mint/
       - run: mint --version
       - name: Cache Mint packages
         uses: actions/cache@v2
