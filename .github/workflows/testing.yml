@@ -29,6 +29,7 @@ jobs:
         id: mint-ver
         run: |
             echo "::set-output name=ver::$(mint --version)"
+      - run: mint --version
       - name: Cache Mint bin
         uses: actions/cache@v2
         with:
@@ -45,7 +46,6 @@ jobs:
             ${{ runner.os }}-mint-
       - name: Generate .xcodeproj
         run: make xcodeproj
-        working-directory: ./2108-ace-c-ios
       - name: application test
         run: |
               set -o pipefail
