@@ -31,9 +31,10 @@ targets:
       - Sample/
     postBuildScripts:
       - script: |
+                unset SDKROOT
                 if which mint >/dev/null; then
-                  xcrun --sdk macosx mint run swiftlint autocorrect --format
-                  xcrun --sdk macosx mint run swiftlint
+                  mint run swiftlint autocorrect --format
+                  mint run swiftlint
                 else
                   echo "error: Mint not installed, run `make mint`"
                   exit 1
