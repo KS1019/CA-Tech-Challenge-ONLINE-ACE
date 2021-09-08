@@ -10,7 +10,9 @@ import XCTest
 
 class JSONConvertTest: XCTestCase {
     func test_JSONが正しくTimetableに変換されているか() throws {
-        let valueFromJSON = try XCTUnwrap(JSONDecoder().decode(TimeTable.self, from: JSONConvertTest.json))
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let valueFromJSON = try XCTUnwrap(decoder.decode(TimeTable.self, from: JSONConvertTest.json))
 
         let expectedValue = TimeTable(
             id: "EQYyywjosSkxUX",

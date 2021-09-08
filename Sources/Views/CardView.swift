@@ -40,7 +40,7 @@ struct CardView<T: TimeTableProtocol>: View {
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(timeTable: MockTimeTable()) { _ in }
+        CardView(timeTable: TimeTable.mock()) { _ in }
             .previewLayout(.sizeThatFits)
     }
 }

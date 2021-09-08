@@ -7,20 +7,12 @@
 
 import Foundation
 
-enum Tabs: CustomStringConvertible {
+enum Tabs: String {
 
-    case calendar, channel, reserved
+    case calendar = "Calendar"
+    case channel = "Channel"
+    case reserved = "Reserved"
 
-    var description: String {
-        switch self {
-        case .calendar:
-            return "Calendar"
-        case .channel:
-            return "Channel"
-        case .reserved:
-            return "Reserved"
-        }
-    }
     var systemimage: String {
         switch self {
         case .calendar:

@@ -34,18 +34,6 @@ struct TimeTable: TimeTableProtocol {
     let labels: [String]
     let content: String
 
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case highlight
-        case detailHighlight = "detail_highlight"
-        case startAt = "start_at"
-        case endAt = "end_at"
-        case channelId = "channel_id"
-        case labels
-        case content
-    }
-
 }
 
 struct DisplayProgram: Decodable, Equatable {
@@ -56,4 +44,22 @@ struct DisplayProgram: Decodable, Equatable {
     }
     let credit: Credit
     let content: String
+}
+
+// FBからの修正
+
+extension TimeTable {
+    static func mock() -> TimeTable {
+        return TimeTable(
+            id: UUID().uuidString,
+            title: "ENLIGHT #1",
+            highlight: "Test Highlight",
+            detailHighlight: "Test detailHighlight",
+            startAt: 1_627_232_880,
+            endAt: 1_627_237_860,
+            channelId: "fishing",
+            labels: ["live", "now"],
+            content: "「いつも通り、目一杯釣るだけ! 簡単にはいかないと思いますが、苦しむ僕を見てください!」と話す 日本最高レベルの岸釣りアングラー川村光大郎の新番組『ENLIGHT』初回は霞ケ浦の流入河川で40UPを狙う!"
+        )
+    }
 }

@@ -17,15 +17,19 @@ protocol TimeTableRepositoryProtocol {
 
 class TimeTableRepository: TimeTableRepositoryProtocol {
 
+    let decoder = JSONDecoder()
+    init() {
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+    }
+
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         var url = TimeTableRepository.getReservedURL
         url.appendPathComponent(userId)
-
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
             .tryMap {
-                try JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+                try self.decoder.decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -38,9 +42,10 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            // httpBodyを作る際に、ここのtry catchが必須なためAnyPublisher<Void, Error>を返すことができない。
             guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
                 return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
+                //                別の書き方もできる
+                //                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
             }
 
             request.httpBody = httpBody
@@ -102,11 +107,12 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         }
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getTimetableURL.queryItemsAdded(queryItems)!
+
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(TimeTableResult.self, from: $0.data).programs
+                self.decoder.decode(TimeTableResult.self, from: $0.data).programs
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -116,11 +122,12 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getChannelURL
+
         return URLSession
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                JSONDecoder().decode(ChannelListResult.self, from: $0.data).channels
+                self.decoder.decode(ChannelListResult.self, from: $0.data).channels
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
