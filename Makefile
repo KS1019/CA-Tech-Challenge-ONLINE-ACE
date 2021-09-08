@@ -4,9 +4,7 @@ bootstrap: mint
 
 mint:
 	git clone https://github.com/yonaskolb/Mint.git -b $(MINT_VERSION)
-	cd Mint
-	make
-	cd ..
+	cd Mint && make
 	rm -rf Mint/
 
 xcodeproj:
