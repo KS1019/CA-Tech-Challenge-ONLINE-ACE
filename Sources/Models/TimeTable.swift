@@ -34,18 +34,6 @@ struct TimeTable: TimeTableProtocol {
     let labels: [String]
     let content: String
 
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case highlight
-        case detailHighlight = "detail_highlight"
-        case startAt = "start_at"
-        case endAt = "end_at"
-        case channelId = "channel_id"
-        case labels
-        case content
-    }
-
 }
 
 struct DisplayProgram: Decodable, Equatable {
