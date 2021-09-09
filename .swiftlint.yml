@@ -40,6 +40,9 @@ opt_in_rules:
 excluded:
 - Pods/
 - .build
+# CI用
+- mint/
+- Mint/
 
 # 1行あたりの文字数制限変更
 line_length: 160

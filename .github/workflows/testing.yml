@@ -12,12 +12,32 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
+      DEVELOPER_DIR: /Applications/Xcode_12.4.0.app/Contents/Developer
+      MINT_VER: 0.16.0
     steps:
       - uses: actions/checkout@v2
-      - name: Install xcodegen
-        run: brew install xcodegen
+      - name: Checkout yonaskolb/Mint
+        uses: actions/checkout@v2
+        with:
+          repository: yonaskolb/Mint
+          ref: ${{ env.MINT_VER }}
+          path: Mint
+      - name: Build Mint
+        run: make
+        working-directory: ./Mint
+      - run: mint --version
+      - name: Cache Mint packages
+        uses: actions/cache@v2
+        with:
+          path: mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
       - name: Generate .xcodeproj
-        run: xcodegen
+        run: make xcodeproj
       - name: application test
         run: |
               set -o pipefail
