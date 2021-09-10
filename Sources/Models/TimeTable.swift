@@ -18,17 +18,6 @@ protocol TimeTableProtocol: Identifiable, Decodable, Equatable {
     var endAt: Int { get }
 }
 
-struct ListResult<T: Decodable>: Decodable {
-    var programs: [T]?
-    var channels: [T]?
-    // Channel は　channels
-    // TimeTableは programsとなっていて、itemsの名前が異なるためまとめることができない。
-}
-
-struct TimeTableResult: Decodable {
-    let programs: [TimeTable]
-}
-
 struct TimeTable: TimeTableProtocol {
 
     let id: String
