@@ -9,7 +9,7 @@ import Foundation
 
 protocol TimeTableRepositoryProtocol {
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
-    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error>
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error>
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error>
@@ -35,14 +35,17 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
         let future = Future<Void, Error> { completion in
-            let params: [String: Any] = ["user_id": userId, "program_id": programId]
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            encoder.outputFormatting = .prettyPrinted
+
             var request = URLRequest(url: TimeTableRepository.postURL)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            guard let httpBody = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+            guard let httpBody = try? encoder.encode(reservationData) else {
                 return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
                 //                別の書き方もできる
                 //                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
