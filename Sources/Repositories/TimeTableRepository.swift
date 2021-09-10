@@ -130,7 +130,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                self.decoder.decode(ChannelListResult.self, from: $0.data).channels
+                self.decoder.decode(ListResult<Channel>.self, from: $0.data).channels ?? []
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
