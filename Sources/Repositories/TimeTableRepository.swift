@@ -29,7 +29,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap {
-                try self.decoder.decode(TimeTableResult.self, from: $0.data).programs
+                try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -112,7 +112,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .shared
             .dataTaskPublisher(for: url)
             .tryMap { try
-                self.decoder.decode(TimeTableResult.self, from: $0.data).programs
+                self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
