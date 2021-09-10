@@ -42,6 +42,12 @@ struct DisplayProgram: Decodable, Equatable {
     let content: String
 }
 
+//予約情報モデル
+struct ReservationData: Encodable {
+    let userId: String
+    let programId: String
+}
+
 // FBからの修正
 
 extension TimeTable {
