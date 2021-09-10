@@ -115,7 +115,7 @@ class TestAPIViewModel: ObservableObject {
     }
     func postReservationData(userId: String, programId: String) {
 
-        repository.postReservationData(userId: userId, programId: programId)
+        repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
             .sink { completion in
                 switch completion {
                 case .finished:
