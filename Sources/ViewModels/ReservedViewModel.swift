@@ -57,6 +57,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         }
         self.repository
             .fetchReservationData(userId: uuidStr.lowercased())
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -85,6 +86,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         }
         self.repository
             .deleteReservationData(userId: uuidStr, programId: programId)
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:

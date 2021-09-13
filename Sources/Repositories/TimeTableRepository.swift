@@ -31,7 +31,6 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .tryMap {
                 try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
             }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 
@@ -91,7 +90,6 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
                 return
             }
             .mapError { error in error }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 
@@ -117,7 +115,6 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .tryMap { try
                 self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
             }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 
@@ -132,7 +129,6 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .tryMap { try
                 self.decoder.decode(ListResult<Channel>.self, from: $0.data).channels ?? []
             }
-            .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }

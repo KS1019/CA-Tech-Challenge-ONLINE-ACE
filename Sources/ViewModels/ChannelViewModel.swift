@@ -56,6 +56,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -77,6 +78,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func getChannelData() {
         repository.fetchChannelData()
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -96,6 +98,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:

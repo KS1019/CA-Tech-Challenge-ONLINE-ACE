@@ -61,6 +61,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -81,6 +82,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
+            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case .finished:
