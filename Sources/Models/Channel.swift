@@ -7,11 +7,7 @@
 
 import Foundation
 
-class ChannelListResult: ObservableObject, Decodable {
-    let channels: [Channel]
-}
-
-class Channel: ObservableObject, Identifiable, Decodable, Equatable {
+struct Channel: Identifiable, Decodable, Equatable {
     static func == (lhs: Channel, rhs: Channel) -> Bool {
         return lhs.id == rhs.id && lhs.title == rhs.title
     }

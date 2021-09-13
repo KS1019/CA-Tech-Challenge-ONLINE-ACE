@@ -21,6 +21,21 @@ extension MockTimeTableRepository {
 }
 
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
+        // postがよばれた回数
+        postFuncCallCount += 1
+        let future = Future<Void, Error> { completion in
+            switch self.mode {
+            case .success:
+                completion(.success(print("必ず成功します")))
+            case .failure:
+                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+            }
+        }
+        return future.eraseToAnyPublisher()
+
+    }
+
     var mode: Mode
     var postFuncCallCount = 0
     var deleteFuncCallCount = 0
@@ -84,21 +99,6 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
             }
         }
         return future.eraseToAnyPublisher()
-    }
-
-    func postReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error> {
-        // postがよばれた回数
-        postFuncCallCount += 1
-        let future = Future<Void, Error> { completion in
-            switch self.mode {
-            case .success:
-                completion(.success(print("必ず成功します")))
-            case .failure:
-                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
-            }
-        }
-        return future.eraseToAnyPublisher()
-
     }
 
     func fetchChannelData() -> AnyPublisher<[Channel], Error> {

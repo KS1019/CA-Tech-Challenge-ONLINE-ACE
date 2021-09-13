@@ -18,10 +18,6 @@ protocol TimeTableProtocol: Identifiable, Decodable, Equatable {
     var endAt: Int { get }
 }
 
-struct TimeTableResult: Decodable {
-    let programs: [TimeTable]
-}
-
 struct TimeTable: TimeTableProtocol {
 
     let id: String
@@ -44,6 +40,12 @@ struct DisplayProgram: Decodable, Equatable {
     }
     let credit: Credit
     let content: String
+}
+
+// 予約情報モデル
+struct ReservationData: Encodable {
+    let userId: String
+    let programId: String
 }
 
 // FBからの修正

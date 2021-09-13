@@ -80,7 +80,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     }
 
     func postReservedData(_ programId: String) {
-        repository.postReservationData(userId: userId, programId: programId)
+        repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
             .sink { completion in
                 switch completion {
                 case .finished:
