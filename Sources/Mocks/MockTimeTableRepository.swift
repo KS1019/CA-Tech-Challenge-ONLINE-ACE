@@ -96,9 +96,9 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         let future = Future<Void, Error> { completion in
             switch self.mode {
             case .success:
-                return completion(.success(print("必ず成功します")))
+                completion(.success(print("必ず成功します")))
             case .failure:
-                return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
             }
         }
         return future.eraseToAnyPublisher()
@@ -108,9 +108,9 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         let future = Future<[Channel], Error> { completion in
             switch self.mode {
             case .success:
-                return completion(.success([Channel(id: "test-id", title: "test-title")]))
+                completion(.success([Channel(id: "test-id", title: "test-title")]))
             case .failure:
-                return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
             }
         }
 
