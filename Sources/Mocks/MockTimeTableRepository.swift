@@ -21,24 +21,11 @@ extension MockTimeTableRepository {
 }
 
 class MockTimeTableRepository: TimeTableRepositoryProtocol {
-    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
-        // postがよばれた回数
-        postFuncCallCount += 1
-        let future = Future<Void, Error> { completion in
-            switch self.mode {
-            case .success:
-                completion(.success(print("必ず成功します")))
-            case .failure:
-                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
-            }
-        }
-        return future.eraseToAnyPublisher()
-
-    }
-
     var mode: Mode
     var postFuncCallCount = 0
     var deleteFuncCallCount = 0
+    var fetchFuncCallCount = 0
+    var fetchReservationFuncCallCount = 0
 
     init(mode: Mode = .success) {
         self.mode = mode
@@ -60,8 +47,24 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         }
 
     }
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
+        // postがよばれた回数
+        postFuncCallCount += 1
+        let future = Future<Void, Error> { completion in
+            switch self.mode {
+            case .success:
+                completion(.success(print("必ず成功します")))
+            case .failure:
+                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+            }
+        }
+        return future.eraseToAnyPublisher()
+
+    }
+
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         // テスト用に成功するものだけを返す
+        fetchReservationFuncCallCount += 1
         let future = Future<[TimeTable], Error> { completion in
             switch self.mode {
             case .success:
@@ -93,9 +96,9 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         let future = Future<Void, Error> { completion in
             switch self.mode {
             case .success:
-                completion(.success(print("必ず成功します")))
+                return completion(.success(print("必ず成功します")))
             case .failure:
-                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+                return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
             }
         }
         return future.eraseToAnyPublisher()
@@ -105,9 +108,9 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         let future = Future<[Channel], Error> { completion in
             switch self.mode {
             case .success:
-                completion(.success([Channel(id: "test-id", title: "test-title")]))
+                return completion(.success([Channel(id: "test-id", title: "test-title")]))
             case .failure:
-                completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+                return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
             }
         }
 
@@ -115,6 +118,8 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error> {
+
+        fetchFuncCallCount += 1
 
         let future = Future<[TimeTable], Error> { completion in
             switch self.mode {
