@@ -11,14 +11,15 @@ import XCTest
 
 class ChannelViewModelTests: XCTestCase {
     // swiftlint:disable implicitly_unwrapped_optional
-    var vm: ChannelViewModel!
+    var vm: ChannelViewModel<ImmediateScheduler>!
     var repository: MockTimeTableRepository!
-
+    var uuidRepository: MockUUIDRepository!
     // repository
     override func setUp() {
         super.setUp()
         repository = MockTimeTableRepository()
-        vm = ChannelViewModel(repository: repository)
+        uuidRepository = MockUUIDRepository()
+        vm = ChannelViewModel(repository: repository, UUIDRepo: uuidRepository, scheduler: ImmediateScheduler.shared)
     }
 
     override func tearDown() {
