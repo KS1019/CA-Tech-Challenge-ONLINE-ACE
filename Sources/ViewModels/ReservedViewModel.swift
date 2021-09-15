@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class ReservedViewModel: TimeTableViewModelProtocol {
+class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
     let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
@@ -17,8 +17,8 @@ class ReservedViewModel: TimeTableViewModelProtocol {
     @Published var isLoading: Bool = true
     @Published var isAlert: Bool = false
     @Published var selectedGenreFilters: [String: Bool] = [:]
-
-    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
+    private let scheduler: Scheduler
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
         self.repository = repository
         do {
             userId = try UUIDRepo.fetchUUID()
@@ -28,6 +28,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
             // swiftlint:disable force_try
             try! UUIDRepo.register(uuid: uuid)
         }
+        self.scheduler = scheduler
     }
 
     func onAppear() {
@@ -57,7 +58,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         }
         self.repository
             .fetchReservationData(userId: uuidStr.lowercased())
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -86,7 +87,7 @@ class ReservedViewModel: TimeTableViewModelProtocol {
         }
         self.repository
             .deleteReservationData(userId: uuidStr, programId: programId)
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -103,5 +104,11 @@ class ReservedViewModel: TimeTableViewModelProtocol {
             }
             .store(in: &self.subscriptions)
 
+    }
+}
+
+extension ReservedViewModel where Scheduler == DispatchQueue {
+    convenience init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
+        self.init(repository: repository, UUIDRepo: UUIDRepo, scheduler: DispatchQueue.main)
     }
 }
