@@ -108,10 +108,8 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         }
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getTimetableURL.queryItemsAdded(queryItems)!
-
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
+        let request = URLRequest(url: url)
+        return apiProvider.apiResponse(for: request)
             .tryMap { try
                 self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
             }
@@ -122,7 +120,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getChannelURL
-        var request = URLRequest(url: url)
+        let request = URLRequest(url: url)
         return apiProvider.apiResponse(for: request)
             .tryMap { try
                 self.decoder.decode(ListResult<Channel>.self, from: $0.data).channels ?? []
