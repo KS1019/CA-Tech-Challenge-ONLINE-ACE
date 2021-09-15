@@ -11,13 +11,13 @@ class CalendarViewModelTests: XCTestCase {
     // swiftlint:disable implicitly_unwrapped_optional
     var repository: MockTimeTableRepository!
     var UUIDRepo: MockUUIDRepository!
-    var vm: CalendarViewModel!
+    var vm: CalendarViewModel<ImmediateScheduler>!
 
     override func setUp() {
         super.setUp()
         repository = MockTimeTableRepository()
         UUIDRepo = MockUUIDRepository()
-        vm = CalendarViewModel(repository: repository, UUIDRepo: UUIDRepo)
+        vm = CalendarViewModel(repository: repository, UUIDRepo: UUIDRepo, scheduler: ImmediateScheduler.shared)
     }
     override func tearDown() {
         super.tearDown()
