@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class ChannelViewModel: TimeTableViewModelProtocol {
+class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
     var userId: String
     private(set) var repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
@@ -21,8 +21,9 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
+    private let scheduler: Scheduler
 
-    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
         self.repository = repository
         do {
             userId = try UUIDRepo.fetchUUID()
@@ -32,6 +33,9 @@ class ChannelViewModel: TimeTableViewModelProtocol {
             // swiftlint:disable force_try
             try! UUIDRepo.register(uuid: uuid)
         }
+
+        self.scheduler = scheduler
+
     }
 
     func reloadData() {
@@ -56,7 +60,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -78,7 +82,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func getChannelData() {
         repository.fetchChannelData()
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -98,7 +102,7 @@ class ChannelViewModel: TimeTableViewModelProtocol {
 
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -113,5 +117,18 @@ class ChannelViewModel: TimeTableViewModelProtocol {
             } receiveValue: {
             }
             .store(in: &self.subscriptions)
+    }
+}
+
+extension ChannelViewModel where Scheduler == DispatchQueue {
+    convenience init(
+        repository: TimeTableRepositoryProtocol,
+        UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()
+    ) {
+        self.init(
+            repository: repository,
+            UUIDRepo: UUIDRepo,
+            scheduler: DispatchQueue.main
+        )
     }
 }

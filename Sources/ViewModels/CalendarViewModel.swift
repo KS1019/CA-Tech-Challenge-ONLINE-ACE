@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class CalendarViewModel: TimeTableViewModelProtocol {
+class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
     let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
@@ -21,8 +21,9 @@ class CalendarViewModel: TimeTableViewModelProtocol {
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
     var aWeek: [Date] = Calendar.aWeek
+    private let scheduler: Scheduler
 
-    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()) {
+    init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
         self.repository = repository
         do {
             userId = try UUIDRepo.fetchUUID()
@@ -32,6 +33,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             // swiftlint:disable force_try
             try! UUIDRepo.register(uuid: uuid)
         }
+        self.scheduler = scheduler
     }
 
     func reloadData() {
@@ -61,7 +63,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
         repository.fetchTimeTableData(firstAt: firstAt, lastAt: lastAt, channelId: nil, labels: nil)
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -82,7 +84,7 @@ class CalendarViewModel: TimeTableViewModelProtocol {
 
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
-            .receive(on: DispatchQueue.main)
+            .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -98,4 +100,17 @@ class CalendarViewModel: TimeTableViewModelProtocol {
             .store(in: &self.subscriptions)
     }
 
+}
+
+extension CalendarViewModel where Scheduler == DispatchQueue {
+    convenience init(
+        repository: TimeTableRepositoryProtocol,
+        UUIDRepo: UUIDRepositoryProtocol = UUIDRepository()
+    ) {
+        self.init(
+            repository: repository,
+            UUIDRepo: UUIDRepo,
+            scheduler: DispatchQueue.main
+        )
+    }
 }

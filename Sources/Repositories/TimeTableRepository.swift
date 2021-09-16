@@ -18,18 +18,20 @@ protocol TimeTableRepositoryProtocol {
 class TimeTableRepository: TimeTableRepositoryProtocol {
 
     let decoder = JSONDecoder()
-    init() {
+    let apiProvider: APIProvider
+    init(apiProvider: APIProvider) {
+        self.apiProvider = apiProvider
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error> {
         var url = TimeTableRepository.getReservedURL
         url.appendPathComponent(userId)
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
+        let request = URLRequest(url: url)
+        return apiProvider
+            .apiResponse(for: request)
             .tryMap {
-                try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
+                try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
@@ -51,8 +53,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             }
 
             request.httpBody = httpBody
-            let session = URLSession.shared
-            session.dataTask(with: request) { (data, response, error) in
+            self.apiProvider.dataTask(with: request) { (data, response, error) in
                 if let error = error {
                     completion(.failure(error))
                 }
@@ -81,8 +82,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let session = URLSession.shared
-        return session.dataTaskPublisher(for: request)
+        return self.apiProvider.apiResponse(for: request)
             .tryMap { data, response in
                 guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
                     throw TimeTableRepository.HTTPError.statusCodeError
@@ -108,12 +108,10 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         }
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getTimetableURL.queryItemsAdded(queryItems)!
-
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
+        let request = URLRequest(url: url)
+        return apiProvider.apiResponse(for: request)
             .tryMap { try
-                self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
+                self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
@@ -122,18 +120,17 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
         // swiftlint:disable force_unwrapping
         let url = TimeTableRepository.getChannelURL
-
-        return URLSession
-            .shared
-            .dataTaskPublisher(for: url)
+        let request = URLRequest(url: url)
+        return apiProvider.apiResponse(for: request)
             .tryMap { try
-                self.decoder.decode(ListResult<Channel>.self, from: $0.data).channels ?? []
+                self.decoder.decode(ListResult<Channel>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
 }
 
 extension TimeTableRepository {
+
     static let getTimetableURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/list")!
     static let getChannelURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/")!
     static let deleteURL = URL(string: "https://api.c.ace2108.net/api/v1/channel/program/record")!

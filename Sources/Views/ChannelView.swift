@@ -8,7 +8,7 @@ import Combine
 import SwiftUI
 
 struct ChannelView: View {
-    @StateObject var vm = ChannelViewModel(repository: TimeTableRepository())
+    @StateObject var vm = ChannelViewModel(repository: TimeTableRepository(apiProvider: URLSession.shared))
     var body: some View {
         VStack {
             // vmからチャンネル一覧を取得
@@ -52,6 +52,6 @@ private var activityIndicator: some View {
 
 struct ChannelView_Previews: PreviewProvider {
     static var previews: some View {
-        ChannelView(vm: ChannelViewModel(repository: TimeTableRepository()))
+        ChannelView(vm: ChannelViewModel(repository: TimeTableRepository(apiProvider: MockAPIProvider())))
     }
 }

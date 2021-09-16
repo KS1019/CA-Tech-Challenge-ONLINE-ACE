@@ -8,31 +8,11 @@
 import Combine
 import XCTest
 
-class TimeTableRepositoryTests: XCTestCase {
-    let userId = UUID().uuidString.lowercased()
+//class TimeTableRepositoryTests: XCTestCase {
+//    let userId = UUID().uuidString.lowercased()
 
-    // 関数の中にrepositoryやsubscriberインスタンスを宣言
-    //    func test_Channelデータ取得成功時にrecieveValueが呼ばれているか() {
+    //     関数の中にrepositoryやsubscriberインスタンスを宣言
     //
-    //        let repository = TimeTableRepository()
-    //        var subscriptions = Set<AnyCancellable>()
-    //
-    //        let exp = expectation(description: #function)
-    //        repository.fetchChannelData()
-    //            .sink { completion in
-    //                switch completion {
-    //                case .finished: break
-    //                case .failure(_): break
-    //                }
-    //            } receiveValue: { channelList in
-    //
-    //                exp.fulfill()
-    //            }
-    //            .store(in: &subscriptions)
-    //
-    //        wait(for: [exp], timeout: 100.0)
-    //
-    //    }
     //    // 関数の中にrepositoryやsubscriberインスタンスを宣言
     //    func test_データ取得成功時にrecieveValueが呼ばれているか() {
     //        let repository = TimeTableRepository()
@@ -134,4 +114,4 @@ class TimeTableRepositoryTests: XCTestCase {
     //        wait(for: [exp], timeout: 20.0)
     //    }
 
-}
+//}
