@@ -47,13 +47,13 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
         }
 
     }
-    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<ErrorCode?, Error> {
         // postがよばれた回数
         postFuncCallCount += 1
-        let future = Future<Void, Error> { completion in
+        let future = Future<ErrorCode?, Error> { completion in
             switch self.mode {
             case .success:
-                completion(.success(print("必ず成功します")))
+                completion(.success(nil))
             case .failure:
                 completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
             }

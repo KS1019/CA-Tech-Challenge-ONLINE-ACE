@@ -85,6 +85,7 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
             .receive(on: scheduler)
+            .retry(3)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -95,7 +96,10 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
 
                 }
 
-            } receiveValue: {
+            } receiveValue: { error in
+                if let error = error {
+                    print(error.code)
+                }
             }
             .store(in: &self.subscriptions)
     }

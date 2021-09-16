@@ -114,7 +114,8 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
                     self.reservedFlag = false
                 }
 
-            } receiveValue: {
+            } receiveValue: { error in
+                print(error)
             }
             .store(in: &self.subscriptions)
     }
