@@ -31,7 +31,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         return apiProvider
             .apiResponse(for: request)
             .tryMap {
-                try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
+                try self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
@@ -111,7 +111,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         let request = URLRequest(url: url)
         return apiProvider.apiResponse(for: request)
             .tryMap { try
-                self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).programs ?? []
+                self.decoder.decode(ListResult<TimeTable>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
@@ -123,7 +123,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         let request = URLRequest(url: url)
         return apiProvider.apiResponse(for: request)
             .tryMap { try
-                self.decoder.decode(ListResult<Channel>.self, from: $0.data).channels ?? []
+                self.decoder.decode(ListResult<Channel>.self, from: $0.data).items
             }
             .eraseToAnyPublisher()
     }
