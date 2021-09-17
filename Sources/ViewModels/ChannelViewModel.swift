@@ -21,7 +21,7 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
-    
+
     @Published var filteredTimeTables: [TimeTable] = []
     private let scheduler: Scheduler
 
