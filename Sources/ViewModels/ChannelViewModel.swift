@@ -21,6 +21,8 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
+    
+    @Published var filteredTimeTables: [TimeTable] = []
     private let scheduler: Scheduler
 
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
@@ -47,6 +49,15 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
                 newResult[label] = false
                 return newResult
             }
+        }
+
+        filteredTimetables = timetables.filter { timetable in
+            !channels.isEmpty
+                && timetable.channelId == channels[selectedIndex].id
+                && (!timetable.labels.filter { label in
+                    selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
+                }.isEmpty
+                || !selectedGenreFilters.values.contains(true))
         }
     }
 
