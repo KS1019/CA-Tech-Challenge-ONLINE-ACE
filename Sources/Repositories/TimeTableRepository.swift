@@ -61,7 +61,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
         return self.apiProvider
             .apiResponse(for: request)
             .tryMap {
-                return try self.decoder.decode(ErrorCode.self, from: $0.data)
+                try self.decoder.decode(ErrorCode.self, from: $0.data)
             }
             .mapError({ error in
                 error
