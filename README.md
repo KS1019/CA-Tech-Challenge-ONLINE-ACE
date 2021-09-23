@@ -1,5 +1,6 @@
 ## インターン後改善したところ
-- 
+- RepositoryのMock化を行って、ViewModelのテストを可能にした
+- RepositoryやViewModelをコンストラクタインジェクションを使ってDI
 
 ## 依存ライブラリ＆ツール等
 ### ライブラリ
