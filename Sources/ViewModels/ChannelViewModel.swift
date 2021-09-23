@@ -13,14 +13,15 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
     private(set) var repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
-    var timetables: [TimeTable] = []
+    @Published var timetables: [TimeTable] = []
     @Published var channels: [Channel] = []
     @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
-    @Published var filteredTimetables: [TimeTable] = []
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
+
+    @Published var filteredTimeTables: [TimeTable] = []
     private let scheduler: Scheduler
 
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
@@ -36,6 +37,29 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
 
         self.scheduler = scheduler
 
+        Publishers.CombineLatest3(
+            $timetables,
+            $channels,
+            Publishers.CombineLatest(
+                $selectedGenreFilters,
+                $selectedIndex)
+        )
+        .map { timetables, channels, selection -> [TimeTable] in
+            let selectedGenreFilters = selection.0
+            let selectedIndex = selection.1
+            return timetables.filter { timetable in
+                !channels.isEmpty
+                    && timetable.channelId == channels[selectedIndex].id
+                    && (!timetable.labels.filter { label in
+                        selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
+                    }.isEmpty
+                    || !selectedGenreFilters.values.contains(true))
+            }
+        }
+        .sink { [weak self] timetables in
+            self?.filteredTimeTables = timetables
+        }
+        .store(in: &self.subscriptions)
     }
 
     func reloadData() {
