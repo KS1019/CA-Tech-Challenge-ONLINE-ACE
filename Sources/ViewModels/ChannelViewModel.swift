@@ -72,15 +72,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
                 return newResult
             }
         }
-
-        filteredTimeTables = timetables.filter { timetable in
-            !channels.isEmpty
-                && timetable.channelId == channels[selectedIndex].id
-                && (!timetable.labels.filter { label in
-                    selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
-                }.isEmpty
-                || !selectedGenreFilters.values.contains(true))
-        }
     }
 
     func onAppear() {
