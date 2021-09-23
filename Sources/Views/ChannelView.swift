@@ -20,7 +20,7 @@ struct ChannelView: View {
 
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.filteredTimetables) { timetable in
+                    ForEach(vm.filteredTimeTables) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable, onCommit: { programId in
                                 vm.postReservedData(programId)

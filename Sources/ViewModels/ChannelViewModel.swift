@@ -17,7 +17,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
     @Published var channels: [Channel] = []
     @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
-    @Published var filteredTimetables: [TimeTable] = []
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
@@ -37,7 +36,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
         }
 
         self.scheduler = scheduler
-
     }
 
     func reloadData() {
@@ -51,7 +49,7 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
             }
         }
 
-        filteredTimetables = timetables.filter { timetable in
+        filteredTimeTables = timetables.filter { timetable in
             !channels.isEmpty
                 && timetable.channelId == channels[selectedIndex].id
                 && (!timetable.labels.filter { label in
