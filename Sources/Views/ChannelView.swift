@@ -12,7 +12,7 @@ struct ChannelView: View {
     var body: some View {
         VStack {
             // vmからチャンネル一覧を取得
-            HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.channels.map { $0.title }) {
+            HorizontalPickerView<StringPickerButtonTrait>(selection: $vm.selectedIndex, selections: vm.channels.map { $0.title }) {
                 print("フィルターボタンをタップ")
             }
 
