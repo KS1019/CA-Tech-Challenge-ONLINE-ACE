@@ -9,7 +9,7 @@ import Combine
 import Foundation
 
 class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
-    let userId: String
+    private let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
@@ -33,36 +33,15 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
 
     func onAppear() {
         getReservaions()
-        labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-        selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-            var newResult = result
-            newResult[label] = false
-            return newResult
-
-        }
-    }
-
-    func reload() {
-        getReservaions()
     }
 
     func getReservaions() {
-        var uuidStr: String
-        do {
-            uuidStr = try UUIDRepository().fetchUUID()
-        } catch {
-            let uuid = UUID()
-            uuidStr = uuid.uuidString
-            // swiftlint:disable force_try
-            try! UUIDRepository().register(uuid: uuid)
-        }
         self.repository
-            .fetchReservationData(userId: uuidStr.lowercased())
+            .fetchReservationData(userId: userId.lowercased())
             .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
-                    print("終了コード")
                     self.isLoading = false
                 case let .failure(error):
                     print(error)
@@ -76,24 +55,15 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     }
 
     func deleteReservation(programId: String) {
-        var uuidStr: String
-        do {
-            uuidStr = try UUIDRepository().fetchUUID()
-        } catch {
-            let uuid = UUID()
-            uuidStr = uuid.uuidString
-
-            try! UUIDRepository().register(uuid: uuid)
-        }
         self.repository
-            .deleteReservationData(userId: uuidStr, programId: programId)
+            .deleteReservationData(userId: userId.lowercased(), programId: programId)
             .receive(on: scheduler)
             .sink { completion in
                 switch completion {
                 case .finished:
                     print("終了コード")
                     self.isLoading = false
-                    self.reload()
+                    self.getReservaions()
                     self.isAlert = false
                 case let .failure(error):
                     print(error)
