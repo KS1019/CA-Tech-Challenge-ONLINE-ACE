@@ -36,7 +36,7 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     }
 
     func getReservaions() {
-        self.repository
+        repository
             .fetchReservationData(userId: userId.lowercased())
             .receive(on: scheduler)
             .sink { completion in
@@ -55,7 +55,7 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     }
 
     func deleteReservation(programId: String) {
-        self.repository
+        repository
             .deleteReservationData(userId: userId.lowercased(), programId: programId)
             .receive(on: scheduler)
             .sink { completion in

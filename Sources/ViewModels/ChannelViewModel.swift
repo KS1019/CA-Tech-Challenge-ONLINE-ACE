@@ -16,7 +16,7 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
     @Published var timetables: [TimeTable] = []
     @Published var channels: [Channel] = []
     @Published var selectedIndex: Int = 0
-    @Published var selectedGenreFilters: [String : Bool] = [:]
+    @Published var selectedGenreFilters: [String: Bool] = [:]
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
