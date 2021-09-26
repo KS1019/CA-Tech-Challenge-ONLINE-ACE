@@ -41,9 +41,4 @@ class CalendarViewModelTests: XCTestCase {
         vm.postReservedData("test")
         XCTAssertEqual(repository.postFuncCallCount, 1)
     }
-
-    func test_fetchUUID時にvmに正しくuserIdが代入されているか() {
-        XCTAssertEqual(vm.userId, try UUIDRepo.fetchUUID())
-    }
-
 }
