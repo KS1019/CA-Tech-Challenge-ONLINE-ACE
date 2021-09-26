@@ -25,8 +25,6 @@ class ReservedViewModelTest: XCTestCase {
     func test_onAppear時timetableに依存する値が更新されているか() {
         vm.onAppear()
         XCTAssertFalse(vm.timetables.isEmpty)
-        XCTAssertFalse(vm.labels.isEmpty)
-        XCTAssertFalse(vm.selectedGenreFilters.isEmpty)
     }
 
     func test_予約を取り消した時にtimetableが更新されているか() {
