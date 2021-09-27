@@ -60,8 +60,11 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
         return self.apiProvider
             .apiResponse(for: request)
-            .tryMap {
-                try self.decoder.decode(ErrorCode.self, from: $0.data)
+            .tryMap { data, response in
+                if let response = response as? HTTPURLResponse, response.statusCode == 400 {
+                    return try self.decoder.decode(ErrorCode.self, from: data)
+                }
+                return nil
             }
             .mapError({ error in
                 error

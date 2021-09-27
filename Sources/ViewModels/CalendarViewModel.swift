@@ -13,13 +13,16 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     var timetables: [TimeTable] = []
-
+    @Published var alertType: AlertType?
+    @Published var showingAlert = false
+    @Published var alertMessage = ""
     @Published var reservedFlag = false
     @Published var selectedIndex: Int = 2
     @Published var isLoading: Bool = true
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published var programId = ""
     var aWeek: [Date] = Calendar.aWeek
     private let scheduler: Scheduler
 
@@ -99,6 +102,9 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
             } receiveValue: { error in
                 if let error = error {
                     print(error.code)
+                    self.showingAlert = true
+                    self.alertMessage = error.error
+                    self.alertType = .parent
                 }
             }
             .store(in: &self.subscriptions)
@@ -116,5 +122,14 @@ extension CalendarViewModel where Scheduler == DispatchQueue {
             UUIDRepo: UUIDRepo,
             scheduler: DispatchQueue.main
         )
+    }
+}
+
+enum AlertType: Int, Identifiable {
+    case parent = 1
+    case child = 2
+
+    var id: Int {
+        rawValue
     }
 }

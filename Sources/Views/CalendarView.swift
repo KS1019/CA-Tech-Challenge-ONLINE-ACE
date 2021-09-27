@@ -24,7 +24,9 @@ struct CalendarView: View {
                         VStack(alignment: .leading) {
                             // カードのProgramIdをクロージャーから受け取る
                             CardView(timeTable: timetable, onCommit: { programId in
-                                vm.postReservedData(programId)
+                                vm.programId = programId
+                                vm.alertType = .child
+
                             })
 
                         }
@@ -37,6 +39,23 @@ struct CalendarView: View {
 
         }
         .onAppear(perform: vm.onAppear)
+        .alert(item: $vm.alertType) {
+            switch $0 {
+            case .parent:
+                return Alert(title: Text(vm.alertMessage))
+            case .child:
+                return Alert(title: Text("この番組を予約しますか"),
+                             primaryButton: .default(
+                                Text("予約する"),
+                                action: {
+                                    vm.postReservedData(vm.programId)
+                                    print("Send API Request here")
+                                }
+                             ),
+                             secondaryButton: .cancel())
+
+            }
+        }
     }
     private var activityIndicator: some View {
         ActivityIndicator(style: .medium)
