@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProgramView<T: TimeTableProtocol>: View {
     let timeTable: T
-
     @State private var showReserveAlert = false
     let onCommit: (String) -> Void
     var body: some View {
@@ -17,22 +16,11 @@ struct ProgramView<T: TimeTableProtocol>: View {
             programDetailView
             Spacer()
             Button(action: {
-                showReserveAlert = true
+                onCommit(timeTable.id)
             }, label: {
                 Image(systemName: "calendar.badge.plus")
                     .foregroundColor(.black)
             })
-            .alert(isPresented: $showReserveAlert) {
-                Alert(title: Text("この番組を予約しますか"),
-                      primaryButton: .default(
-                        Text("予約する"),
-                        action: {
-                            onCommit(timeTable.id)
-                            print("Send API Request here")
-                        }
-                      ),
-                      secondaryButton: .cancel())
-            }
 
         }
         .padding()

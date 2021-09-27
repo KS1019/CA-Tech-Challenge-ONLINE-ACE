@@ -9,12 +9,16 @@ import Foundation
 
 protocol TimeTableRepositoryProtocol {
     func fetchChannelData() -> AnyPublisher<[Channel], Error>
-    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error>
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<ErrorCode?, Error>
     func deleteReservationData(userId: String, programId: String) -> AnyPublisher<Void, Error>
     func fetchTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) -> AnyPublisher<[TimeTable], Error>
     func fetchReservationData(userId: String) -> AnyPublisher<[TimeTable], Error>
 }
 
+struct ErrorCode: Decodable {
+    let error: String
+    let code: Int
+}
 class TimeTableRepository: TimeTableRepositoryProtocol {
 
     let decoder = JSONDecoder()
@@ -36,38 +40,55 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
             .eraseToAnyPublisher()
     }
 
-    func postReservationData(reservationData: ReservationData) -> AnyPublisher<Void, Error> {
-        let future = Future<Void, Error> { completion in
-            let encoder = JSONEncoder()
-            encoder.keyEncodingStrategy = .convertToSnakeCase
-            encoder.outputFormatting = .prettyPrinted
+    func postReservationData(reservationData: ReservationData) -> AnyPublisher<ErrorCode?, Error> {
+        //        let future = Future<Void, Error> { completion in
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
 
-            var request = URLRequest(url: TimeTableRepository.postURL)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = URLRequest(url: TimeTableRepository.postURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            guard let httpBody = try? encoder.encode(reservationData) else {
-                return completion(.failure(TimeTableRepository.HTTPError.httpBodyError))
-                //                別の書き方もできる
-                //                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
-            }
-
-            request.httpBody = httpBody
-            self.apiProvider.dataTask(with: request) { (data, response, error) in
-                if let error = error {
-                    completion(.failure(error))
-                }
-
-                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
-                    return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
-                }
-                print(response.statusCode)
-
-                completion(.success(()))
-
-            }.resume()
+        guard let httpBody = try? encoder.encode(reservationData) else {
+            return Fail<ErrorCode?, Error>(error: TimeTableRepository.HTTPError.httpBodyError)
+                .eraseToAnyPublisher()
+            //                別の書き方もできる
+            //                return Fail<Void, Error>(error: TimeTableRepository.HTTPError.httpBodyError).eraseToAnyPublisher()
         }
-        return future.eraseToAnyPublisher()
+
+        request.httpBody = httpBody
+
+        return self.apiProvider
+            .apiResponse(for: request)
+            .tryMap { data, response in
+                if let response = response as? HTTPURLResponse, response.statusCode == 400 {
+                    return try self.decoder.decode(ErrorCode.self, from: data)
+                }
+                return nil
+            }
+            .mapError({ error in
+                error
+            })
+            .eraseToAnyPublisher()
+
+        //            dataTask(with: request) { (data, response, error) in
+        //                if let error = error {
+        //                    completion(.failure(error))
+        //                }
+        //
+        //
+        //
+        //                guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+        //                    return completion(.failure(TimeTableRepository.HTTPError.statusCodeError))
+        //                }
+        //                print(response.statusCode)
+        //
+        //                completion(.success(()))
+        //
+        //            }.resume()
+        //        }
+
+        //        return future.eraseToAnyPublisher()
 
     }
 
@@ -84,6 +105,7 @@ class TimeTableRepository: TimeTableRepositoryProtocol {
 
         return self.apiProvider.apiResponse(for: request)
             .tryMap { data, response in
+
                 guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
                     throw TimeTableRepository.HTTPError.statusCodeError
                 }

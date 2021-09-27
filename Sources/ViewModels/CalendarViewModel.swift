@@ -12,6 +12,9 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     private let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
+    @Published var alertType: AlertType?
+    @Published var alertMessage = ""
+    @Published var showingAlert = false
     @Published var timetables: [TimeTable] = []
 
     @Published var reservedFlag = false
@@ -20,6 +23,7 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     @Published var channels: [Channel] = []
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published var programId = ""
     let aWeek: [Date] = Calendar.aWeek
     private let scheduler: Scheduler
 
@@ -89,6 +93,7 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     func postReservedData(_ programId: String) {
         repository.postReservationData(reservationData: ReservationData(userId: userId, programId: programId))
             .receive(on: scheduler)
+            .retry(3)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -98,7 +103,13 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
 
                 }
 
-            } receiveValue: {
+            } receiveValue: { error in
+                if let error = error {
+                    print(error.code)
+                    self.showingAlert = true
+                    self.alertMessage = error.error
+                    self.alertType = .parent
+                }
             }
             .store(in: &self.subscriptions)
     }
@@ -115,5 +126,14 @@ extension CalendarViewModel where Scheduler == DispatchQueue {
             UUIDRepo: UUIDRepo,
             scheduler: DispatchQueue.main
         )
+    }
+}
+
+enum AlertType: Int, Identifiable {
+    case parent = 1
+    case child = 2
+
+    var id: Int {
+        rawValue
     }
 }
