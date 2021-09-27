@@ -3,7 +3,8 @@
 - RepositoryやViewModelをコンストラクタインジェクションを使ってDI
 - Repository自体のテストを実装できるように、URLSessionのAdapterを定義してスケジューラーを実行時に変更できるように変更
 　　- KeychainのAdapterは実装できていません。
-- [WIP]API通信で帰ってくるErrorCodeによって適切に処理を分岐させること https://github.com/CyberAgentHack/2108-ace-c-ios/pull/106
+- API通信で帰ってくるErrorCodeによって適切に処理を分岐させること(とりあえず、CalendarViewのpost部分のみ実装しています。) 
+  - https://github.com/CyberAgentHack/2108-ace-c-ios/pull/106
 
 ## 依存ライブラリ＆ツール等
 ### ライブラリ
