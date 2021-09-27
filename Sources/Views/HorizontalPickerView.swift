@@ -7,17 +7,11 @@
 
 import SwiftUI
 
-struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Hashable, T.Index: Hashable {
+struct HorizontalPickerView<T: PickerButtonTrait>: View {
     @Binding var selection: Int
-    var selections: T
+    var selections: [T.Value]
     var onChange: () -> Void
-    init(selection: Binding<Int>, selections: T, onChange: @escaping () -> Void ) where T.Element == String {
-        self._selection = selection
-        self.selections = selections
-        self.onChange = onChange
-    }
-
-    init(selection: Binding<Int>, selections: T, onChange: @escaping () -> Void ) where T.Element == Date {
+    init(selection: Binding<Int>, selections: [T.Value], onChange: @escaping () -> Void ) {
         self._selection = selection
         self.selections = selections
         self.onChange = onChange
@@ -27,19 +21,11 @@ struct HorizontalPickerView<T: RandomAccessCollection>: View where T.Element: Ha
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 5) {
                 ForEach(selections.indices, id: \.self) { index in
-                    if type(of: selections[index]) == Date.self {
-                        PickerButton(item: selections[index] as! Date, index: index as! Int, selectedIndex: $selection) {
-                            selection = index as! Int
-                            onChange()
-                        }
-                        .padding(0)
-                    } else if type(of: selections[index]) == String.self {
-                        PickerButton(item: selections[index] as! String, index: index as! Int, selectedIndex: $selection) {
-                            selection = index as! Int
-                            onChange()
-                        }
-                        .padding(0)
+                    T.makePickerButton(item: selections[index], index: index, onChange: onChange, selection: $selection) {
+                        selection = index
+                        onChange()
                     }
+                    .padding(0)
                 }
             }
         }
@@ -54,11 +40,11 @@ struct HorizontalPickerView_Previews: PreviewProvider {
     static var previews: some View {
 
         Group {
-            HorizontalPickerView(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"], onChange: onChange)
+            HorizontalPickerView<StringPickerButtonTrait>(selection: .constant(0), selections: ["A", "B", "C", "D", "E", "F", "GGGG"], onChange: onChange)
                 .previewLayout(.sizeThatFits)
 
             // swiftlint:disable force_unwrapping line_length
-            HorizontalPickerView(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!], onChange: onChange)
+            HorizontalPickerView<DatePickerButtonTrait>(selection: .constant(0), selections: [Date(), Calendar.current.date(byAdding: .day, value: 1, to: Date())!, Calendar.current.date(byAdding: .day, value: 2, to: Date())!], onChange: onChange)
                 .previewLayout(.sizeThatFits)
 
             PickerButton(item: "A", index: 1, selectedIndex: .constant(1)) {
@@ -75,12 +61,12 @@ struct HorizontalPickerView_Previews: PreviewProvider {
 }
 
 struct PickerButton<T>: View {
-    private var buttonTextString: String = ""
-    private var buttonSubTextString: String = ""
-    var item: T
-    var index: Int
+    private let buttonTextString: String
+    private let buttonSubTextString: String
+    let item: T
+    let index: Int
     @Binding var selectedIndex: Int
-    var action: () -> Void
+    let action: () -> Void
 
     var body: some View {
         Button(action: {
@@ -132,5 +118,22 @@ extension PickerButton where T == String {
         self.index = index
         buttonTextString = self.item
         buttonSubTextString = "Channel"
+    }
+}
+
+protocol PickerButtonTrait {
+    associatedtype Value
+    static func makePickerButton(item: Value, index: Int, onChange: @escaping () -> Void, selection: Binding<Int>, action: @escaping () -> Void) -> PickerButton<Value>
+}
+
+enum StringPickerButtonTrait: PickerButtonTrait {
+    static func makePickerButton(item: String, index: Int, onChange: @escaping () -> Void, selection: Binding<Int>, action: @escaping () -> Void) -> PickerButton<String> {
+        PickerButton(item: item, index: index, selectedIndex: selection, action: action)
+    }
+}
+
+enum DatePickerButtonTrait: PickerButtonTrait {
+    static func makePickerButton(item: Date, index: Int, onChange: @escaping () -> Void, selection: Binding<Int>, action: @escaping () -> Void) -> PickerButton<Date> {
+        PickerButton(item: item, index: index, selectedIndex: selection, action: action)
     }
 }

@@ -9,18 +9,19 @@ import Combine
 import Foundation
 
 class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
-    var userId: String
+    private let userId: String
     private(set) var repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
     @Published var labels: [String] = []
-    var timetables: [TimeTable] = []
+    @Published var timetables: [TimeTable] = []
     @Published var channels: [Channel] = []
     @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
-    @Published var filteredTimetables: [TimeTable] = []
 
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
+
+    @Published var filteredTimeTables: [TimeTable] = []
     private let scheduler: Scheduler
 
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
@@ -36,18 +37,48 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
 
         self.scheduler = scheduler
 
+        setupPublishers()
     }
 
-    func reloadData() {
-        let labelsLoaded = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-        if labelsLoaded.sorted() != labels.sorted() {
-            labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-            selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-                var newResult = result
-                newResult[label] = false
-                return newResult
+    private func setupPublishers() {
+        Publishers.CombineLatest3(
+            $timetables,
+            $channels,
+            Publishers.CombineLatest(
+                $selectedGenreFilters,
+                $selectedIndex)
+        )
+        .map { timetables, channels, selection -> [TimeTable] in
+            let selectedGenreFilters = selection.0
+            let selectedIndex = selection.1
+            return timetables.filter { timetable in
+                !channels.isEmpty
+                    && timetable.channelId == channels[selectedIndex].id
+                    && (!timetable.labels.filter { label in
+                        selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
+                    }.isEmpty
+                    || !selectedGenreFilters.values.contains(true))
             }
         }
+        .assign(to: &$filteredTimeTables)
+
+        $timetables
+            .map { timetables -> [String] in
+                Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+            }
+            .combineLatest($labels)
+            .filter { labelsLoaded, labels in
+                labelsLoaded.sorted() != labels.sorted()
+            }
+            .map { labelsLoaded, _ -> [String: Bool] in
+                self.labels = labelsLoaded
+                return labelsLoaded.reduce([String: Bool]()) { (result, label)  in
+                    var newResult = result
+                    newResult[label] = false
+                    return newResult
+                }
+            }
+            .assign(to: &$selectedGenreFilters)
     }
 
     func onAppear() {
@@ -55,7 +86,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
         getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
                          lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
                          channelId: nil, labels: nil)
-        reloadData()
     }
 
     func getTimeTableData(firstAt: Int, lastAt: Int, channelId: String?, labels: String?) {
@@ -74,7 +104,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
 
             } receiveValue: { data in
                 self.timetables = data
-                self.reloadData()
             }
             .store(in: &self.subscriptions)
 
@@ -88,14 +117,13 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
                 case .finished:
                     print("CalendarViewModelのデータ取得成功\(#function)")
                     self.isLoading = false
-                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
                 }
 
             } receiveValue: { data in
-                self.channels += data
+                self.channels = data
             }
             .store(in: &self.subscriptions)
     }
@@ -108,7 +136,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
                 case .finished:
                     print("Post成功")
                     self.reservedFlag = true
-                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.reservedFlag = false

@@ -12,7 +12,7 @@ struct ChannelView: View {
     var body: some View {
         VStack {
             // vmからチャンネル一覧を取得
-            HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.channels.map { $0.title }) {
+            HorizontalPickerView<StringPickerButtonTrait>(selection: $vm.selectedIndex, selections: vm.channels.map { $0.title }) {
                 print("フィルターボタンをタップ")
             }
 
@@ -20,15 +20,7 @@ struct ChannelView: View {
 
             ScrollView {
                 LazyVStack {
-                    ForEach(
-                        vm.timetables.filter { timetable in
-                            !vm.channels.isEmpty
-                                && timetable.channelId == vm.channels[vm.selectedIndex].id
-                                && (!timetable.labels.filter { label in
-                                    vm.selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
-                                }.isEmpty
-                                || !vm.selectedGenreFilters.values.contains(true))
-                        }) { timetable in
+                    ForEach(vm.filteredTimeTables) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable, onCommit: { programId in
                                 vm.postReservedData(programId)

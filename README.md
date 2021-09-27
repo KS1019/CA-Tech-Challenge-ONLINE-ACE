@@ -1,3 +1,10 @@
+## インターン後改善したところ
+- RepositoryのMock化を行って、ViewModelのテストを可能にした
+- RepositoryやViewModelをコンストラクタインジェクションを使ってDI
+- Repository自体のテストを実装できるように、URLSessionのAdapterを定義してスケジューラーを実行時に変更できるように変更
+　　- KeychainのAdapterは実装できていません。
+- [WIP]API通信で帰ってくるErrorCodeによって適切に処理を分岐させること https://github.com/CyberAgentHack/2108-ace-c-ios/pull/106
+
 ## 依存ライブラリ＆ツール等
 ### ライブラリ
 #### OHHTTPStubs

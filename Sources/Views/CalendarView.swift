@@ -11,7 +11,7 @@ struct CalendarView: View {
     @StateObject var vm = CalendarViewModel(repository: TimeTableRepository(apiProvider: URLSession.shared))
     var body: some View {
         VStack {
-            HorizontalPickerView(selection: $vm.selectedIndex, selections: vm.aWeek) {
+            HorizontalPickerView<DatePickerButtonTrait>(selection: $vm.selectedIndex, selections: vm.aWeek) {
                 print("#インデックスが変化しているか\(vm.selectedIndex)")
                 vm.onChangeDate()
             }

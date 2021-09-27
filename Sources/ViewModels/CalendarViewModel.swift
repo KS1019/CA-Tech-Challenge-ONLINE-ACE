@@ -9,13 +9,14 @@ import Combine
 import Foundation
 
 class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
-    let userId: String
+    private let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
-    var timetables: [TimeTable] = []
     @Published var alertType: AlertType?
-    @Published var showingAlert = false
     @Published var alertMessage = ""
+    @Published var showingAlert = false
+    @Published var timetables: [TimeTable] = []
+
     @Published var reservedFlag = false
     @Published var selectedIndex: Int = 2
     @Published var isLoading: Bool = true
@@ -23,7 +24,7 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     @Published var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
     @Published var programId = ""
-    var aWeek: [Date] = Calendar.aWeek
+    let aWeek: [Date] = Calendar.aWeek
     private let scheduler: Scheduler
 
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
@@ -37,25 +38,30 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
             try! UUIDRepo.register(uuid: uuid)
         }
         self.scheduler = scheduler
-    }
 
-    func reloadData() {
-        let labelsLoaded = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-        if labelsLoaded.sorted() != labels.sorted() {
-            labels = Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
-            selectedGenreFilters = labels.reduce([String: Bool]()) { (result, label)  in
-                var newResult = result
-                newResult[label] = false
-                return newResult
+        $timetables
+            .map { timetables -> [String] in
+                Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
             }
-        }
+            .combineLatest($labels)
+            .filter { labelsLoaded, labels in
+                labelsLoaded.sorted() != labels.sorted()
+            }
+            .map { labelsLoaded, _ -> [String: Bool] in
+                self.labels = labelsLoaded
+                return labelsLoaded.reduce([String: Bool]()) { (result, label)  in
+                    var newResult = result
+                    newResult[label] = false
+                    return newResult
+                }
+            }
+            .assign(to: &$selectedGenreFilters)
     }
 
     func onAppear() {
         getTimeTableData(firstAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970),
                          lastAt: Int(Calendar.aWeek[selectedIndex].timeIntervalSince1970) + 86_400,
                          channelId: nil, labels: nil)
-        reloadData()
     }
 
     func onChangeDate() {
@@ -72,7 +78,6 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
                 case .finished:
                     print("CalendarViewModelのデータ取得成功\(#function)")
                     self.isLoading = false
-                    self.reloadData()
                 case let .failure(error):
                     print(error)
                     self.isLoading = true
@@ -93,7 +98,6 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
                 switch completion {
                 case .finished:
                     print("Post成功")
-                    self.reloadData()
                 case let .failure(error):
                     print(error)
 
