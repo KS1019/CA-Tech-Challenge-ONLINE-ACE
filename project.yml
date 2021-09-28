@@ -28,7 +28,6 @@ targets:
     type: application
     sources:
       - Sources/
-      - Sample/
     postBuildScripts:
       - name: Mint Build Script
         script: |
