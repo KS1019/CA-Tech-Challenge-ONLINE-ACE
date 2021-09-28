@@ -8,14 +8,14 @@
 import Combine
 import Foundation
 
-class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
-    private let userId: String
-    private let repository: TimeTableRepositoryProtocol
-    private var subscriptions = Set<AnyCancellable>()
+class ReservedViewModel<Scheduler: Combine.Scheduler>: ObservableObject {
     @Published var timetables: [TimeTable] = []
     @Published var isLoading: Bool = true
     @Published var isAlert: Bool = false
+    private var subscriptions = Set<AnyCancellable>()
+    private let repository: TimeTableRepositoryProtocol
     private let scheduler: Scheduler
+    private let userId: String
 
     @Published private var labels: [String] = []
     @Published var selectedGenreFilters: [String: Bool] = [:]
