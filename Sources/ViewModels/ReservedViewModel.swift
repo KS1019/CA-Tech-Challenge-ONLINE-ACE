@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
+class ReservedViewModel<Scheduler: Combine.Scheduler>: ObservableObject {
     @Published var timetables: [TimeTable] = []
     @Published var isLoading: Bool = true
     @Published var isAlert: Bool = false

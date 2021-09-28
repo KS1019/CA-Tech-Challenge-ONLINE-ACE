@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
+class CalendarViewModel<Scheduler: Combine.Scheduler>: ObservableObject {
     private let userId: String
     private let repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
