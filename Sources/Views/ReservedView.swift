@@ -12,9 +12,11 @@ struct ReservedView: View {
     @StateObject var vm: ReservedViewModel = ReservedViewModel(repository: TimeTableRepository(apiProvider: URLSession.shared))
     var body: some View {
         VStack {
+            GenreFilterView(selectedGenres: $vm.selectedGenreFilters)
+
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.timetables) { timetable in
+                    ForEach(vm.filteredTimeTables) { timetable in
                         VStack(alignment: .leading) {
                             CardView(timeTable: timetable) { programId in
                                 vm.deleteReservation(programId: programId)

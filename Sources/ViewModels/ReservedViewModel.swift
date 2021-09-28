@@ -17,9 +17,9 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     @Published var isAlert: Bool = false
     private let scheduler: Scheduler
 
-    // FIXME: 現在は使われていないのコメントアウト。GenreFilterViewを置く時に使う
-    // @Published var labels: [String] = []
-    // @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published private var labels: [String] = []
+    @Published var selectedGenreFilters: [String: Bool] = [:]
+    @Published var filteredTimeTables: [TimeTable] = []
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
         self.repository = repository
         do {
@@ -31,6 +31,41 @@ class ReservedViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
             try! UUIDRepo.register(uuid: uuid)
         }
         self.scheduler = scheduler
+        setupPublishers()
+    }
+
+    private func setupPublishers() {
+        Publishers.CombineLatest(
+            $timetables,
+            $selectedGenreFilters
+        )
+        .map { timetables, selectedGenreFilters in
+            return timetables.filter { timetable in
+                (!timetable.labels.filter { label in
+                    selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
+                }.isEmpty
+                || !selectedGenreFilters.values.contains(true))
+            }
+        }
+        .assign(to: &$filteredTimeTables)
+
+        $timetables
+            .map { timetables -> [String] in
+                Array(Set(timetables.filter { !$0.labels.isEmpty }.map { $0.labels }.joined()))
+            }
+            .combineLatest($labels)
+            .filter { labelsLoaded, labels in
+                labelsLoaded.sorted() != labels.sorted()
+            }
+            .map { labelsLoaded, _ -> [String: Bool] in
+                self.labels = labelsLoaded
+                return labelsLoaded.reduce([String: Bool]()) { (result, label)  in
+                    var newResult = result
+                    newResult[label] = false
+                    return newResult
+                }
+            }
+            .assign(to: &$selectedGenreFilters)
     }
 
     func onAppear() {
