@@ -27,6 +27,8 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
     let aWeek: [Date] = Calendar.aWeek
     private let scheduler: Scheduler
 
+    @Published var filteredTimeTables: [TimeTable] = []
+
     init(repository: TimeTableRepositoryProtocol, UUIDRepo: UUIDRepositoryProtocol = UUIDRepository(), scheduler: Scheduler) {
         self.repository = repository
         do {
@@ -38,6 +40,24 @@ class CalendarViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtoco
             try! UUIDRepo.register(uuid: uuid)
         }
         self.scheduler = scheduler
+
+        setupPublishers()
+    }
+
+    private func setupPublishers() {
+        Publishers.CombineLatest(
+            $timetables,
+            $selectedGenreFilters
+        )
+        .map { timetables, selectedGenreFilters -> [TimeTable] in
+            return timetables.filter { timetable in
+                !timetable.labels.filter { label in
+                    selectedGenreFilters.filter { dic in dic.value }.keys.sorted().contains(label)
+                }.isEmpty
+                || !selectedGenreFilters.values.contains(true)
+            }
+        }
+        .assign(to: &$filteredTimeTables)
 
         $timetables
             .map { timetables -> [String] in

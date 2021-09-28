@@ -20,7 +20,7 @@ struct CalendarView: View {
 
             ScrollView {
                 LazyVStack {
-                    ForEach(vm.timetables) { timetable in
+                    ForEach(vm.filteredTimeTables) { timetable in
                         VStack(alignment: .leading) {
                             // カードのProgramIdをクロージャーから受け取る
                             CardView(timeTable: timetable, onCommit: { programId in
