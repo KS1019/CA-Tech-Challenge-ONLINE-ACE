@@ -27,7 +27,7 @@ targets:
     platform: iOS
     type: application
     sources:
-      - Sources/
+      - Sources
     postBuildScripts:
       - name: Mint Build Script
         script: |
@@ -49,15 +49,7 @@ targets:
     platform: iOS
     type: bundle.unit-test
     sources:
-      - Tests/
-      - path: Sources/Models
-      - path: Sources/Extensions
-      - path: Sources/Repositories
-      - path: Sources/Mocks
-        excludes:
-        - MockAPIView.swift
-        - MockTimeTable.swift
-      - path: Sources/ViewModels
+      - Tests
     scheme:
       testTargets:
         - Tests
@@ -69,7 +61,7 @@ targets:
     platform: iOS
     type: bundle.ui-testing
     sources:
-      - UITests/
+      - UITests
     scheme:
       testTargets:
         - UITests

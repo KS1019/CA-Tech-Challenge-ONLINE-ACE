@@ -4,6 +4,7 @@
 //
 //  Created by TanakaHirokazu on 2021/08/30.
 //
+@testable import App
 import Combine
 import XCTest
 
