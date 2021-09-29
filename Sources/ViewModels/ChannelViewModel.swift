@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol {
+class ChannelViewModel<Scheduler: Combine.Scheduler>: ObservableObject {
     private let userId: String
     private(set) var repository: TimeTableRepositoryProtocol
     private var subscriptions = Set<AnyCancellable>()
@@ -17,7 +17,6 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: TimeTableViewModelProtocol
     @Published var channels: [Channel] = []
     @Published var selectedIndex: Int = 0
     @Published var selectedGenreFilters: [String: Bool] = [:]
-
     @Published var isLoading: Bool = true
     @Published var reservedFlag = false
 
