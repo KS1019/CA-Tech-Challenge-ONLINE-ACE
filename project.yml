@@ -46,10 +46,7 @@ targets:
       - path: Sources/Models
       - path: Sources/Extensions
       - path: Sources/Repositories
-      - path: Sources/Mocks
-        excludes:
-        - MockAPIView.swift
-        - MockTimeTable.swift
+      - path: Sources/Mocks/MockTimeTableRepository.swift
       - path: Sources/ViewModels
     scheme:
       testTargets:

@@ -4,6 +4,7 @@
 //
 //  Created by TanakaHirokazu on 2021/08/17.
 //
+#if DEBUG
 
 import Combine
 import Foundation
@@ -127,3 +128,4 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
 }
+#endif

@@ -4,6 +4,7 @@
 //
 //  Created by TanakaHirokazu on 2021/08/13.
 //
+#if DEBUG
 
 import Foundation
 
@@ -42,3 +43,5 @@ struct MockTimeTable: TimeTableProtocol {
     }
 
 }
+
+#endif
