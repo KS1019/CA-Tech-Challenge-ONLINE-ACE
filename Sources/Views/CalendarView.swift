@@ -64,8 +64,10 @@ struct CalendarView: View {
 
 }
 
+#if DEBUG
 struct CalendarView_Previews: PreviewProvider {
     static var previews: some View {
         CalendarView(vm: CalendarViewModel(repository: MockTimeTableRepository(), UUIDRepo: UUIDRepository()))
     }
 }
+#endif

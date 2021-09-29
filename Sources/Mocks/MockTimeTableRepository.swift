@@ -4,6 +4,7 @@
 //
 //  Created by TanakaHirokazu on 2021/08/17.
 //
+#if DEBUG
 
 import Combine
 import Foundation
@@ -152,3 +153,5 @@ extension MockTimeTableRepository {
     static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
     static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")!
 }
+
+#endif
