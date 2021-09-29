@@ -39,9 +39,11 @@ struct ProgramView<T: TimeTableProtocol>: View {
     }
 }
 
+#if DEBUG
 struct ProgramView_Previews: PreviewProvider {
     static var previews: some View {
         ProgramView(timeTable: MockTimeTable()) { _ in }
             .previewLayout(.sizeThatFits)
     }
 }
+#endif
