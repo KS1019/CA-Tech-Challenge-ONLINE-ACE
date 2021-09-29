@@ -141,7 +141,7 @@ class ChannelViewModel<Scheduler: Combine.Scheduler>: ObservableObject {
                 }
 
             } receiveValue: { error in
-                print(error)
+                print(error as Any)
             }
             .store(in: &self.subscriptions)
     }
