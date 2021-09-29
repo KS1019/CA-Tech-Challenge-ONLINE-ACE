@@ -48,6 +48,7 @@ struct MockAPIProvider: APIProvider {
 
     }
 
+    // swiftlint:disable force_unwrapping
     func apiResponse(for request: URLRequest) -> AnyPublisher<APIResponse, URLError> {
         let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)!
         let data = "Hello, world!".data(using: .utf8)!

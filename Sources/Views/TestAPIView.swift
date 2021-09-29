@@ -126,7 +126,7 @@ class TestAPIViewModel: ObservableObject {
                 }
 
             } receiveValue: { error in
-                print(error)
+                print(error as Any)
             }
             .store(in: &self.subscriptions)
 

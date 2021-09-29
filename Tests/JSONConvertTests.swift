@@ -4,7 +4,7 @@
 //
 //  Created by Kotaro Suto on 2021/08/14.
 //
-
+@testable import App
 import Foundation
 import XCTest
 
