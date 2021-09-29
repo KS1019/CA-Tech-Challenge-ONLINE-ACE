@@ -8,8 +8,6 @@
 
 import Combine
 import Foundation
-import OHHTTPStubs
-import OHHTTPStubsSwift
 
 extension MockTimeTableRepository {
 
@@ -30,23 +28,6 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
 
     init(mode: Mode = .success) {
         self.mode = mode
-
-        stub(condition: isHost("C.ACE.ace-c-ios")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("TimetableResponse.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-        stub(condition: isHost("C.ACE.ace-c-ios-channel-list")) { _ in
-            return fixture(
-                // swiftlint:disable force_unwrapping
-                filePath: OHPathForFile("ChannelList.json", type(of: self))!,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
     }
     func postReservationData(reservationData: ReservationData) -> AnyPublisher<ErrorCode?, Error> {
         // postがよばれた回数
@@ -147,11 +128,4 @@ class MockTimeTableRepository: TimeTableRepositoryProtocol {
     }
 
 }
-
-extension MockTimeTableRepository {
-    static let baseURL = URL(string: "https://C.ACE.ace-c-ios/projects")!
-    static let failedURL = URL(string: "https://failure.ace-c-ios/projects")!
-    static let channelListURL = URL(string: "https://C.ACE.ace-c-ios-channel-list/projects")!
-}
-
 #endif
