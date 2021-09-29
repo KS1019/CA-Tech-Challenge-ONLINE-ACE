@@ -4,6 +4,8 @@
 //
 //  Created by TanakaHirokazu on 2021/08/12.
 //
+#if DEBUG
+
 import Combine
 import SwiftUI
 
@@ -51,3 +53,5 @@ struct MockAPIView_Previews: PreviewProvider {
 struct MockTimeTableResult: Decodable {
     let data: [MockTimeTable]
 }
+
+#endif
