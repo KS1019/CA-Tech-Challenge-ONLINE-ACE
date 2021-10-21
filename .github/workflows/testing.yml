@@ -43,6 +43,6 @@ jobs:
               set -o pipefail
               xcodebuild build-for-testing test-without-building -project ace-c-ios.xcodeproj -scheme Tests -resultBundlePath TestResults -configuration Debug -sdk iphonesimulator -destination "name=iPhone 12" ENABLE_TESTABILITY=YES | xcpretty -c
       - uses: kishikawakatsumi/xcresulttool@v1.0.1
-          with:
+        with:
           path: TestResults.xcresult
-          if: always()
+        if: always()
